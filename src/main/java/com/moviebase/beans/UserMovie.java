@@ -1,13 +1,13 @@
 package com.moviebase.beans;
 
-import javax.xml.crypto.Data;
+import java.util.Date;
 
 public class UserMovie {
     private int accountId;
     private int movieId;
     private String status;
-    private Data createdAt;
-    private Data updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
 
     public UserMovie() {
     }
