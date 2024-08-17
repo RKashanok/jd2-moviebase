@@ -4,17 +4,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class PropertyHelper {
-    public static String getProperty(String propertyFileName, String key) {
-        Properties properties = new Properties();
+import static com.helpers.ConstantsHelper.APP;
 
-        try (InputStream inputStream =
-                     PropertyHelper.class.getResourceAsStream(String.format("/%s", propertyFileName))) {
+public class PropertyHelper {
+    private final Properties properties;
+
+    public PropertyHelper() {
+        properties = new Properties();
+        try (InputStream inputStream = PropertyHelper.class.getResourceAsStream(String.format("/%s", APP))) {
             properties.load(inputStream);
         } catch (IOException e) {
-            System.out.println("Failed to load properties file. Error: " + e.getMessage());
+            throw new RuntimeException("Failed to load properties file");
         }
+    }
 
+    public String getProperty(String key) {
         return properties.getProperty(key);
     }
+
 }
