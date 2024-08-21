@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS accounts (
     user_id INTEGER UNIQUE NOT NULL,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
-    prefered_name VARCHAR(255),
+    preferred_name VARCHAR(255),
     date_of_birth DATE,
     phone VARCHAR(20),
     gender VARCHAR(10),
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS accounts (
             ON DELETE CASCADE
 );
 
-INSERT INTO accounts (user_id, first_name, last_name, prefered_name, date_of_birth, phone, gender, photo_url) VALUES
+INSERT INTO accounts (user_id, first_name, last_name, preferred_name, date_of_birth, phone, gender, photo_url) VALUES
 (1, 'Paul', 'McCartney', 'Super Paul', '1990-05-15', '123456789', 'M', 'http://example.com/photo1.jpg'),
 (2, 'John', 'Lennon', 'Super John', '1990-05-05', '987654321', 'M', 'http://example.com/photo2.jpg');
 --

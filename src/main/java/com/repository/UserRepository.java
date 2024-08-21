@@ -10,14 +10,21 @@ import java.sql.SQLException;
 
 public class UserRepository {
     private final DataSource ds;
+    private final String CREATE_SQL = "INSERT INTO users (email, password, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
+    private final String FIND_BY_ID_SQL = "SELECT * FROM users WHERE id = ?";
+    private final String UPDATE_SQL = "UPDATE users SET email = ?, password = ?, role = ?, updated_at = ? WHERE id = ?";
+    private final String DELETE_BY_ID_FROM_USERS_SQL = "DELETE FROM users WHERE id = ?";
+    private final String DELETE_BY_ID_FROM_ACCOUNTS_SQL = "DELETE FROM accounts WHERE user_id = ?";
+    private final String INACTIVE_COMMENT_SQL = "UPDATE comments SET is_active = false WHERE user_id = ?";
+    private final String DELETE_USER_MOVIE_SQL = "DELETE FROM user_movie WHERE account_id = ?";
 
     public UserRepository(DataSource ds) {
         this.ds = ds;
     }
 
     public User create(User user) {
-        try(Connection conn = ds.getConnection())  {
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO users (email, password, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?)");
+        try (Connection conn = ds.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(CREATE_SQL);
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getRole());
@@ -32,8 +39,8 @@ public class UserRepository {
 
     public User findById(int id) {
         User user = new User();
-        try(Connection conn = ds.getConnection())  {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM users WHERE id = ?");
+        try (Connection conn = ds.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL);
             ps.setInt(1, id);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
@@ -51,8 +58,8 @@ public class UserRepository {
     }
 
     public User update(User user) {
-        try(Connection conn = ds.getConnection())  {
-            PreparedStatement ps = conn.prepareStatement("UPDATE users SET email = ?, password = ?, role = ?, updated_at = ? WHERE id = ?");
+        try (Connection conn = ds.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(UPDATE_SQL);
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getRole());
@@ -66,10 +73,22 @@ public class UserRepository {
     }
 
     public void deleteById(int id) {
-        try(Connection conn = ds.getConnection())  {
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM users WHERE id = ?");
-            ps.setInt(1, id);
-            ps.executeUpdate();
+        try (Connection conn = ds.getConnection()) {
+            PreparedStatement psComments = conn.prepareStatement(INACTIVE_COMMENT_SQL);
+            psComments.setInt(1, id);
+            psComments.executeUpdate();
+
+            PreparedStatement psUserMovie = conn.prepareStatement(DELETE_USER_MOVIE_SQL);
+            psUserMovie.setInt(1, id);
+            psUserMovie.executeUpdate();
+
+            PreparedStatement psAccounts = conn.prepareStatement(DELETE_BY_ID_FROM_ACCOUNTS_SQL);
+            psAccounts.setInt(1, id);
+            psAccounts.executeUpdate();
+
+            PreparedStatement psUsers = conn.prepareStatement(DELETE_BY_ID_FROM_USERS_SQL);
+            psUsers.setInt(1, id);
+            psUsers.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
