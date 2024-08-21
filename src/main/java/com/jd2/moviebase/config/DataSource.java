@@ -1,11 +1,9 @@
-package com.movie.database.datasource;
+package com.jd2.moviebase.config;
 
-import com.helpers.PropertyHelper;
+import com.jd2.moviebase.util.PropertyHelper;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-
-import static com.helpers.ConstantsHelper.APP;
 
 public class DataSource {
     private final HikariDataSource ds;
