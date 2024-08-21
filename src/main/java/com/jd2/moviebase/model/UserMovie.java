@@ -1,25 +1,15 @@
-package com.moviebase.beans;
+package com.jd2.moviebase.model;
 
 import java.util.Date;
 
-public class Comment {
-    private int id;
+public class UserMovie {
     private int accountId;
     private int movieId;
-    private String note;
+    private String status;
     private Date createdAt;
     private Date updatedAt;
-    private Boolean isActive;
 
-    public Comment() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public UserMovie() {
     }
 
     public int getAccountId() {
@@ -38,12 +28,12 @@ public class Comment {
         this.movieId = movieId;
     }
 
-    public String getNote() {
-        return note;
+    public String getStatus() {
+        return status;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Date getCreatedAt() {
@@ -60,13 +50,5 @@ public class Comment {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
     }
 }

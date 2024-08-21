@@ -1,4 +1,4 @@
-package com.moviebase.beans;
+package com.jd2.moviebase.model;
 
 import java.sql.Date;
 import java.util.List;
