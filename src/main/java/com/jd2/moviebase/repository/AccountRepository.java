@@ -1,7 +1,7 @@
-package com.repository;
+package com.jd2.moviebase.repository;
 
-import com.movie.database.datasource.DataSource;
-import com.moviebase.beans.Account;
+import com.jd2.moviebase.config.DataSource;
+import com.jd2.moviebase.model.Account;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

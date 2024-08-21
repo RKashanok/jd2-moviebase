@@ -1,7 +1,7 @@
-package com.service;
+package com.jd2.moviebase.service;
 
-import com.moviebase.beans.Account;
-import com.repository.AccountRepository;
+import com.jd2.moviebase.model.Account;
+import com.jd2.moviebase.repository.AccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
