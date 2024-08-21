@@ -1,6 +1,5 @@
 package com.jd2.moviebase.model;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class User {
@@ -50,7 +49,7 @@ public class User {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -58,7 +57,7 @@ public class User {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 }
