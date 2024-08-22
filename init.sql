@@ -88,10 +88,6 @@ CREATE TABLE IF NOT EXISTS comments (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_active BOOLEAN DEFAULT TRUE,
-    CONSTRAINT fk_account
-        FOREIGN KEY (account_id)
-            REFERENCES accounts (id)
-            ON DELETE CASCADE,
     CONSTRAINT fk_movie
         FOREIGN KEY (movie_id)
             REFERENCES movies (id)
