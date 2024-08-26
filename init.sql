@@ -61,7 +61,7 @@ INSERT INTO movies (tmdb_id, name, genre_id, release_date, rating, overview, ori
 (202, 'Movie 2', ARRAY[1,2], '2024-02-15', 8, 'Overview 2', 'fr'),
 (303, 'Movie 3', ARRAY[2,3], '2024-03-30', 6, 'Overview 13', 'pl');
 
-CREATE TABLE IF NOT EXISTS user_movie (
+CREATE TABLE IF NOT EXISTS account_movie (
     account_id INTEGER NOT NULL,
     movie_id INTEGER NOT NULL,
     status VARCHAR(50) NOT NULL,
@@ -78,11 +78,11 @@ CREATE TABLE IF NOT EXISTS user_movie (
     PRIMARY KEY (account_id, movie_id)
 );
 
-INSERT INTO user_movie (account_id, movie_id, status) VALUES (1, 2, 'watched'), (2, 3, 'to_watch');
+INSERT INTO account_movie (account_id, movie_id, status) VALUES (1, 2, 'watched'), (2, 3, 'to_watch');
 
 CREATE TABLE IF NOT EXISTS comments (
     id SERIAL PRIMARY KEY,
-    account_id INTEGER NOT NULL,
+    account_id INTEGER NULL,
     movie_id INTEGER NOT NULL,
     note TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

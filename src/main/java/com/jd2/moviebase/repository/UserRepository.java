@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Optional;
 
 public class UserRepository {
     private final DataSource ds;
@@ -21,11 +23,19 @@ public class UserRepository {
 
     public User create(User user) {
         try (Connection conn = ds.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(CREATE_SQL);
+            int insertedId;
+            conn.setAutoCommit(false);
+            PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getRole());
             ps.executeUpdate();
+            ResultSet generatedKeys = ps.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                insertedId = generatedKeys.getInt(1);
+                user.setId(insertedId);
+                conn.commit();
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -33,12 +43,13 @@ public class UserRepository {
     }
 
     public User findById(int id) {
-        User user = new User();
+        User user = null;
         try (Connection conn = ds.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL);
             ps.setInt(1, id);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
+                user = new User();
                 user.setId(resultSet.getInt("id"));
                 user.setEmail(resultSet.getString("email"));
                 user.setPassword(resultSet.getString("password"));
@@ -49,7 +60,8 @@ public class UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return user;
+        return Optional.ofNullable(user)
+                .orElseThrow(() -> new RuntimeException("User with ID " + id + " not found"));
     }
 
     public User update(User user) {

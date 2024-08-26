@@ -4,18 +4,24 @@ import com.jd2.moviebase.config.DataSource;
 import com.jd2.moviebase.model.User;
 import com.jd2.moviebase.repository.AccountRepository;
 import com.jd2.moviebase.repository.CommentsRepository;
-import com.jd2.moviebase.repository.UserMovieRepository;
+import com.jd2.moviebase.repository.AccountMovieRepository;
 import com.jd2.moviebase.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-
+    DataSource ds = new DataSource();
     private final UserRepository userRepository;
+    private final AccountService accountService;
+    private final CommentsService commentsService;
+    private final AccountMovieService accountMovieService;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.accountService = new AccountService(new AccountRepository(ds));
+        this.commentsService = new CommentsService(new CommentsRepository(ds));
+        this.accountMovieService = new AccountMovieService(new AccountMovieRepository(ds));
     }
 
     public User create(User user) {
@@ -35,19 +41,16 @@ public class UserService {
 
     public void deleteById(int id) {
         logger.info("Deleting user by id: {}", id);
-        DataSource ds = new DataSource();
 
         // get account id
-        AccountService accountService = new AccountService(new AccountRepository(ds));
         int accId = accountService.findByUserId(id).getId();
 
-        // deactivate comments
-        CommentsService commentsService = new CommentsService(new CommentsRepository(ds));
+        // deactivate comments and set null account id
         commentsService.deactivateByAccId(accId);
+        commentsService.setNullAccId(id);
 
         // delete user_movie
-        UserMovieService userMovieService = new UserMovieService(new UserMovieRepository(ds));
-        userMovieService.deleteByAccId(accId);
+        accountMovieService.deleteByAccId(accId);
 
         //delete account
         accountService.deleteById(accId);

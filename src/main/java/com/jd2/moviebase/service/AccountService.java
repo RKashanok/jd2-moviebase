@@ -4,16 +4,21 @@ import com.jd2.moviebase.config.DataSource;
 import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.repository.AccountRepository;
 import com.jd2.moviebase.repository.CommentsRepository;
-import com.jd2.moviebase.repository.UserMovieRepository;
+import com.jd2.moviebase.repository.AccountMovieRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AccountService {
     private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
+    DataSource ds = new DataSource();
     private final AccountRepository accountRepository;
+    private final CommentsService commentsService;
+    private final AccountMovieService accountMovieService;
 
     public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
+        this.commentsService = new CommentsService(new CommentsRepository(ds));
+        this.accountMovieService = new AccountMovieService(new AccountMovieRepository(ds));
     }
 
     public Account create(Account account) {
@@ -38,15 +43,13 @@ public class AccountService {
 
     public void deleteById(int id) {
         logger.info("Deleting account by id: {}", id);
-        DataSource ds = new DataSource();
 
-        // deactivate comments
-        CommentsService commentsService = new CommentsService(new CommentsRepository(ds));
+        // deactivate comments and set null account id
         commentsService.deactivateByAccId(id);
+        commentsService.setNullAccId(id);
 
-        // delete user_movie
-        UserMovieService userMovieService = new UserMovieService(new UserMovieRepository(ds));
-        userMovieService.deleteByAccId(id);
+        // delete account_movie
+        accountMovieService.deleteByAccId(id);
 
         // delete account
         accountRepository.deleteById(id);

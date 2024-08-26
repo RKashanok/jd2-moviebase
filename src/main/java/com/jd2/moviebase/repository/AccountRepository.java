@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class AccountRepository {
     private final DataSource ds;
@@ -24,7 +25,9 @@ public class AccountRepository {
 
     public Account create(Account account) {
         try (Connection conn = ds.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(CREATE_SQL);
+            int insertedId;
+            conn.setAutoCommit(false);
+            PreparedStatement ps = conn.prepareStatement(CREATE_SQL, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setInt(1, account.getUserId());
             ps.setString(2, account.getFirstName());
             ps.setString(3, account.getLastName());
@@ -34,6 +37,12 @@ public class AccountRepository {
             ps.setString(7, account.getGender());
             ps.setString(8, account.getPhotoUrl());
             ps.executeUpdate();
+            ResultSet generatedKeys = ps.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                insertedId = generatedKeys.getInt(1);
+                account.setId(insertedId);
+                conn.commit();
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -41,12 +50,13 @@ public class AccountRepository {
     }
 
     public Account findById(int id) {
-        Account account = new Account();
+        Account account = null;
         try (Connection conn = ds.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL);
             ps.setInt(1, id);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
+                account = new Account();
                 account.setId(resultSet.getInt("id"));
                 account.setUserId(resultSet.getInt("user_id"));
                 account.setFirstName(resultSet.getString("first_name"));
@@ -62,16 +72,18 @@ public class AccountRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return account;
+        return Optional.ofNullable(account)
+                .orElseThrow(() -> new RuntimeException("Account with ID " + id + " not found"));
     }
 
     public Account findByUserId(int userId) {
-        Account account = new Account();
+        Account account = null;
         try (Connection conn = ds.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(FIND_BY_USER_ID_SQL);
             ps.setInt(1, userId);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
+                account = new Account();
                 account.setId(resultSet.getInt("id"));
                 account.setUserId(resultSet.getInt("user_id"));
                 account.setFirstName(resultSet.getString("first_name"));
@@ -87,7 +99,8 @@ public class AccountRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return account;
+        return Optional.ofNullable(account)
+                .orElseThrow(() -> new RuntimeException("Account with user ID " + userId + " not found"));
     }
 
     public Account update(Account account) {
