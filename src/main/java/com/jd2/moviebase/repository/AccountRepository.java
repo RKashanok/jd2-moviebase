@@ -26,7 +26,6 @@ public class AccountRepository {
     public Account create(Account account) {
         try (Connection conn = ds.getConnection()) {
             int insertedId;
-            conn.setAutoCommit(false);
             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setInt(1, account.getUserId());
             ps.setString(2, account.getFirstName());
@@ -41,7 +40,6 @@ public class AccountRepository {
             if (generatedKeys.next()) {
                 insertedId = generatedKeys.getInt(1);
                 account.setId(insertedId);
-                conn.commit();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

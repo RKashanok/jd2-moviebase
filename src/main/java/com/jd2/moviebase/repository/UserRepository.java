@@ -24,7 +24,6 @@ public class UserRepository {
     public User create(User user) {
         try (Connection conn = ds.getConnection()) {
             int insertedId;
-            conn.setAutoCommit(false);
             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
@@ -34,7 +33,6 @@ public class UserRepository {
             if (generatedKeys.next()) {
                 insertedId = generatedKeys.getInt(1);
                 user.setId(insertedId);
-                conn.commit();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

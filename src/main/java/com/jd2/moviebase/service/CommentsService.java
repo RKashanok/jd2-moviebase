@@ -16,9 +16,4 @@ public class CommentsService {
         logger.info("Deleting comment by account id: {}", id);
         commentsRepository.deactivateByAccId(id);
     }
-
-    public void setNullAccId(int id) {
-        logger.info("Setting null account id in comments by account id: {}", id);
-        commentsRepository.setNullAccId(id);
-    }
 }

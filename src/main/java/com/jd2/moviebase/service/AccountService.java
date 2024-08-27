@@ -46,7 +46,6 @@ public class AccountService {
 
         // deactivate comments and set null account id
         commentsService.deactivateByAccId(id);
-        commentsService.setNullAccId(id);
 
         // delete account_movie
         accountMovieService.deleteByAccId(id);
