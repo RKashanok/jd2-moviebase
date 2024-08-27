@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class GenreRepository {
@@ -30,46 +31,54 @@ public class GenreRepository {
         List<Genre> genres = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(FIND_SQL)) {
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(FIND_SQL)) {
 
             while (rs.next()) {
-                genres.add(sortRow(rs));
+                genres.add(mapRow(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return genres;
     }
 
-    public Genre findById(Genre genre) {
-        int id = genre.getId();
-
+    public Optional<Genre> findById(int id) {
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
 
             ps.setInt(1, id);
+
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    genre = sortRow(rs);
+                    return Optional.of(mapRow(rs));
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        return genre;
+        return Optional.empty();
     }
 
     public Genre create(Genre genre) {
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(CREATE_SQL)) {
+             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, genre.getTmdbId());
             ps.setString(2, genre.getName());
             ps.executeUpdate();
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if(generatedKeys.next()) {
+                    genre.setId(generatedKeys.getInt(1));
+                } else {
+                    throw new SQLException("Creating genre failed, no ID obtained.");
+                }
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -83,27 +92,35 @@ public class GenreRepository {
             ps.setInt(1, genre.getTmdbId());
             ps.setString(2, genre.getName());
             ps.setInt(3, genre.getId());
-            ps.executeUpdate();
+
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Updating genre failed, no rows affected.");
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return genre;
     }
 
-    public Genre deleteById(Genre genre) {
-        int id = genre.getId();
+    public void deleteById(int id) {
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(DELETE_SQL)) {
+             PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
 
-            pstmt.setInt(1, id);
-            pstmt.executeUpdate();
+            ps.setInt(1, id);
+
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Deleting genre failed, no rows affected.");
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return findById(genre);
     }
 
-    private Genre sortRow(ResultSet rs) throws SQLException {
+    private Genre mapRow(ResultSet rs) throws SQLException {
         Genre genre = new Genre();
         genre.setId(rs.getInt("id"));
         genre.setTmdbId(rs.getInt("tmdb_id"));

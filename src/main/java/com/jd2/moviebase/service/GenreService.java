@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GenreService {
@@ -23,28 +24,28 @@ public class GenreService {
     }
 
     public List<Genre> findAll() {
-        logger.info("findAll log from {}", GenreService.class.getSimpleName());
+        logger.info("Executing method: findAll()");
         return genreRepository.findAll();
     }
 
-    public Genre findById(Genre genre) {
-        logger.info("findById log from {}", GenreService.class.getSimpleName());
-        return genreRepository.findById(genre);
+    public Optional<Genre> findById(int id) {
+        logger.info("Executing method: findById(id={})", id);
+        return genreRepository.findById(id);
     }
 
     public Genre create(Genre genre){
-        logger.info("create log from {}", GenreService.class.getSimpleName());
+        logger.info("Executing method: create(genre={})", genre);
         return genreRepository.create(genre);
     }
 
     public Genre update(Genre genre){
-        logger.info("update log from {}", GenreService.class.getSimpleName());
+        logger.info("Executing method: update(genre={})", genre);
         return genreRepository.update(genre);
     }
 
-    public Genre deleteByID(Genre genre){
-        logger.info("deleteByID log from {}", GenreService.class.getSimpleName());
-        return genreRepository.deleteById(genre);
+    public void deleteByID(int id){
+        logger.info("Executing method: deleteByID(id={})", id);
+        genreRepository.deleteById(id);
     }
 
 }
