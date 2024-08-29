@@ -24,7 +24,7 @@ public class AccountMovieRepository {
     private final String FIND_ALL_ACC_MOVIE_BY_ACC_ID_SQL = "SELECT * FROM account_movie WHERE account_id = ?";
     private final String UPDATE_ACC_MOVIE_STATUS_BY_ACC_ID_SQL = "UPDATE account_movie SET status = ? WHERE account_id = ? AND movie_id = ?";
 
-    public int create(AccountMovie accountMovie) {
+    public void create(AccountMovie accountMovie) {
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(CREATE_ACC_MOVIE_SQL)) {
             ps.setInt(1, accountMovie.getAccountId());
@@ -34,7 +34,6 @@ public class AccountMovieRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return accountMovie.getAccountId();
     }
 
     public List<AccountMovie> findAllByAccountId(int accountId) {

@@ -17,9 +17,9 @@ public class AccountMovieService {
         this.accountMovieRepository = accountMovieRepository;
     }
 
-    public int create(AccountMovie accountMovie) {
+    public void create(AccountMovie accountMovie) {
         logger.info("Creating account movie: {}", accountMovie);
-        return accountMovieRepository.create(accountMovie);
+        accountMovieRepository.create(accountMovie);
     }
 
     public List<AccountMovie> findAllByAccountId(int accountId) {
