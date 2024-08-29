@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static com.jd2.moviebase.util.ConstantsHelper.MovieStatus;
+
 public class AccountMovieService {
     private static final Logger logger = LoggerFactory.getLogger(AccountMovieService.class);
     private final AccountMovieRepository accountMovieRepository;
@@ -15,7 +17,7 @@ public class AccountMovieService {
         this.accountMovieRepository = accountMovieRepository;
     }
 
-    public AccountMovie create(AccountMovie accountMovie) {
+    public int create(AccountMovie accountMovie) {
         logger.info("Creating account movie: {}", accountMovie);
         return accountMovieRepository.create(accountMovie);
     }
@@ -25,7 +27,7 @@ public class AccountMovieService {
         return accountMovieRepository.findAllByAccountId(accountId);
     }
 
-    public void updateStatusByAccId(int accountId, int movieId, String status) {
+    public void updateStatusByAccId(int accountId, int movieId, MovieStatus status) {
         logger.info("Updating account movie status by account id: {}", accountId);
         accountMovieRepository.updateStatusByAccId(accountId, movieId, status);
     }
