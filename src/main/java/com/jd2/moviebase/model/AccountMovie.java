@@ -2,14 +2,14 @@ package com.jd2.moviebase.model;
 
 import java.util.Date;
 
-public class UserMovie {
+public class AccountMovie {
     private int accountId;
     private int movieId;
     private String status;
     private Date createdAt;
     private Date updatedAt;
 
-    public UserMovie() {
+    public AccountMovie() {
     }
 
     public int getAccountId() {
