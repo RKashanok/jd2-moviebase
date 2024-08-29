@@ -22,9 +22,9 @@ public class UserRepository {
     }
 
     public User create(User user) {
-        try (Connection conn = ds.getConnection()) {
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
             int insertedId;
-            PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getRole());
@@ -42,8 +42,8 @@ public class UserRepository {
 
     public User findById(int id) {
         User user = null;
-        try (Connection conn = ds.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL);
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
             ps.setInt(1, id);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
@@ -63,8 +63,8 @@ public class UserRepository {
     }
 
     public User update(User user) {
-        try (Connection conn = ds.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(UPDATE_SQL);
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getRole());
@@ -78,8 +78,8 @@ public class UserRepository {
     }
 
     public void deleteById(int id) {
-        try (Connection conn = ds.getConnection()) {
-            PreparedStatement psUsers = conn.prepareStatement(DELETE_BY_ID_FROM_USERS_SQL);
+        try (Connection conn = ds.getConnection();
+             PreparedStatement psUsers = conn.prepareStatement(DELETE_BY_ID_FROM_USERS_SQL)) {
             psUsers.setInt(1, id);
             psUsers.executeUpdate();
         } catch (SQLException e) {

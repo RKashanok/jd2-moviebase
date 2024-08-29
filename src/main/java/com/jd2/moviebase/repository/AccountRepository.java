@@ -24,9 +24,9 @@ public class AccountRepository {
     }
 
     public Account create(Account account) {
-        try (Connection conn = ds.getConnection()) {
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, PreparedStatement.RETURN_GENERATED_KEYS)) {
             int insertedId;
-            PreparedStatement ps = conn.prepareStatement(CREATE_SQL, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setInt(1, account.getUserId());
             ps.setString(2, account.getFirstName());
             ps.setString(3, account.getLastName());
@@ -49,8 +49,8 @@ public class AccountRepository {
 
     public Account findById(int id) {
         Account account = null;
-        try (Connection conn = ds.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL);
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
             ps.setInt(1, id);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
@@ -76,8 +76,8 @@ public class AccountRepository {
 
     public Account findByUserId(int userId) {
         Account account = null;
-        try (Connection conn = ds.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(FIND_BY_USER_ID_SQL);
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(FIND_BY_USER_ID_SQL)) {
             ps.setInt(1, userId);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
@@ -102,8 +102,8 @@ public class AccountRepository {
     }
 
     public Account update(Account account) {
-        try (Connection conn = ds.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(UPDATE_SQL);
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
             ps.setInt(1, account.getUserId());
             ps.setString(2, account.getFirstName());
             ps.setString(3, account.getLastName());
@@ -122,8 +122,8 @@ public class AccountRepository {
     }
 
     public void deleteById(int id) {
-        try (Connection conn = ds.getConnection()) {
-            PreparedStatement psAccounts = conn.prepareStatement(DELETE_BY_ID_FROM_ACCOUNTS_SQL);
+        try (Connection conn = ds.getConnection();
+             PreparedStatement psAccounts = conn.prepareStatement(DELETE_BY_ID_FROM_ACCOUNTS_SQL)) {
             psAccounts.setInt(1, id);
             psAccounts.executeUpdate();
         } catch (SQLException e) {

@@ -16,8 +16,8 @@ public class CommentsRepository {
     private final String DEACTIVE_COMMENT_BY_ACC_ID_SQL = "UPDATE comments SET is_active = false, account_id = NULL  WHERE account_id = ?";
 
     public void deactivateByAccId(int id) {
-        try (Connection conn = ds.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(DEACTIVE_COMMENT_BY_ACC_ID_SQL);
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(DEACTIVE_COMMENT_BY_ACC_ID_SQL)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {

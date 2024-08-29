@@ -16,8 +16,8 @@ public class AccountMovieRepository {
     private final String DELETE_USER_MOVIE_BY_ACC_ID_SQL = "DELETE FROM account_movie WHERE account_id = ?";
 
     public void deleteByAccId(int id) {
-        try (Connection conn = ds.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(DELETE_USER_MOVIE_BY_ACC_ID_SQL);
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(DELETE_USER_MOVIE_BY_ACC_ID_SQL)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
