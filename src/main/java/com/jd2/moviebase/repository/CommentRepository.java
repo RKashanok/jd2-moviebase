@@ -17,7 +17,6 @@ public class CommentRepository {
     private static final String FIND_BY_ID_SQL = "SELECT * FROM comments WHERE id = ?";
     private static final String FIND_SQL = "SELECT * FROM comments";
     private static final String UPDATE_SQL = "UPDATE comments SET account_id = ?, movie_id = ?, note = ?, updated_at = ?, is_active = ? WHERE id = ?";
-    private static final String DELETE_SQL = "DELETE FROM comments WHERE id = ?";
     private static final String DEACTIVATE_COMMENT_BY_ACC_ID_SQL = "UPDATE comments SET is_active = false, account_id = NULL WHERE account_id = ?";
 
     private final DataSource dataSource;
@@ -106,22 +105,6 @@ public class CommentRepository {
             throw new RuntimeException(e);
         }
         return comment;
-    }
-
-    public void deleteById(int id) {
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
-
-            ps.setInt(1, id);
-
-            int rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new SQLException("Deleting comment failed, no rows affected.");
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 

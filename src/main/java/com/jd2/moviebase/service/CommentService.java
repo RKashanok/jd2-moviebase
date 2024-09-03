@@ -42,11 +42,6 @@ public class CommentService {
         return commentRepository.update(comment);
     }
 
-    public void deleteById(int id) {
-        logger.info("Executing method: deleteById(id={})", id);
-        commentRepository.deleteById(id);
-    }
-
     public void deactivateByAccId(int accountId) {
         logger.info("Executing method: deactivateByAccId(accountId={})", accountId);
         commentRepository.deactivateByAccId(accountId);
