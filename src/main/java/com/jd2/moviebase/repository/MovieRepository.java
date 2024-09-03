@@ -148,7 +148,7 @@ public class MovieRepository {
     private void composeStatement(PreparedStatement ps, Movie movie, Connection conn) throws SQLException {
         ps.setInt(1, movie.getTmdbId());
         ps.setString(2, movie.getName());
-        ps.setArray(3, conn.createArrayOf("integer", movie.getGenreId().toArray()));
+        ps.setArray(3, conn.createArrayOf("integer", movie.getGenreIds().toArray()));
         ps.setDate(4, movie.getReleaseDate());
         ps.setInt(5, movie.getRating());
         ps.setString(6, movie.getOverview());

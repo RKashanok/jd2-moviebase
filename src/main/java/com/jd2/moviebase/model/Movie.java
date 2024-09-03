@@ -7,7 +7,7 @@ public class Movie {
     private int id;
     private int tmdbId;
     private String name;
-    private List<Integer> genreId;
+    private List<Integer> genreIds;
     private Date releaseDate;
     private int rating;
     private String overview;
@@ -40,12 +40,12 @@ public class Movie {
         this.name = name;
     }
 
-    public List<Integer> getGenreId() {
-        return genreId;
+    public List<Integer> getGenreIds() {
+        return genreIds;
     }
 
     public void setGenreId(List<Integer> genreId) {
-        this.genreId = genreId;
+        this.genreIds = genreId;
     }
 
     public Date getReleaseDate() {
