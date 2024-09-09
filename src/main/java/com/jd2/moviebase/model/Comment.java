@@ -62,7 +62,7 @@ public class Comment {
         this.updatedAt = updatedAt;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return isActive;
     }
 
