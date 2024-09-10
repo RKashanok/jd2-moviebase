@@ -1,5 +1,6 @@
 package com.jd2.moviebase.service;
 
+
 import com.jd2.moviebase.config.DataSource;
 import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.repository.AccountRepository;
@@ -10,7 +11,16 @@ import org.slf4j.LoggerFactory;
 
 public class AccountService {
     private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
-    DataSource ds = new DataSource();
+    DataSource ds;
+
+    {
+        try {
+            ds = new DataSource();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private final AccountRepository accountRepository;
     private final CommentsService commentsService;
     private final AccountMovieService accountMovieService;

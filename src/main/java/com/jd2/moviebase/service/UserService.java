@@ -17,7 +17,7 @@ public class UserService {
     private final CommentsService commentsService;
     private final AccountMovieService accountMovieService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository) throws ClassNotFoundException {
         this.userRepository = userRepository;
         this.accountService = new AccountService(new AccountRepository(ds));
         this.commentsService = new CommentsService(new CommentsRepository(ds));
