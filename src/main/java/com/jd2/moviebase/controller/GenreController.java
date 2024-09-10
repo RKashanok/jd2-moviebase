@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/genres")
@@ -26,12 +27,25 @@ public class GenreController {
 
     @GetMapping("/find_by_id")
     public @ResponseBody Genre fidById(@RequestParam("id") int id) {
-        return genreService.findById(id);
+        Optional<Genre> optionalGenre = genreService.findById(id);
+        return optionalGenre.orElse(null);
     }
-    //create
 
+    @PostMapping("/create")
+    public @ResponseBody Genre create(@RequestBody Genre genre) {
+        return genreService.create(genre);
+    }
 
-    //update
+    @PutMapping("/update")
+    public @ResponseBody Genre update(@RequestBody Genre genre) {
+        Optional<Genre> existingGenre = genreService.findById(genre.getId());
+        return existingGenre.map(g -> genreService.update(genre)).orElse(null);
+    }
 
-    //delete_by_id
+    @DeleteMapping("/delete_by_id")
+    public void deleteById(@RequestParam("id") int id) {
+        Optional<Genre> existingGenre = genreService.findById(id);
+        existingGenre.ifPresent(g -> genreService.deleteByID(id));
+    }
 }
+

@@ -28,9 +28,9 @@ public class GenreService {
         return genreRepository.findAll();
     }
 
-    public Genre findById(int id) {
+    public Optional<Genre> findById(int id) {
         logger.info("Executing method: findById(id={})", id);
-        return genreRepository.findById(id).orElse(null);
+        return genreRepository.findById(id);
     }
 
     public Genre create(Genre genre){
