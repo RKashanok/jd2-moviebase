@@ -13,7 +13,6 @@ public class DataSource {
     PropertyHelper propertyHelper = new PropertyHelper();
 
     public DataSource() throws ClassNotFoundException {
-        System.out.println("Start DataSource");
         Class.forName("org.postgresql.Driver");
         this.ds = new HikariDataSource();
         this.ds.setJdbcUrl(propertyHelper.getProperty("db.host"));
