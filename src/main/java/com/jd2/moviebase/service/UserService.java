@@ -2,14 +2,13 @@ package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.config.DataSource;
 import com.jd2.moviebase.model.User;
-import com.jd2.moviebase.repository.AccountRepository;
-import com.jd2.moviebase.repository.CommentsRepository;
-import com.jd2.moviebase.repository.AccountMovieRepository;
 import com.jd2.moviebase.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -37,6 +36,11 @@ public class UserService {
     public User findById(int id) {
         logger.info("Finding user by id: {}", id);
         return userRepository.findById(id);
+    }
+
+    public List<User> findAll() {
+        logger.info("Finding all users");
+        return userRepository.findAll();
     }
 
     public User update(User user) {

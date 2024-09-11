@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,6 +19,7 @@ public class UserRepository {
     private final DataSource ds;
     private final String CREATE_SQL = "INSERT INTO users (email, password, role) VALUES (?, ?, ?)";
     private final String FIND_BY_ID_SQL = "SELECT * FROM users WHERE id = ?";
+    private final String FIND_ALL_SQL = "SELECT * FROM users";
     private final String UPDATE_SQL = "UPDATE users SET email = ?, password = ?, role = ?, updated_at = ? WHERE id = ?";
     private final String DELETE_BY_ID_FROM_USERS_SQL = "DELETE FROM users WHERE id = ?";
 
@@ -64,6 +67,29 @@ public class UserRepository {
         }
         return Optional.ofNullable(user)
                 .orElseThrow(() -> new RuntimeException("User with ID " + id + " not found"));
+    }
+
+    public List<User> findAll() {
+        List<User> users = new ArrayList<>();
+
+        try (Connection conn = ds.getConnection();
+             PreparedStatement ps = conn.prepareStatement(FIND_ALL_SQL)) {
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getInt("id"));
+                user.setEmail(resultSet.getString("email"));
+                user.setPassword(resultSet.getString("password"));
+                user.setRole(resultSet.getString("role"));
+                user.setCreatedAt(resultSet.getDate("created_at"));
+                user.setUpdatedAt(resultSet.getDate("updated_at"));
+                users.add(user);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return users;
     }
 
     public User update(User user) {

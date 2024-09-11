@@ -2,8 +2,6 @@ package com.jd2.moviebase.config;
 
 import com.jd2.moviebase.util.PropertyHelper;
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -13,7 +11,6 @@ import java.sql.SQLException;
 public class DataSource {
     private final HikariDataSource ds;
     PropertyHelper propertyHelper = new PropertyHelper();
-
 
     public DataSource() throws ClassNotFoundException {
         System.out.println("Start DataSource");
