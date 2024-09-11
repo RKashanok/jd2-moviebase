@@ -2,6 +2,8 @@ package com.jd2.moviebase.repository;
 
 import com.jd2.moviebase.config.DataSource;
 import com.jd2.moviebase.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
 
+@Repository
 public class UserRepository {
     private final DataSource ds;
     private final String CREATE_SQL = "INSERT INTO users (email, password, role) VALUES (?, ?, ?)";
@@ -17,6 +20,7 @@ public class UserRepository {
     private final String UPDATE_SQL = "UPDATE users SET email = ?, password = ?, role = ?, updated_at = ? WHERE id = ?";
     private final String DELETE_BY_ID_FROM_USERS_SQL = "DELETE FROM users WHERE id = ?";
 
+    @Autowired
     public UserRepository(DataSource ds) {
         this.ds = ds;
     }

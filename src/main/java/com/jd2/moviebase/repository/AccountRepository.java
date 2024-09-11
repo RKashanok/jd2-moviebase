@@ -2,6 +2,7 @@ package com.jd2.moviebase.repository;
 
 import com.jd2.moviebase.config.DataSource;
 import com.jd2.moviebase.model.Account;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+@Repository
 public class AccountRepository {
     private final DataSource ds;
     private final String CREATE_SQL = "INSERT INTO accounts (user_id, first_name, last_name, preferred_name, date_of_birth, " +
