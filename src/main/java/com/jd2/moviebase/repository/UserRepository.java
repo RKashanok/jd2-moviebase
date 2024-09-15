@@ -54,13 +54,7 @@ public class UserRepository {
             ps.setInt(1, id);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
-                user = new User();
-                user.setId(resultSet.getInt("id"));
-                user.setEmail(resultSet.getString("email"));
-                user.setPassword(resultSet.getString("password"));
-                user.setRole(resultSet.getString("role"));
-                user.setCreatedAt(resultSet.getDate("created_at"));
-                user.setUpdatedAt(resultSet.getDate("updated_at"));
+                user = getUserObject(resultSet);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -76,13 +70,7 @@ public class UserRepository {
              PreparedStatement ps = conn.prepareStatement(FIND_ALL_SQL)) {
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
-                User user = new User();
-                user.setId(resultSet.getInt("id"));
-                user.setEmail(resultSet.getString("email"));
-                user.setPassword(resultSet.getString("password"));
-                user.setRole(resultSet.getString("role"));
-                user.setCreatedAt(resultSet.getDate("created_at"));
-                user.setUpdatedAt(resultSet.getDate("updated_at"));
+                User user = getUserObject(resultSet);
                 users.add(user);
             }
 
@@ -115,5 +103,16 @@ public class UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private User getUserObject(ResultSet resultSet) throws SQLException {
+        User user = new User();
+        user.setId(resultSet.getInt("id"));
+        user.setEmail(resultSet.getString("email"));
+        user.setPassword(resultSet.getString("password"));
+        user.setRole(resultSet.getString("role"));
+        user.setCreatedAt(resultSet.getDate("created_at"));
+        user.setUpdatedAt(resultSet.getDate("updated_at"));
+        return user;
     }
 }
