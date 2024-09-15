@@ -1,9 +1,9 @@
 package com.jd2.moviebase.repository;
 
-import com.jd2.moviebase.config.DataSource;
 import com.jd2.moviebase.model.AccountMovie;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

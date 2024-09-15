@@ -1,10 +1,10 @@
 package com.jd2.moviebase.repository;
 
-import com.jd2.moviebase.config.DataSource;
 import com.jd2.moviebase.model.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

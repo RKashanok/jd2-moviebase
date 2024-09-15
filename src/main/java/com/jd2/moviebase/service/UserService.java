@@ -1,6 +1,5 @@
 package com.jd2.moviebase.service;
 
-import com.jd2.moviebase.config.DataSource;
 import com.jd2.moviebase.model.User;
 import com.jd2.moviebase.repository.UserRepository;
 import org.slf4j.Logger;
@@ -8,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 @Service

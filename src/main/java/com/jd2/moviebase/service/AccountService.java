@@ -1,10 +1,7 @@
 package com.jd2.moviebase.service;
 
-import com.jd2.moviebase.config.DataSource;
 import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.repository.AccountRepository;
-import com.jd2.moviebase.repository.CommentsRepository;
-import com.jd2.moviebase.repository.AccountMovieRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
