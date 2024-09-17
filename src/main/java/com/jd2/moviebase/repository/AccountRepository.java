@@ -56,18 +56,7 @@ public class AccountRepository {
             ps.setInt(1, id);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
-                account = new Account();
-                account.setId(resultSet.getInt("id"));
-                account.setUserId(resultSet.getInt("user_id"));
-                account.setFirstName(resultSet.getString("first_name"));
-                account.setLastName(resultSet.getString("last_name"));
-                account.setPreferredName(resultSet.getString("preferred_name"));
-                account.setDateOfBirth(resultSet.getDate("date_of_birth"));
-                account.setPhone(resultSet.getString("phone"));
-                account.setGender(resultSet.getString("gender"));
-                account.setPhotoUrl(resultSet.getString("photo_url"));
-                account.setCreatedAt(resultSet.getDate("created_at"));
-                account.setUpdatedAt(resultSet.getDate("updated_at"));
+                account = getAccountObject(resultSet);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -83,18 +72,7 @@ public class AccountRepository {
             ps.setInt(1, userId);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
-                account = new Account();
-                account.setId(resultSet.getInt("id"));
-                account.setUserId(resultSet.getInt("user_id"));
-                account.setFirstName(resultSet.getString("first_name"));
-                account.setLastName(resultSet.getString("last_name"));
-                account.setPreferredName(resultSet.getString("preferred_name"));
-                account.setDateOfBirth(resultSet.getDate("date_of_birth"));
-                account.setPhone(resultSet.getString("phone"));
-                account.setGender(resultSet.getString("gender"));
-                account.setPhotoUrl(resultSet.getString("photo_url"));
-                account.setCreatedAt(resultSet.getDate("created_at"));
-                account.setUpdatedAt(resultSet.getDate("updated_at"));
+                account = getAccountObject(resultSet);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -131,5 +109,21 @@ public class AccountRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Account getAccountObject(ResultSet resultSet) throws SQLException {
+        Account account = new Account();
+        account.setId(resultSet.getInt("id"));
+        account.setUserId(resultSet.getInt("user_id"));
+        account.setFirstName(resultSet.getString("first_name"));
+        account.setLastName(resultSet.getString("last_name"));
+        account.setPreferredName(resultSet.getString("preferred_name"));
+        account.setDateOfBirth(resultSet.getDate("date_of_birth"));
+        account.setPhone(resultSet.getString("phone"));
+        account.setGender(resultSet.getString("gender"));
+        account.setPhotoUrl(resultSet.getString("photo_url"));
+        account.setCreatedAt(resultSet.getDate("created_at"));
+        account.setUpdatedAt(resultSet.getDate("updated_at"));
+        return account;
     }
 }

@@ -14,7 +14,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
         AnnotationConfigWebApplicationContext root =
                 new AnnotationConfigWebApplicationContext();
 
-        root.scan("com.jd2.moviebase");
+        root.register(WebConfig.class);
         sc.addListener(new ContextLoaderListener(root));
 
         ServletRegistration.Dynamic appServlet =

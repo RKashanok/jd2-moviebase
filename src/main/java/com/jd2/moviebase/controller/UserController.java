@@ -30,7 +30,7 @@ public class UserController {
         return userService.create(user);
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping("/{id}")
     public User findById(@PathVariable("id") Integer id) {
         return userService.findById(id);
     }
@@ -45,7 +45,7 @@ public class UserController {
         return userService.update(user);
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping("/{id}")
     public void deleteById(@PathVariable("id") Integer id) {
         userService.deleteById(id);
     }

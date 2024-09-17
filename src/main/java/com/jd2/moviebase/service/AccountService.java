@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 public class AccountService {
     private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
     private final AccountRepository accountRepository;
-    private final CommentsService commentsService;
+    private final CommentService commentService;
     private final AccountMovieService accountMovieService;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository, CommentsService commentsService, AccountMovieService accountMovieService) {
+    public AccountService(AccountRepository accountRepository, CommentService commentService, AccountMovieService accountMovieService) {
         this.accountRepository = accountRepository;
-        this.commentsService = commentsService;
+        this.commentService = commentService;
         this.accountMovieService = accountMovieService;
     }
 
@@ -45,7 +45,7 @@ public class AccountService {
         logger.info("Deleting account by id: {}", id);
 
         // deactivate comments and set null account id
-        commentsService.deactivateByAccId(id);
+        commentService.deactivateByAccId(id);
 
         // delete account_movie
         accountMovieService.deleteByAccId(id);
