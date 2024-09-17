@@ -1,27 +1,31 @@
 package com.jd2.moviebase.service;
 
-import com.jd2.moviebase.config.DataSource;
 import com.jd2.moviebase.model.User;
-import com.jd2.moviebase.repository.AccountRepository;
-import com.jd2.moviebase.repository.CommentsRepository;
-import com.jd2.moviebase.repository.AccountMovieRepository;
 import com.jd2.moviebase.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
+import java.util.List;
+
+@Service
 public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-    DataSource ds = new DataSource();
+    private final DataSource ds;
     private final UserRepository userRepository;
     private final AccountService accountService;
     private final CommentsService commentsService;
     private final AccountMovieService accountMovieService;
 
-    public UserService(UserRepository userRepository) {
+    @Autowired
+    public UserService(DataSource ds, UserRepository userRepository, AccountService accountService, CommentsService commentsService, AccountMovieService accountMovieService) {
+        this.ds = ds;
         this.userRepository = userRepository;
-        this.accountService = new AccountService(new AccountRepository(ds));
-        this.commentsService = new CommentsService(new CommentsRepository(ds));
-        this.accountMovieService = new AccountMovieService(new AccountMovieRepository(ds));
+        this.accountService = accountService;
+        this.commentsService = commentsService;
+        this.accountMovieService = accountMovieService;
     }
 
     public User create(User user) {
@@ -32,6 +36,11 @@ public class UserService {
     public User findById(int id) {
         logger.info("Finding user by id: {}", id);
         return userRepository.findById(id);
+    }
+
+    public List<User> findAll() {
+        logger.info("Finding all users");
+        return userRepository.findAll();
     }
 
     public User update(User user) {

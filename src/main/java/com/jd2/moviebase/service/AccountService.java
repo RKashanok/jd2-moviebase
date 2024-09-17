@@ -1,24 +1,24 @@
 package com.jd2.moviebase.service;
 
-import com.jd2.moviebase.config.DataSource;
 import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.repository.AccountRepository;
-import com.jd2.moviebase.repository.CommentsRepository;
-import com.jd2.moviebase.repository.AccountMovieRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AccountService {
     private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
-    DataSource ds = new DataSource();
     private final AccountRepository accountRepository;
     private final CommentsService commentsService;
     private final AccountMovieService accountMovieService;
 
-    public AccountService(AccountRepository accountRepository) {
+    @Autowired
+    public AccountService(AccountRepository accountRepository, CommentsService commentsService, AccountMovieService accountMovieService) {
         this.accountRepository = accountRepository;
-        this.commentsService = new CommentsService(new CommentsRepository(ds));
-        this.accountMovieService = new AccountMovieService(new AccountMovieRepository(ds));
+        this.commentsService = commentsService;
+        this.accountMovieService = accountMovieService;
     }
 
     public Account create(Account account) {
