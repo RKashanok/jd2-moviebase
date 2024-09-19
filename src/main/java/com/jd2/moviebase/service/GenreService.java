@@ -43,7 +43,7 @@ public class GenreService {
         return genreRepository.update(genre);
     }
 
-    public void deleteByID(int id){
+    public void deleteById(int id){
         logger.info("Executing method: deleteByID(id={})", id);
         genreRepository.deleteById(id);
     }

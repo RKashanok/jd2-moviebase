@@ -70,7 +70,7 @@ public class CommentRepository {
             ps.setInt(1, comment.getAccountId());
             ps.setInt(2, comment.getMovieId());
             ps.setString(3, comment.getNote());
-            ps.setBoolean(4, comment.getActive());
+            ps.setBoolean(4, comment.isActive());
             ps.executeUpdate();
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -95,7 +95,7 @@ public class CommentRepository {
             ps.setInt(2, comment.getMovieId());
             ps.setString(3, comment.getNote());
             ps.setTimestamp(4, new Timestamp(comment.getUpdatedAt().getTime()));
-            ps.setBoolean(5, comment.getActive());
+            ps.setBoolean(5, comment.isActive());
             ps.setInt(6, comment.getId());
 
             int rowsAffected = ps.executeUpdate();
