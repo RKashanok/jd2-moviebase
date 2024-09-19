@@ -1,5 +1,6 @@
 package com.jd2.moviebase.service;
 
+import com.jd2.moviebase.dto.CommentDto;
 import com.jd2.moviebase.model.Comment;
 import com.jd2.moviebase.repository.CommentRepository;
 import org.slf4j.Logger;
@@ -37,9 +38,9 @@ public class CommentService {
         return commentRepository.create(comment);
     }
 
-    public Comment update(Comment comment) {
-        logger.info("Executing method: update(comment={})", comment);
-        return commentRepository.update(comment);
+    public CommentDto update(int id, CommentDto commentDto) {
+        logger.info("Executing method: update(comment={})", commentDto);
+        return commentRepository.update(id, commentDto);
     }
 
     public void deactivateByAccId(int accountId) {

@@ -1,5 +1,6 @@
 package com.jd2.moviebase.repository;
 
+import com.jd2.moviebase.dto.AccountDto;
 import com.jd2.moviebase.model.Account;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +18,7 @@ public class AccountRepository {
             "phone, gender, photo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private final String FIND_BY_ID_SQL = "SELECT * FROM accounts WHERE id = ?";
     private final String FIND_BY_USER_ID_SQL = "SELECT * FROM accounts WHERE user_id = ?";
-    private final String UPDATE_SQL = "UPDATE accounts SET user_id = ?, first_name = ?, last_name = ?, preferred_name = ?, " +
+    private final String UPDATE_SQL = "UPDATE accounts SET first_name = ?, last_name = ?, preferred_name = ?, " +
             "date_of_birth = ?, phone = ?, gender = ?, photo_url = ?, updated_at = ? WHERE id = ?";
     private final String DELETE_BY_ID_FROM_ACCOUNTS_SQL = "DELETE FROM accounts WHERE id = ?";
 
@@ -81,24 +82,24 @@ public class AccountRepository {
                 .orElseThrow(() -> new RuntimeException("Account with user ID " + userId + " not found"));
     }
 
-    public Account update(Account account) {
+    public AccountDto update(int id, AccountDto accountDto) {
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
-            ps.setInt(1, account.getUserId());
-            ps.setString(2, account.getFirstName());
-            ps.setString(3, account.getLastName());
-            ps.setString(4, account.getPreferredName());
-            ps.setDate(5, new java.sql.Date(account.getDateOfBirth().getTime()));
-            ps.setString(6, account.getPhone());
-            ps.setString(7, account.getGender());
-            ps.setString(8, account.getPhotoUrl());
-            ps.setTimestamp(9, new java.sql.Timestamp(account.getUpdatedAt().getTime()));
-            ps.setInt(10, account.getId());
+            ps.setString(1, accountDto.getFirstName());
+            ps.setString(2, accountDto.getLastName());
+            ps.setString(3, accountDto.getPreferredName());
+            ps.setDate(4, new java.sql.Date(accountDto.getDateOfBirth().getTime()));
+            ps.setString(5, accountDto.getPhone());
+            ps.setString(6, accountDto.getGender());
+            ps.setString(7, accountDto.getPhotoUrl());
+            ps.setDate(8, new java.sql.Date(System.currentTimeMillis()));
+            ps.setInt(9, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return account;
+        return new AccountDto(accountDto.getFirstName(), accountDto.getLastName(), accountDto.getPreferredName(),
+                accountDto.getDateOfBirth(), accountDto.getPhone(), accountDto.getGender(), accountDto.getPhotoUrl());
     }
 
     public void deleteById(int id) {

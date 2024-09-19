@@ -1,11 +1,16 @@
 package com.jd2.moviebase.repository;
 
+import com.jd2.moviebase.dto.CommentDto;
 import com.jd2.moviebase.model.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +21,7 @@ public class CommentRepository {
     private static final String CREATE_SQL = "INSERT INTO comments (account_id, movie_id, note, is_active) VALUES (?, ?, ?, ?)";
     private static final String FIND_BY_ID_SQL = "SELECT * FROM comments WHERE id = ?";
     private static final String FIND_SQL = "SELECT * FROM comments";
-    private static final String UPDATE_SQL = "UPDATE comments SET account_id = ?, movie_id = ?, note = ?, updated_at = ?, is_active = ? WHERE id = ?";
+    private static final String UPDATE_SQL = "UPDATE comments SET note = ?, updated_at = ?, is_active = ? WHERE id = ?";
     private static final String DEACTIVATE_COMMENT_BY_ACC_ID_SQL = "UPDATE comments SET is_active = false, account_id = NULL WHERE account_id = ?";
 
     private final DataSource dataSource;
@@ -68,7 +73,7 @@ public class CommentRepository {
             ps.setInt(1, comment.getAccountId());
             ps.setInt(2, comment.getMovieId());
             ps.setString(3, comment.getNote());
-            ps.setBoolean(4, comment.getActive());
+            ps.setBoolean(4, comment.getIsActive());
             ps.executeUpdate();
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -85,16 +90,13 @@ public class CommentRepository {
         return comment;
     }
 
-    public Comment update(Comment comment) {
+    public CommentDto update(int id, CommentDto commentDto) {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
-
-            ps.setInt(1, comment.getAccountId());
-            ps.setInt(2, comment.getMovieId());
-            ps.setString(3, comment.getNote());
-            ps.setTimestamp(4, new Timestamp(comment.getUpdatedAt().getTime()));
-            ps.setBoolean(5, comment.getActive());
-            ps.setInt(6, comment.getId());
+            ps.setString(1, commentDto.getNote());
+            ps.setDate(2, new java.sql.Date(System.currentTimeMillis()));
+            ps.setBoolean(3, commentDto.getIsActive());
+            ps.setInt(4, id);
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
@@ -104,7 +106,7 @@ public class CommentRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return comment;
+        return commentDto;
     }
 
 
@@ -132,7 +134,7 @@ public class CommentRepository {
         comment.setNote(rs.getString("note"));
         comment.setCreatedAt(rs.getDate("created_at"));
         comment.setUpdatedAt(rs.getDate("updated_at"));
-        comment.setActive(rs.getBoolean("is_active"));
+        comment.setIsActive(rs.getBoolean("is_active"));
         return comment;
     }
 }

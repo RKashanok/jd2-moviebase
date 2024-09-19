@@ -1,4 +1,4 @@
-package com.jd2.moviebase.model;
+package com.jd2.moviebase.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +11,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Account {
-    private int id;
-    private int userId;
+public class AccountDto {
     private String firstName;
     private String lastName;
     private String preferredName;
@@ -21,6 +19,4 @@ public class Account {
     private String phone;
     private String gender;
     private String photoUrl;
-    private Date createdAt;
-    private Date updatedAt;
 }

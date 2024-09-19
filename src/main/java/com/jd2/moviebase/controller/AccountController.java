@@ -1,5 +1,6 @@
 package com.jd2.moviebase.controller;
 
+import com.jd2.moviebase.dto.AccountDto;
 import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class AccountController {
         return accountService.findById(id);
     }
 
-    @GetMapping("users/{id}")
+    @GetMapping("/users/{id}")
     public Account findByUserId(@PathVariable("id") Integer id) {
         return accountService.findByUserId(id);
     }
@@ -38,9 +39,9 @@ public class AccountController {
         return accountService.create(account);
     }
 
-    @PutMapping
-    public Account update(@RequestBody Account account) {
-        return accountService.update(account);
+    @PutMapping("/{id}")
+    public AccountDto update(@PathVariable("id") Integer id, @RequestBody AccountDto accountDto) {
+        return accountService.update(id, accountDto);
     }
 
     @DeleteMapping("/{id}")

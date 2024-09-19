@@ -1,5 +1,6 @@
 package com.jd2.moviebase.controller;
 
+import com.jd2.moviebase.dto.CommentDto;
 import com.jd2.moviebase.model.Comment;
 import com.jd2.moviebase.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +45,9 @@ public class CommentController {
         return commentService.create(comment);
     }
 
-    @PutMapping
-    public Comment update(@RequestBody Comment comment) {
-        return commentService.update(comment);
+    @PutMapping("/{id}")
+    public CommentDto update(@PathVariable("id") Integer id, @RequestBody CommentDto commentDto) {
+        return commentService.update(id, commentDto);
     }
 
     @DeleteMapping("/{id}")

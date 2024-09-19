@@ -1,5 +1,6 @@
 package com.jd2.moviebase.service;
 
+import com.jd2.moviebase.dto.AccountDto;
 import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.repository.AccountRepository;
 import org.slf4j.Logger;
@@ -36,9 +37,9 @@ public class AccountService {
         return accountRepository.findByUserId(userId);
     }
 
-    public Account update(Account account) {
-        logger.info("Updating account: {}", account);
-        return accountRepository.update(account);
+    public AccountDto update(int id, AccountDto accountDto) {
+        logger.info("Updating account: {}", accountDto);
+        return accountRepository.update(id, accountDto);
     }
 
     public void deleteById(int id) {
