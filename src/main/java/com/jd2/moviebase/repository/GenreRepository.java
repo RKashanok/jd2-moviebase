@@ -7,9 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.sql.DataSource;
 
@@ -43,7 +41,7 @@ public class GenreRepository {
             throw new RuntimeException(e);
         }
 
-        return genres;
+        return genres.isEmpty() ? Collections.emptyList() : genres;
     }
 
     public Optional<Genre> findById(int id) {

@@ -22,31 +22,23 @@ public class GenreController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Genre>> findAll() {
-        List<Genre> genres = genreService.findAll();
-
-        return new ResponseEntity<>(genres, HttpStatus.OK);
+    public List<Genre> findAll() {
+        return genreService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Genre> findById(@PathVariable("id") int id) {
-        Optional<Genre> optionalGenre = genreService.findById(id);
-
-        return optionalGenre.map(g -> new ResponseEntity<>(g, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public Genre findById(@PathVariable("id") int id) {
+        return genreService.findById(id);
     }
 
     @PostMapping
-    public ResponseEntity<Genre> create(@RequestBody Genre genre) {
-        return new ResponseEntity<>(genreService.create(genre), HttpStatus.CREATED);
+    public Genre create(@RequestBody Genre genre) {
+        return  genreService.create(genre);
     }
 
     @PutMapping
-    public ResponseEntity<Genre> update(@RequestBody Genre genre) {
-        Optional<Genre> existingGenre = genreService.findById(genre.getId());
-
-        return existingGenre.map(g -> new ResponseEntity<>(genreService.update(genre), HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public Genre update(@RequestBody Genre genre) {
+        return genreService.update(genre);
 
     }
 

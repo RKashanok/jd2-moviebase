@@ -25,12 +25,17 @@ public class GenreService {
 
     public List<Genre> findAll() {
         logger.info("Executing method: findAll()");
-        return genreRepository.findAll();
+        List<Genre> genres = genreRepository.findAll();
+        if(genres.isEmpty()){
+            throw new RuntimeException("No genres found in the database.");
+        }
+        return genres;
     }
 
-    public Optional<Genre> findById(int id) {
+    public Genre findById(int id) {
         logger.info("Executing method: findById(id={})", id);
-        return genreRepository.findById(id);
+        return genreRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Genre not found with id: " + id));
     }
 
     public Genre create(Genre genre){
