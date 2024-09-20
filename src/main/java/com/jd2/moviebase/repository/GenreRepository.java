@@ -8,13 +8,14 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class GenreRepository {
 
-    private static final String CREATE_SQL = "INSERT INTO genres (tmdbId, name) VALUES (?, ?)";
+    private static final String CREATE_SQL = "INSERT INTO genres (tmdb_id, name) VALUES (?, ?)";
     private static final String FIND_BY_ID_SQL = "SELECT * FROM genres WHERE id = ?";
     private static final String FIND_SQL = "SELECT * FROM genres";
     private static final String UPDATE_SQL = "UPDATE genres SET tmdb_id = ?, name = ? WHERE id = ?";
@@ -41,7 +42,7 @@ public class GenreRepository {
             throw new RuntimeException(e);
         }
 
-        return genres;
+        return genres.isEmpty() ? Collections.emptyList() : genres;
     }
 
     public Optional<Genre> findById(int id) {
@@ -72,7 +73,7 @@ public class GenreRepository {
             ps.executeUpdate();
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                if(generatedKeys.next()) {
+                if (generatedKeys.next()) {
                     genre.setId(generatedKeys.getInt(1));
                 } else {
                     throw new SQLException("Creating genre failed, no ID obtained.");
