@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +43,7 @@ public class MovieRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return movies;
+        return movies.isEmpty() ? Collections.emptyList() : movies;
     }
 
     public Optional<Movie> findById(int id) {

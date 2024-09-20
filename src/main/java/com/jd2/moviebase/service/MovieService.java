@@ -24,12 +24,17 @@ public class MovieService {
 
     public List<Movie> findAll() {
         logger.info("Executing method: findAll()");
-        return movieRepository.findAll();
+        List<Movie> movies = movieRepository.findAll();
+        if(movies.isEmpty()) {
+            throw new RuntimeException("No movies found in the database.");
+        }
+        return movies;
     }
 
-    public Optional<Movie> findById(int id) {
+    public Movie findById(int id) {
         logger.info("Executing method: findById(id={})", id);
-        return movieRepository.findById(id);
+        return movieRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Movie not found with id: " + id));
     }
 
     public Movie create(Movie movie){
