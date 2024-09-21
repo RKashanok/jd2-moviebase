@@ -24,11 +24,7 @@ public class MovieService {
 
     public List<Movie> findAll() {
         logger.info("Executing method: findAll()");
-        List<Movie> movies = movieRepository.findAll();
-        if(movies.isEmpty()) {
-            throw new RuntimeException("No movies found in the database.");
-        }
-        return movies;
+        return movieRepository.findAll();
     }
 
     public Movie findById(int id) {

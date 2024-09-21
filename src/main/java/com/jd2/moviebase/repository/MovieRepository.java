@@ -43,7 +43,7 @@ public class MovieRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return movies.isEmpty() ? Collections.emptyList() : movies;
+        return movies;
     }
 
     public Optional<Movie> findById(int id) {
