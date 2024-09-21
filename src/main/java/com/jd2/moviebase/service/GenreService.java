@@ -25,11 +25,7 @@ public class GenreService {
 
     public List<Genre> findAll() {
         logger.info("Executing method: findAll()");
-        List<Genre> genres = genreRepository.findAll();
-        if (genres.isEmpty()) {
-            throw new RuntimeException("No genres found in the database.");
-        }
-        return genres;
+        return genreRepository.findAll();
     }
 
     public Genre findById(int id) {

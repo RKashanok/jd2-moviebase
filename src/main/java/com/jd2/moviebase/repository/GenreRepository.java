@@ -42,7 +42,7 @@ public class GenreRepository {
             throw new RuntimeException(e);
         }
 
-        return genres.isEmpty() ? Collections.emptyList() : genres;
+        return genres;
     }
 
     public Optional<Genre> findById(int id) {
