@@ -1,7 +1,6 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.CommentDto;
-import com.jd2.moviebase.model.Comment;
 import com.jd2.moviebase.repository.CommentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,19 +22,19 @@ public class CommentService {
         this.commentRepository = commentsRepository;
     }
 
-    public List<Comment> findAll() {
+    public List<CommentDto> findAll() {
         logger.info("Executing method: findAll()");
         return commentRepository.findAll();
     }
 
-    public Optional<Comment> findById(int id) {
+    public Optional<CommentDto> findById(int id) {
         logger.info("Executing method: findById(id={})", id);
         return commentRepository.findById(id);
     }
 
-    public Comment create(Comment comment) {
-        logger.info("Executing method: create(comment={})", comment);
-        return commentRepository.create(comment);
+    public CommentDto create(CommentDto commentDto) {
+        logger.info("Executing method: create(comment={})", commentDto);
+        return commentRepository.create(commentDto);
     }
 
     public CommentDto update(int id, CommentDto commentDto) {

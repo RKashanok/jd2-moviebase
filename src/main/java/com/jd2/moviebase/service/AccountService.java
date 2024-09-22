@@ -1,7 +1,6 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.AccountDto;
-import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.repository.AccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,17 +21,17 @@ public class AccountService {
         this.accountMovieService = accountMovieService;
     }
 
-    public Account create(Account account) {
-        logger.info("Creating account: {}", account);
-        return accountRepository.create(account);
+    public AccountDto create(AccountDto accountDto) {
+        logger.info("Creating account: {}", accountDto);
+        return accountRepository.create(accountDto);
     }
 
-    public Account findById(int id) {
+    public AccountDto findById(int id) {
         logger.info("Finding account by id: {}", id);
         return accountRepository.findById(id);
     }
 
-    public Account findByUserId(int userId) {
+    public AccountDto findByUserId(int userId) {
         logger.info("Finding account by user_id: {}", userId);
         return accountRepository.findByUserId(userId);
     }
