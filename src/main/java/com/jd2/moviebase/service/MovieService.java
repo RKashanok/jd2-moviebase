@@ -27,9 +27,10 @@ public class MovieService {
         return movieRepository.findAll();
     }
 
-    public Optional<Movie> findById(int id) {
+    public Movie findById(int id) {
         logger.info("Executing method: findById(id={})", id);
-        return movieRepository.findById(id);
+        return movieRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Movie not found with id: " + id));
     }
 
     public Movie create(Movie movie){
