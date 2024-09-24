@@ -1,6 +1,7 @@
 package com.jd2.moviebase.repository;
 
 import com.jd2.moviebase.dto.AccountDto;
+import com.jd2.moviebase.model.Account;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -25,28 +26,28 @@ public class AccountRepository {
         this.ds = ds;
     }
 
-    public AccountDto create(AccountDto accountDto) {
+    public Account create(Account account) {
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(CREATE_SQL, PreparedStatement.RETURN_GENERATED_KEYS)) {
             int insertedId;
-            ps.setInt(1, accountDto.getUserId());
-            ps.setString(2, accountDto.getFirstName());
-            ps.setString(3, accountDto.getLastName());
-            ps.setString(4, accountDto.getPreferredName());
-            ps.setDate(5, new java.sql.Date(accountDto.getDateOfBirth().getTime()));
-            ps.setString(6, accountDto.getPhone());
-            ps.setString(7, accountDto.getGender());
-            ps.setString(8, accountDto.getPhotoUrl());
+            ps.setInt(1, account.getUserId());
+            ps.setString(2, account.getFirstName());
+            ps.setString(3, account.getLastName());
+            ps.setString(4, account.getPreferredName());
+            ps.setDate(5, new java.sql.Date(account.getDateOfBirth().getTime()));
+            ps.setString(6, account.getPhone());
+            ps.setString(7, account.getGender());
+            ps.setString(8, account.getPhotoUrl());
             ps.executeUpdate();
             ResultSet generatedKeys = ps.getGeneratedKeys();
             if (generatedKeys.next()) {
                 insertedId = generatedKeys.getInt(1);
-                accountDto.setId(insertedId);
+                account.setId(insertedId);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return accountDto;
+        return account;
     }
 
     public AccountDto findById(int id) {
