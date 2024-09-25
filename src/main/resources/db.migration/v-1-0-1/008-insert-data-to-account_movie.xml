@@ -1,0 +1,19 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="008" author="pavel_kazhukhouski">
+        <insert tableName="account_movie">
+            <column name="account_id" value="3"/>
+            <column name="movie_id" value="4"/>
+            <column name="status" value="watched"/>
+        </insert>
+        <insert tableName="account_movie">
+            <column name="account_id" value="4"/>
+            <column name="movie_id" value="5"/>
+            <column name="status" value="to_watch"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

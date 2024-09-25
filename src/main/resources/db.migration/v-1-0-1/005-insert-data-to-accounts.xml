@@ -1,0 +1,29 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="005" author="pavel_kazhukhouski">
+        <insert tableName="accounts">
+            <column name="user_id" value="3"/>
+            <column name="first_name" value="George"/>
+            <column name="last_name" value="Harrison"/>
+            <column name="preferred_name" value="Guitar George"/>
+            <column name="date_of_birth" value="1980-12-12"/>
+            <column name="phone" value="111222333"/>
+            <column name="gender" value="M"/>
+            <column name="photo_url" value="http://example.com/photo3.jpg"/>
+        </insert>
+        <insert tableName="accounts">
+            <column name="user_id" value="4"/>
+            <column name="first_name" value="Ringo"/>
+            <column name="last_name" value="Starr"/>
+            <column name="preferred_name" value="Drummer Ringo"/>
+            <column name="date_of_birth" value="1985-07-07"/>
+            <column name="phone" value="444555666"/>
+            <column name="gender" value="M"/>
+            <column name="photo_url" value="http://example.com/photo4.jpg"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

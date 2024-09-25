@@ -1,0 +1,17 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="006" author="pavel_kazhukhouski">
+        <insert tableName="genres">
+            <column name="tmdb_id" value="55"/>
+            <column name="name" value="Sci-Fi"/>
+        </insert>
+        <insert tableName="genres">
+            <column name="tmdb_id" value="66"/>
+            <column name="name" value="Romance"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

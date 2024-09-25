@@ -1,0 +1,28 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+
+    <changeSet id="007" author="pavel_kazhukhouski">
+        <insert tableName="movies">
+            <column name="tmdb_id" value="404"/>
+            <column name="name" value="Movie X"/>
+            <column name="genre_id" value="{4,3}"/>
+            <column name="release_date" value="2025-05-05"/>
+            <column name="rating" value="9"/>
+            <column name="overview" value="New Overview X"/>
+            <column name="original_language" value="en"/>
+        </insert>
+        <insert tableName="movies">
+            <column name="tmdb_id" value="505"/>
+            <column name="name" value="Movie Y"/>
+            <column name="genre_id" value="{2,4}"/>
+            <column name="release_date" value="2025-10-10"/>
+            <column name="rating" value="7"/>
+            <column name="overview" value="New Overview Y"/>
+            <column name="original_language" value="es"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,6 +1,7 @@
 package com.jd2.moviebase.config;
 
 import com.zaxxer.hikari.HikariDataSource;
+import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -35,5 +36,13 @@ public class WebConfig implements WebMvcConfigurer {
         ds.setPassword(dbPassword);
         ds.setDriverClassName(driverClassName);
         return ds;
+    }
+
+    @Bean
+    public SpringLiquibase liquibase() {
+        SpringLiquibase liquibase = new SpringLiquibase();
+        liquibase.setChangeLog("classpath:db.migration/master.xml");
+        liquibase.setDataSource(dataSource());
+        return liquibase;
     }
 }
