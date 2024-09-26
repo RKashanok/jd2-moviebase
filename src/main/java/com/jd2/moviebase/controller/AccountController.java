@@ -3,7 +3,7 @@ package com.jd2.moviebase.controller;
 import com.jd2.moviebase.dto.AccountDto;
 import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.service.AccountService;
-import com.jd2.moviebase.util.ModelMapperUtil;
+import com.jd2.moviebase.util.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +38,7 @@ public class AccountController {
 
     @PostMapping
     public AccountDto create(@RequestBody Account account) {
-        return ModelMapperUtil.mapObject(accountService.create(account), AccountDto.class);
+        return ModelMapper.mapObject(accountService.create(account), AccountDto.class);
     }
 
     @PutMapping("/{id}")

@@ -3,7 +3,7 @@ package com.jd2.moviebase.service;
 import com.jd2.moviebase.dto.AccountDto;
 import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.repository.AccountRepository;
-import com.jd2.moviebase.util.ModelMapperUtil;
+import com.jd2.moviebase.util.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class AccountService {
 
     public AccountDto create(Account account) {
         logger.info("Creating account: {}", account);
-        return ModelMapperUtil.mapObject(accountRepository.create(account), AccountDto.class);
+        return ModelMapper.mapObject(accountRepository.create(account), AccountDto.class);
     }
 
     public AccountDto findById(int id) {
