@@ -1,5 +1,8 @@
 package com.jd2.moviebase.service;
 
+import com.jd2.moviebase.dto.MovieDTO;
+import com.jd2.moviebase.mapper.MovieMapper;
+import com.jd2.moviebase.model.Genre;
 import com.jd2.moviebase.model.Movie;
 import com.jd2.moviebase.repository.MovieRepository;
 import org.slf4j.Logger;
@@ -16,31 +19,42 @@ public class MovieService {
     private static final Logger logger = LoggerFactory.getLogger(GenreService.class);
 
     private final MovieRepository movieRepository;
+    private final MovieMapper movieMapper;
 
     @Autowired
-    public MovieService(MovieRepository movieRepository) {
+    public MovieService(MovieRepository movieRepository, MovieMapper movieMapper) {
         this.movieRepository = movieRepository;
+        this.movieMapper = movieMapper;
     }
 
-    public List<Movie> findAll() {
+    public List<MovieDTO> findAll() {
         logger.info("Executing method: findAll()");
-        return movieRepository.findAll();
+        List<Movie> movies = movieRepository.findAll();
+        return movies.stream()
+                .map(movieMapper::toDto)
+                .toList();
+
     }
 
-    public Movie findById(int id) {
+    public MovieDTO findById(int id) {
         logger.info("Executing method: findById(id={})", id);
-        return movieRepository.findById(id)
+        Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Movie not found with id: " + id));
+        return movieMapper.toDto(movie);
     }
 
-    public Movie create(Movie movie){
-        logger.info("Executing method: create(genre={})", movie);
-        return movieRepository.create(movie);
+    public MovieDTO create(MovieDTO movieDTO){
+        logger.info("Executing method: create(genre={})", movieDTO);
+        Movie movie = movieMapper.toModel(movieDTO);
+        Movie createdMovie = movieRepository.create(movie);
+        return movieMapper.toDto(createdMovie);
     }
 
-    public Movie update(Movie movie){
-        logger.info("Executing method: update(genre={})", movie);
-        return movieRepository.update(movie);
+    public MovieDTO update(MovieDTO movieDTO){
+        logger.info("Executing method: update(genre={})", movieDTO);
+        Movie movie = movieMapper.toModel(movieDTO);
+        Movie updatedMovie = movieRepository.update(movie);
+        return movieMapper.toDto(updatedMovie);
     }
 
     public void deleteByID(int id){

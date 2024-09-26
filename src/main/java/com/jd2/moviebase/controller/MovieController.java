@@ -1,5 +1,6 @@
 package com.jd2.moviebase.controller;
 
+import com.jd2.moviebase.dto.MovieDTO;
 import com.jd2.moviebase.model.Movie;
 import com.jd2.moviebase.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +20,23 @@ public class MovieController {
     }
 
     @GetMapping
-    public List<Movie> findAll() {
+    public List<MovieDTO> findAll() {
         return movieService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Movie findById(@PathVariable("id") int id) {
+    public MovieDTO findById(@PathVariable("id") int id) {
         return movieService.findById(id);
     }
 
     @PostMapping
-    public Movie create(@RequestBody Movie movie) {
-        return movieService.create(movie);
+    public MovieDTO create(@RequestBody MovieDTO movieDTO) {
+        return movieService.create(movieDTO);
     }
 
     @PutMapping
-    public Movie update(@RequestBody Movie movie) {
-        return movieService.update(movie);
+    public MovieDTO update(@RequestBody MovieDTO movieDTO) {
+        return movieService.update(movieDTO);
     }
 
     @DeleteMapping("/{id}")
