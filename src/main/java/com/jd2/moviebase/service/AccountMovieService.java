@@ -27,7 +27,7 @@ public class AccountMovieService {
 
     public void create(AccountMovieDTO accountMovieDTO) {
         logger.info("Creating account movie: {}", accountMovieDTO);
-        accountMovieRepository.create(accountMovieMapper.);
+        accountMovieRepository.create(accountMovieMapper.toModel());
     }
 
     public List<AccountMovie> findAllByAccountId(int accountId) {
