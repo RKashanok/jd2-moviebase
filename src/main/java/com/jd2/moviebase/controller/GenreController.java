@@ -1,5 +1,6 @@
 package com.jd2.moviebase.controller;
 
+import com.jd2.moviebase.dto.GenreDTO;
 import com.jd2.moviebase.model.Genre;
 import com.jd2.moviebase.service.GenreService;
 
@@ -20,23 +21,23 @@ public class GenreController {
     }
 
     @GetMapping
-    public List<Genre> findAll() {
+    public List<GenreDTO> findAll() {
         return genreService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Genre findById(@PathVariable("id") int id) {
+    public GenreDTO findById(@PathVariable("id") int id) {
         return genreService.findById(id);
     }
 
     @PostMapping
-    public Genre create(@RequestBody Genre genre) {
-        return genreService.create(genre);
+    public GenreDTO create(@RequestBody GenreDTO genreDTO) {
+        return genreService.create(genreDTO);
     }
 
     @PutMapping
-    public Genre update(@RequestBody Genre genre) {
-        return genreService.update(genre);
+    public GenreDTO update(@RequestBody GenreDTO genreDTO) {
+        return genreService.update(genreDTO);
 
     }
 

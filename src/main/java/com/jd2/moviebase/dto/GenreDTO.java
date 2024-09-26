@@ -7,4 +7,8 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 public class GenreDTO {
+    private int id;
+    private int tmdbId;
+    private String name;
+
 }
