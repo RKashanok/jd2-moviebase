@@ -1,5 +1,6 @@
 package com.jd2.moviebase.controller;
 
+import com.jd2.moviebase.dto.AccountMovieDTO;
 import com.jd2.moviebase.model.AccountMovie;
 import com.jd2.moviebase.service.AccountMovieService;
 import com.jd2.moviebase.util.ConstantsHelper;
@@ -19,13 +20,13 @@ public class AccountMovieController {
     }
 
     @GetMapping("/account-movies/{accountId}")
-    public List<AccountMovie> findByAccountId(@PathVariable(value = "accountId") int accountId) {
+    public List<AccountMovieDTO> findByAccountId(@PathVariable(value = "accountId") int accountId) {
         return accountMovieService.findAllByAccountId(accountId);
     }
 
     @PostMapping("/account-movies")
-    public void create(@RequestBody AccountMovie accountMovie) {
-        accountMovieService.create(accountMovie);
+    public void create(@RequestBody AccountMovieDTO accountMovieDTO) {
+        accountMovieService.create(accountMovieDTO);
     }
 
     // Обновление статуса account_movie по accountId и movieId

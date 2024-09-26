@@ -27,12 +27,17 @@ public class AccountMovieService {
 
     public void create(AccountMovieDTO accountMovieDTO) {
         logger.info("Creating account movie: {}", accountMovieDTO);
-        accountMovieRepository.create(accountMovieMapper.toModel());
+        accountMovieRepository.create(accountMovieMapper.toModel(accountMovieDTO));
     }
 
-    public List<AccountMovie> findAllByAccountId(int accountId) {
+    public List<AccountMovieDTO> findAllByAccountId(int accountId) {
         logger.info("Finding all account movies by account id: {}", accountId);
-        return accountMovieRepository.findAllByAccountId(accountId);
+        List<AccountMovie> accountMovies = accountMovieRepository.findAllByAccountId(accountId);
+        List<AccountMovieDTO> accountMovieDTOS = accountMovies.stream()
+                .map(accountMovieMapper::toDto)
+                .toList();
+
+        return accountMovieDTOS;
     }
 
     public void updateStatusByAccId(int accountId, int movieId, MovieStatus status) {
