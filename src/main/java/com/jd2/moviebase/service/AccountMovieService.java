@@ -1,5 +1,7 @@
 package com.jd2.moviebase.service;
 
+import com.jd2.moviebase.dto.AccountMovieDTO;
+import com.jd2.moviebase.mapper.AccountMovieMapper;
 import com.jd2.moviebase.model.AccountMovie;
 import com.jd2.moviebase.repository.AccountMovieRepository;
 import org.slf4j.Logger;
@@ -15,15 +17,17 @@ import static com.jd2.moviebase.util.ConstantsHelper.MovieStatus;
 public class AccountMovieService {
     private static final Logger logger = LoggerFactory.getLogger(AccountMovieService.class);
     private final AccountMovieRepository accountMovieRepository;
+    private final AccountMovieMapper accountMovieMapper;
 
     @Autowired
-    public AccountMovieService(AccountMovieRepository accountMovieRepository) {
+    public AccountMovieService(AccountMovieRepository accountMovieRepository, AccountMovieMapper accountMovieMapper) {
         this.accountMovieRepository = accountMovieRepository;
+        this.accountMovieMapper = accountMovieMapper;
     }
 
-    public void create(AccountMovie accountMovie) {
-        logger.info("Creating account movie: {}", accountMovie);
-        accountMovieRepository.create(accountMovie);
+    public void create(AccountMovieDTO accountMovieDTO) {
+        logger.info("Creating account movie: {}", accountMovieDTO);
+        accountMovieRepository.create(accountMovieMapper.);
     }
 
     public List<AccountMovie> findAllByAccountId(int accountId) {
