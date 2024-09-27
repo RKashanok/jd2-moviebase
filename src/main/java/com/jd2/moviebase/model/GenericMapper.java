@@ -1,10 +1,9 @@
-package com.jd2.moviebase.mapper;
+package com.jd2.moviebase.model;
 
 import com.jd2.moviebase.dto.AccountMovieDTO;
-import com.jd2.moviebase.model.AccountMovie;
 
-public class AccountMovieMapper {
-    public AccountMovieDTO toDto(AccountMovie accountMovie) {
+public class GenericMapper {
+    public static AccountMovieDTO accountMovieToDto(AccountMovie accountMovie) {
         AccountMovieDTO accountMovieDTO = new AccountMovieDTO();
         accountMovieDTO.setAccountId(accountMovie.getAccountId());
         accountMovieDTO.setMovieId(accountMovie.getMovieId());
@@ -14,7 +13,7 @@ public class AccountMovieMapper {
         return accountMovieDTO;
     }
 
-    public AccountMovie toModel(AccountMovieDTO accountMovieDTO) {
+    public static AccountMovie accountMovieDtoToModel(AccountMovieDTO accountMovieDTO) {
         AccountMovie accountMovie= new AccountMovie();
         accountMovie.setAccountId(accountMovieDTO.getAccountId());
         accountMovie.setMovieId(accountMovieDTO.getMovieId());

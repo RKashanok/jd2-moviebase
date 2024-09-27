@@ -1,8 +1,8 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.AccountMovieDTO;
-import com.jd2.moviebase.mapper.AccountMovieMapper;
 import com.jd2.moviebase.model.AccountMovie;
+import com.jd2.moviebase.model.GenericMapper;
 import com.jd2.moviebase.repository.AccountMovieRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,24 +17,23 @@ import static com.jd2.moviebase.util.ConstantsHelper.MovieStatus;
 public class AccountMovieService {
     private static final Logger logger = LoggerFactory.getLogger(AccountMovieService.class);
     private final AccountMovieRepository accountMovieRepository;
-    private final AccountMovieMapper accountMovieMapper;
+
 
     @Autowired
-    public AccountMovieService(AccountMovieRepository accountMovieRepository, AccountMovieMapper accountMovieMapper) {
+    public AccountMovieService(AccountMovieRepository accountMovieRepository) {
         this.accountMovieRepository = accountMovieRepository;
-        this.accountMovieMapper = accountMovieMapper;
     }
 
     public void create(AccountMovieDTO accountMovieDTO) {
         logger.info("Creating account movie: {}", accountMovieDTO);
-        accountMovieRepository.create(accountMovieMapper.toModel(accountMovieDTO));
+        accountMovieRepository.create(GenericMapper.accountMovieDtoToModel(accountMovieDTO));
     }
 
     public List<AccountMovieDTO> findAllByAccountId(int accountId) {
         logger.info("Finding all account movies by account id: {}", accountId);
         List<AccountMovie> accountMovies = accountMovieRepository.findAllByAccountId(accountId);
         List<AccountMovieDTO> accountMovieDTOS = accountMovies.stream()
-                .map(accountMovieMapper::toDto)
+                .map(GenericMapper::accountMovieToDto)
                 .toList();
 
         return accountMovieDTOS;
