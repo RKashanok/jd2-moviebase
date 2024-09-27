@@ -1,7 +1,7 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.GenreDTO;
-import com.jd2.moviebase.mapper.GenreMapper;
+import com.jd2.moviebase.model.GenericMapper;
 import com.jd2.moviebase.model.Genre;
 import com.jd2.moviebase.repository.GenreRepository;
 
@@ -21,19 +21,17 @@ public class GenreService {
     private static final Logger logger = LoggerFactory.getLogger(GenreService.class);
 
     private final GenreRepository genreRepository;
-    private final GenreMapper genreMapper;
 
     @Autowired
-    public GenreService(GenreRepository genreRepository, GenreMapper genreMapper) {
+    public GenreService(GenreRepository genreRepository) {
         this.genreRepository = genreRepository;
-        this.genreMapper = genreMapper;
     }
 
     public List<GenreDTO> findAll() {
         logger.info("Executing method: findAll()");
         List<Genre> genres = genreRepository.findAll();
         return genres.stream()
-                .map(genreMapper::toDto)
+                .map(GenericMapper::genreToDto)
                 .collect(Collectors.toList());
     }
 
@@ -41,22 +39,22 @@ public class GenreService {
         logger.info("Executing method: findById(id={})", id);
         Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Genre not found with id: " + id));
-        return genreMapper.toDto(genre);
+        return GenericMapper.genreToDto(genre);
 
     }
 
     public GenreDTO create(GenreDTO genreDTO) {
         logger.info("Executing method: create(genre={})", genreDTO);
-        Genre genre = genreMapper.toModel(genreDTO);
+        Genre genre = GenericMapper.genreDtoToModel(genreDTO);
         Genre createdGenre = genreRepository.create(genre);
-        return genreMapper.toDto(createdGenre);
+        return GenericMapper.genreToDto(createdGenre);
     }
 
     public GenreDTO update(GenreDTO genreDTO) {
         logger.info("Executing method: update(genre={})", genreDTO);
-        Genre genre = genreMapper.toModel(genreDTO);
+        Genre genre = GenericMapper.genreDtoToModel(genreDTO);
         Genre updatedGenre = genreRepository.update(genre);
-        return genreMapper.toDto(updatedGenre);
+        return GenericMapper.genreToDto(updatedGenre);
     }
 
     public void deleteById(int id) {

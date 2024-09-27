@@ -1,16 +1,10 @@
-package com.jd2.moviebase.mapper;
+package com.jd2.moviebase.model;
 
 import com.jd2.moviebase.dto.GenreDTO;
-import com.jd2.moviebase.model.Genre;
-import org.springframework.stereotype.Component;
 
-@Component
-public class GenreMapper {
+public class GenericMapper {
 
-    public GenreDTO toDto(Genre genre) {
-        if (genre == null) {
-            return null;
-        }
+    public static GenreDTO genreToDto(Genre genre) {
         GenreDTO genreDTO = new GenreDTO();
         genreDTO.setId(genre.getId());
         genreDTO.setTmdbId(genre.getTmdbId());
@@ -18,10 +12,7 @@ public class GenreMapper {
         return genreDTO;
     }
 
-    public Genre toModel(GenreDTO genreDTO) {
-        if (genreDTO == null) {
-            return null;
-        }
+    public static Genre genreDtoToModel(GenreDTO genreDTO) {
         Genre genre = new Genre();
         genre.setId(genreDTO.getId());
         genre.setTmdbId(genreDTO.getTmdbId());
