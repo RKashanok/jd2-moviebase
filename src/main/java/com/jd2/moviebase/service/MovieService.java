@@ -2,6 +2,7 @@ package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.MovieDTO;
 import com.jd2.moviebase.mapper.MovieMapper;
+import com.jd2.moviebase.model.GenericMapper;
 import com.jd2.moviebase.model.Genre;
 import com.jd2.moviebase.model.Movie;
 import com.jd2.moviebase.repository.MovieRepository;
@@ -19,19 +20,17 @@ public class MovieService {
     private static final Logger logger = LoggerFactory.getLogger(GenreService.class);
 
     private final MovieRepository movieRepository;
-    private final MovieMapper movieMapper;
 
     @Autowired
-    public MovieService(MovieRepository movieRepository, MovieMapper movieMapper) {
+    public MovieService(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
-        this.movieMapper = movieMapper;
     }
 
     public List<MovieDTO> findAll() {
         logger.info("Executing method: findAll()");
         List<Movie> movies = movieRepository.findAll();
         return movies.stream()
-                .map(movieMapper::toDto)
+                .map(GenericMapper::movieToDto)
                 .toList();
 
     }
@@ -40,21 +39,21 @@ public class MovieService {
         logger.info("Executing method: findById(id={})", id);
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Movie not found with id: " + id));
-        return movieMapper.toDto(movie);
+        return GenericMapper.movieToDto(movie);
     }
 
     public MovieDTO create(MovieDTO movieDTO){
         logger.info("Executing method: create(genre={})", movieDTO);
-        Movie movie = movieMapper.toModel(movieDTO);
+        Movie movie = GenericMapper.movieDtoToModel(movieDTO);
         Movie createdMovie = movieRepository.create(movie);
-        return movieMapper.toDto(createdMovie);
+        return GenericMapper.movieToDto(createdMovie);
     }
 
     public MovieDTO update(MovieDTO movieDTO){
         logger.info("Executing method: update(genre={})", movieDTO);
-        Movie movie = movieMapper.toModel(movieDTO);
+        Movie movie = GenericMapper.movieDtoToModel(movieDTO);
         Movie updatedMovie = movieRepository.update(movie);
-        return movieMapper.toDto(updatedMovie);
+        return GenericMapper.movieToDto(updatedMovie);
     }
 
     public void deleteByID(int id){

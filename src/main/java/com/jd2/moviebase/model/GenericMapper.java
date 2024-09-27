@@ -1,13 +1,10 @@
-package com.jd2.moviebase.mapper;
+package com.jd2.moviebase.model;
 
 import com.jd2.moviebase.dto.MovieDTO;
-import com.jd2.moviebase.model.Movie;
-import org.springframework.stereotype.Component;
 
-@Component
-public class MovieMapper {
+public class GenericMapper {
 
-    public MovieDTO toDto(Movie movie) {
+    public static MovieDTO movieToDto(Movie movie) {
         MovieDTO movieDTO = new MovieDTO();
         movieDTO.setId(movie.getId());
         movieDTO.setTmdbId(movie.getTmdbId());
@@ -20,7 +17,7 @@ public class MovieMapper {
         return movieDTO;
     }
 
-    public Movie toModel(MovieDTO movieDTO) {
+    public static Movie movieDtoToModel(MovieDTO movieDTO) {
         Movie movie = new Movie();
         movie.setId(movieDTO.getId());
         movie.setTmdbId(movieDTO.getTmdbId());
@@ -32,5 +29,4 @@ public class MovieMapper {
         movie.setOriginalLanguage(movieDTO.getOriginalLanguage());
         return movie;
     }
-
 }
