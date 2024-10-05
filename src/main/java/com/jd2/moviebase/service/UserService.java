@@ -16,15 +16,15 @@ public class UserService {
     private final DataSource ds;
     private final UserRepository userRepository;
     private final AccountService accountService;
-    private final CommentsService commentsService;
+    private final CommentService commentService;
     private final AccountMovieService accountMovieService;
 
     @Autowired
-    public UserService(DataSource ds, UserRepository userRepository, AccountService accountService, CommentsService commentsService, AccountMovieService accountMovieService) {
+    public UserService(DataSource ds, UserRepository userRepository, AccountService accountService, CommentService commentService, AccountMovieService accountMovieService) {
         this.ds = ds;
         this.userRepository = userRepository;
         this.accountService = accountService;
-        this.commentsService = commentsService;
+        this.commentService = commentService;
         this.accountMovieService = accountMovieService;
     }
 
@@ -55,7 +55,7 @@ public class UserService {
         int accId = accountService.findByUserId(id).getId();
 
         // deactivate comments and set null account id
-        commentsService.deactivateByAccId(accId);
+        commentService.deactivateByAccId(accId);
 
         // delete user_movie
         accountMovieService.deleteByAccId(accId);
