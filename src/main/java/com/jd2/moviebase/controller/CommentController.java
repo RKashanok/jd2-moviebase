@@ -3,8 +3,6 @@ package com.jd2.moviebase.controller;
 import com.jd2.moviebase.dto.CommentDto;
 import com.jd2.moviebase.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,10 +31,8 @@ public class CommentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CommentDto> findById(@PathVariable("id") int id) {
-        return commentService.findById(id)
-                .map(comment -> new ResponseEntity<>(comment, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public CommentDto findById(@PathVariable("id") int id) {
+        return commentService.findById(id);
     }
 
     @PostMapping

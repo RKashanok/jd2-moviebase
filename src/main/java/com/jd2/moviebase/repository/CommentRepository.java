@@ -1,6 +1,7 @@
 package com.jd2.moviebase.repository;
 
 import com.jd2.moviebase.dto.CommentDto;
+import com.jd2.moviebase.model.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +32,8 @@ public class CommentRepository {
         this.dataSource = dataSource;
     }
 
-    public List<CommentDto> findAll() {
-        List<CommentDto> comments = new ArrayList<>();
+    public List<Comment> findAll() {
+        List<Comment> comments = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
              Statement st = conn.createStatement();
@@ -47,7 +49,8 @@ public class CommentRepository {
         return comments;
     }
 
-    public Optional<CommentDto> findById(int id) {
+    public Comment findById(int id) {
+        Comment comment = null;
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
 
@@ -55,17 +58,21 @@ public class CommentRepository {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return Optional.of(mapRow(rs));
+                    comment = mapRow(rs);
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        return Optional.empty();
+        return Optional.ofNullable(comment)
+                .orElseThrow(() -> new RuntimeException("Comment with ID " + id + " not found"));
     }
 
-    public CommentDto create(CommentDto commentDto) {
+    public Comment create(CommentDto commentDto) {
+        int insertedId = 0;
+        Date createdAt = null;
+        Date updatedAt = null;
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -77,7 +84,10 @@ public class CommentRepository {
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    commentDto.setId(generatedKeys.getInt(1));
+                    insertedId = generatedKeys.getInt(1);
+                    createdAt = generatedKeys.getDate(5);
+                    updatedAt = generatedKeys.getDate(6);
+                    commentDto.setId(insertedId);
                 } else {
                     throw new SQLException("Creating comment failed, no ID obtained.");
                 }
@@ -86,10 +96,13 @@ public class CommentRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return commentDto;
+        return new Comment(commentDto.getId(), commentDto.getAccountId(), commentDto.getMovieId(),
+                commentDto.getNote(), createdAt, updatedAt, commentDto.getIsActive());
     }
 
-    public CommentDto update(int id, CommentDto commentDto) {
+    public Comment update(int id, CommentDto commentDto) {
+        Date createdAt = null;
+        Date updatedAt = null;
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
             ps.setString(1, commentDto.getNote());
@@ -101,12 +114,16 @@ public class CommentRepository {
             if (rowsAffected == 0) {
                 throw new SQLException("Updating comment failed, no rows affected.");
             }
-
+            ResultSet generatedKeys = ps.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                createdAt = generatedKeys.getDate(10);
+                updatedAt = generatedKeys.getDate(11);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return new CommentDto(id, commentDto.getAccountId(), commentDto.getMovieId(),
-                commentDto.getNote(), commentDto.getIsActive());
+        return new Comment(id, commentDto.getAccountId(), commentDto.getMovieId(),
+                commentDto.getNote(), createdAt, updatedAt, commentDto.getIsActive());
     }
 
 
@@ -126,13 +143,15 @@ public class CommentRepository {
         }
     }
 
-    private CommentDto mapRow(ResultSet rs) throws SQLException {
-        CommentDto commentDto = new CommentDto();
-        commentDto.setId(rs.getInt("id"));
-        commentDto.setAccountId(rs.getInt("account_id"));
-        commentDto.setMovieId(rs.getInt("movie_id"));
-        commentDto.setNote(rs.getString("note"));
-        commentDto.setIsActive(rs.getBoolean("is_active"));
-        return commentDto;
+    private Comment mapRow(ResultSet rs) throws SQLException {
+        return new Comment(
+                rs.getInt("id"),
+                rs.getInt("account_id"),
+                rs.getInt("movie_id"),
+                rs.getString("note"),
+                rs.getDate("created_at"),
+                rs.getDate("updated_at"),
+                rs.getBoolean("is_active")
+        );
     }
 }

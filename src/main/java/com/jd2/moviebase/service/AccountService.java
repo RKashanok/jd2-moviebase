@@ -1,7 +1,6 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.AccountDto;
-import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.repository.AccountRepository;
 import com.jd2.moviebase.util.ModelMapper;
 import org.slf4j.Logger;
@@ -23,24 +22,24 @@ public class AccountService {
         this.accountMovieService = accountMovieService;
     }
 
-    public AccountDto create(Account account) {
-        logger.info("Creating account: {}", account);
-        return ModelMapper.mapObject(accountRepository.create(account), AccountDto.class);
+    public AccountDto create(AccountDto accountDto) {
+        logger.info("Creating account: {}", accountDto);
+        return ModelMapper.toAccountDto(accountRepository.create(accountDto));
     }
 
     public AccountDto findById(int id) {
         logger.info("Finding account by id: {}", id);
-        return accountRepository.findById(id);
+        return ModelMapper.toAccountDto(accountRepository.findById(id));
     }
 
     public AccountDto findByUserId(int userId) {
         logger.info("Finding account by user_id: {}", userId);
-        return accountRepository.findByUserId(userId);
+        return ModelMapper.toAccountDto(accountRepository.findByUserId(userId));
     }
 
     public AccountDto update(int id, AccountDto accountDto) {
         logger.info("Updating account: {}", accountDto);
-        return accountRepository.update(id, accountDto);
+        return ModelMapper.toAccountDto(accountRepository.update(id, accountDto));
     }
 
     public void deleteById(int id) {

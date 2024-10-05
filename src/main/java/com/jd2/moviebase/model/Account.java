@@ -1,6 +1,8 @@
 package com.jd2.moviebase.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,11 +10,10 @@ import lombok.Setter;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 public class Account {
     private int id;
     private int userId;

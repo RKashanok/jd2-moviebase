@@ -1,16 +1,16 @@
 package com.jd2.moviebase.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
-@EqualsAndHashCode
+@AllArgsConstructor
 public class User {
     private int id;
     private String email;

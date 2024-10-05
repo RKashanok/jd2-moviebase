@@ -1,17 +1,32 @@
 package com.jd2.moviebase.util;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jd2.moviebase.dto.AccountDto;
+import com.jd2.moviebase.dto.CommentDto;
+import com.jd2.moviebase.model.Account;
 
 public class ModelMapper {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
-    static {
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    public static AccountDto toAccountDto(Account account) {
+        return AccountDto.builder()
+                .id(account.getId())
+                .userId(account.getUserId())
+                .firstName(account.getFirstName())
+                .lastName(account.getLastName())
+                .preferredName(account.getPreferredName())
+                .dateOfBirth(account.getDateOfBirth())
+                .phone(account.getPhone())
+                .gender(account.getGender())
+                .photoUrl(account.getPhotoUrl())
+                .build();
     }
 
-    public static <T, U> U mapObject(T source, Class<U> destinationClass) {
-        return objectMapper.convertValue(source, destinationClass);
+    public static CommentDto toCommentDto(com.jd2.moviebase.model.Comment comment) {
+        return CommentDto.builder()
+                .id(comment.getId())
+                .accountId(comment.getAccountId())
+                .movieId(comment.getMovieId())
+                .note(comment.getNote())
+                .isActive(comment.getIsActive())
+                .build();
     }
 }
