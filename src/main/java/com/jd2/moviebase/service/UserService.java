@@ -35,7 +35,8 @@ public class UserService {
 
     public User findById(int id) {
         logger.info("Finding user by id: {}", id);
-        return userRepository.findById(id);
+        return userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
     public List<User> findAll() {

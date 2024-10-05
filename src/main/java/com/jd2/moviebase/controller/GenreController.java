@@ -34,14 +34,13 @@ public class GenreController {
         return genreService.create(genre);
     }
 
-    @PutMapping
-    public Genre update(@RequestBody Genre genre) {
-        return genreService.update(genre);
-
+    @PutMapping("/{id}")
+    public Genre update(@PathVariable ("id") long id, @RequestBody Genre genre) {
+        return genreService.update(id, genre);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") int id) {
+    public void deleteById(@PathVariable("id") long id) {
         genreService.deleteById(id);
 
     }

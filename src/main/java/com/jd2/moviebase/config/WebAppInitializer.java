@@ -1,25 +1,21 @@
 package com.jd2.moviebase.config;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletRegistration;
-import org.springframework.web.WebApplicationInitializer;
-import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.context.support.GenericWebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class WebAppInitializer implements WebApplicationInitializer {
+public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+
     @Override
-    public void onStartup(ServletContext sc) {
-        AnnotationConfigWebApplicationContext root =
-                new AnnotationConfigWebApplicationContext();
+    protected Class<?>[] getRootConfigClasses() {
+        return new Class[]{WebConfig.class};
+    }
 
-        root.register(WebConfig.class);
-        sc.addListener(new ContextLoaderListener(root));
+    @Override
+    protected Class<?>[] getServletConfigClasses() {
+        return new Class[0];
+    }
 
-        ServletRegistration.Dynamic appServlet =
-                sc.addServlet("mvc", new DispatcherServlet(new GenericWebApplicationContext()));
-        appServlet.setLoadOnStartup(1);
-        appServlet.addMapping("/");
+    @Override
+    protected String[] getServletMappings() {
+        return new String[]{"/"};
     }
 }

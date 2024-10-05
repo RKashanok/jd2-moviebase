@@ -1,6 +1,7 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.AccountDto;
+import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.repository.AccountRepository;
 import com.jd2.moviebase.util.ModelMapper;
 import org.slf4j.Logger;
@@ -10,13 +11,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AccountService {
+
     private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
     private final AccountRepository accountRepository;
     private final CommentService commentService;
     private final AccountMovieService accountMovieService;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository, CommentService commentService, AccountMovieService accountMovieService) {
+    public AccountService(AccountRepository accountRepository, CommentService commentService,
+        AccountMovieService accountMovieService) {
         this.accountRepository = accountRepository;
         this.commentService = commentService;
         this.accountMovieService = accountMovieService;
@@ -24,7 +27,8 @@ public class AccountService {
 
     public AccountDto create(AccountDto accountDto) {
         logger.info("Creating account: {}", accountDto);
-        return ModelMapper.toAccountDto(accountRepository.create(accountDto));
+        Account account = accountRepository.create(ModelMapper.toAccount(accountDto));
+        return ModelMapper.toAccountDto(account);
     }
 
     public AccountDto findById(int id) {
@@ -39,18 +43,17 @@ public class AccountService {
 
     public AccountDto update(int id, AccountDto accountDto) {
         logger.info("Updating account: {}", accountDto);
-        return ModelMapper.toAccountDto(accountRepository.update(id, accountDto));
+        accountDto.setId(id);
+        Account account = ModelMapper.toAccount(accountDto);
+        return ModelMapper.toAccountDto(accountRepository.update(account));
     }
 
     public void deleteById(int id) {
         logger.info("Deleting account by id: {}", id);
-
         // deactivate comments and set null account id
         commentService.deactivateByAccId(id);
-
         // delete account_movie
         accountMovieService.deleteByAccId(id);
-
         // delete account
         accountRepository.deleteById(id);
     }

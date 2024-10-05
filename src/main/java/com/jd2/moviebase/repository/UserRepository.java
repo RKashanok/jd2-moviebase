@@ -1,23 +1,26 @@
 package com.jd2.moviebase.repository;
 
 import com.jd2.moviebase.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepository {
+
     private final DataSource ds;
-    private final String CREATE_SQL = "INSERT INTO users (email, password, role) VALUES (?, ?, ?)";
+    private final String CREATE_SQL = "INSERT INTO users (email, password, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
     private final String FIND_BY_ID_SQL = "SELECT * FROM users WHERE id = ?";
     private final String FIND_ALL_SQL = "SELECT * FROM users";
     private final String UPDATE_SQL = "UPDATE users SET email = ?, password = ?, role = ?, updated_at = ? WHERE id = ?";
@@ -30,74 +33,77 @@ public class UserRepository {
 
     public User create(User user) {
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            int insertedId;
+            PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getRole());
+            ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
+            ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
             ps.executeUpdate();
-            ResultSet generatedKeys = ps.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                insertedId = generatedKeys.getInt(1);
-                user.setId(insertedId);
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    user.setId(generatedKeys.getInt(1));
+                } else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error while creating user", e);
         }
         return user;
     }
 
-    public User findById(int id) {
-        User user = null;
+    public Optional<User> findById(int id) {
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
+            PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
             ps.setInt(1, id);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
-                user = getUserObject(resultSet);
+                return Optional.of(createUser(resultSet));
+            } else {
+                return Optional.empty();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error while fetching movie by ID", e);
         }
-        return Optional.ofNullable(user)
-                .orElseThrow(() -> new RuntimeException("User with ID " + id + " not found"));
     }
 
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
-
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_ALL_SQL)) {
-            ResultSet resultSet = ps.executeQuery();
+            Statement st = conn.createStatement()) {
+            ResultSet resultSet = st.executeQuery(FIND_ALL_SQL);
             while (resultSet.next()) {
-                User user = getUserObject(resultSet);
-                users.add(user);
+                users.add(createUser(resultSet));
             }
-
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error while finding all users", e);
         }
         return users;
     }
 
     public User update(User user) {
+        user.setUpdatedAt(LocalDateTime.now(ZoneId.of("UTC")));
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
+            PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getRole());
-            ps.setTimestamp(4, new java.sql.Timestamp(user.getUpdatedAt().getTime()));
+            ps.setTimestamp(4, Timestamp.valueOf(user.getUpdatedAt()));
             ps.setInt(5, user.getId());
-            ps.executeUpdate();
+            if (ps.executeUpdate() > 0) {
+                return user;
+            } else {
+                throw new RuntimeException("Updating user failed, no rows affected. User ID: " + user.getId());
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error updating account ", e);
         }
-        return user;
     }
 
     public void deleteById(int id) {
         try (Connection conn = ds.getConnection();
-             PreparedStatement psUsers = conn.prepareStatement(DELETE_BY_ID_FROM_USERS_SQL)) {
+            PreparedStatement psUsers = conn.prepareStatement(DELETE_BY_ID_FROM_USERS_SQL)) {
             psUsers.setInt(1, id);
             psUsers.executeUpdate();
         } catch (SQLException e) {
@@ -105,14 +111,16 @@ public class UserRepository {
         }
     }
 
-    private User getUserObject(ResultSet resultSet) throws SQLException {
-        User user = new User();
-        user.setId(resultSet.getInt("id"));
-        user.setEmail(resultSet.getString("email"));
-        user.setPassword(resultSet.getString("password"));
-        user.setRole(resultSet.getString("role"));
-        user.setCreatedAt(resultSet.getDate("created_at"));
-        user.setUpdatedAt(resultSet.getDate("updated_at"));
-        return user;
+    private User createUser(ResultSet resultSet) throws SQLException {
+        return User.builder()
+            .id(resultSet.getInt("id"))
+            .email(resultSet.getString("email"))
+            .password(resultSet.getString("password"))
+            .role(resultSet.getString("role"))
+            .createdAt(LocalDateTime.from(resultSet.getTimestamp("created_at").toLocalDateTime()
+                .atZone(ZoneId.of("UTC"))))
+            .updatedAt(
+                LocalDateTime.from(resultSet.getTimestamp("updated_at").toLocalDateTime().atZone(ZoneId.of("UTC"))))
+            .build();
     }
 }

@@ -1,18 +1,14 @@
 package com.jd2.moviebase.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.sql.Date;
 import java.util.List;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Movie {
+
     private int id;
     private int tmdbId;
     private String name;

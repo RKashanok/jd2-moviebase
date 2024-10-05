@@ -1,0 +1,1534 @@
+Subject: [PATCH] updates
+---
+Index: src/main/java/com/jd2/moviebase/config/WebAppInitializer.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/config/WebAppInitializer.java b/src/main/java/com/jd2/moviebase/config/WebAppInitializer.java
+--- a/src/main/java/com/jd2/moviebase/config/WebAppInitializer.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/config/WebAppInitializer.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,25 +1,21 @@
+ package com.jd2.moviebase.config;
+ 
+-import jakarta.servlet.ServletContext;
+-import jakarta.servlet.ServletRegistration;
+-import org.springframework.web.WebApplicationInitializer;
+-import org.springframework.web.context.ContextLoaderListener;
+-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+-import org.springframework.web.context.support.GenericWebApplicationContext;
+-import org.springframework.web.servlet.DispatcherServlet;
++import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
++
++public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+ 
+-public class WebAppInitializer implements WebApplicationInitializer {
++    @Override
++    protected Class<?>[] getRootConfigClasses() {
++        return new Class[]{WebConfig.class};
++    }
++
+     @Override
+-    public void onStartup(ServletContext sc) {
+-        AnnotationConfigWebApplicationContext root =
+-                new AnnotationConfigWebApplicationContext();
++    protected Class<?>[] getServletConfigClasses() {
++        return new Class[0];
++    }
+ 
+-        root.register(WebConfig.class);
+-        sc.addListener(new ContextLoaderListener(root));
+-
+-        ServletRegistration.Dynamic appServlet =
+-                sc.addServlet("mvc", new DispatcherServlet(new GenericWebApplicationContext()));
+-        appServlet.setLoadOnStartup(1);
+-        appServlet.addMapping("/");
++    @Override
++    protected String[] getServletMappings() {
++        return new String[]{"/"};
+     }
+ }
+\ No newline at end of file
+Index: src/main/java/com/jd2/moviebase/controller/CommentController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/controller/CommentController.java b/src/main/java/com/jd2/moviebase/controller/CommentController.java
+--- a/src/main/java/com/jd2/moviebase/controller/CommentController.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/controller/CommentController.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -2,6 +2,7 @@
+ 
+ import com.jd2.moviebase.dto.CommentDto;
+ import com.jd2.moviebase.service.CommentService;
++import java.util.List;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.web.bind.annotation.DeleteMapping;
+ import org.springframework.web.bind.annotation.GetMapping;
+@@ -12,8 +13,6 @@
+ import org.springframework.web.bind.annotation.RequestMapping;
+ import org.springframework.web.bind.annotation.RestController;
+ 
+-import java.util.List;
+-
+ @RestController
+ @RequestMapping("/comments")
+ public class CommentController {
+Index: src/main/java/com/jd2/moviebase/controller/GenreController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/controller/GenreController.java b/src/main/java/com/jd2/moviebase/controller/GenreController.java
+--- a/src/main/java/com/jd2/moviebase/controller/GenreController.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/controller/GenreController.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -34,14 +34,13 @@
+         return genreService.create(genre);
+     }
+ 
+-    @PutMapping
+-    public Genre update(@RequestBody Genre genre) {
+-        return genreService.update(genre);
+-
++    @PutMapping("/{id}")
++    public Genre update(@PathVariable ("id") long id, @RequestBody Genre genre) {
++        return genreService.update(id, genre);
+     }
+ 
+     @DeleteMapping("/{id}")
+-    public void deleteById(@PathVariable("id") int id) {
++    public void deleteById(@PathVariable("id") long id) {
+         genreService.deleteById(id);
+ 
+     }
+Index: src/main/java/com/jd2/moviebase/dto/AccountDto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/dto/AccountDto.java b/src/main/java/com/jd2/moviebase/dto/AccountDto.java
+--- a/src/main/java/com/jd2/moviebase/dto/AccountDto.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/dto/AccountDto.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,19 +1,15 @@
+ package com.jd2.moviebase.dto;
+ 
+-import lombok.AllArgsConstructor;
++import java.util.Date;
+ import lombok.Builder;
+ import lombok.Data;
+-import lombok.NoArgsConstructor;
+-
+-import java.util.Date;
+ 
+ @Data
+ @Builder
+-@NoArgsConstructor
+-@AllArgsConstructor
+ public class AccountDto {
+-    private int id;
+-    private int userId;
++
++    private Integer id;
++    private Integer userId;
+     private String firstName;
+     private String lastName;
+     private String preferredName;
+Index: src/main/java/com/jd2/moviebase/dto/CommentDto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/dto/CommentDto.java b/src/main/java/com/jd2/moviebase/dto/CommentDto.java
+--- a/src/main/java/com/jd2/moviebase/dto/CommentDto.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/dto/CommentDto.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,15 +1,12 @@
+ package com.jd2.moviebase.dto;
+ 
+-import lombok.AllArgsConstructor;
+ import lombok.Builder;
+ import lombok.Data;
+-import lombok.NoArgsConstructor;
+ 
+ @Data
+ @Builder
+-@NoArgsConstructor
+-@AllArgsConstructor
+ public class CommentDto {
++
+     private int id;
+     private int accountId;
+     private int movieId;
+Index: src/main/java/com/jd2/moviebase/model/Account.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/model/Account.java b/src/main/java/com/jd2/moviebase/model/Account.java
+--- a/src/main/java/com/jd2/moviebase/model/Account.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/model/Account.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,20 +1,14 @@
+ package com.jd2.moviebase.model;
+ 
+-import lombok.AllArgsConstructor;
++import java.time.LocalDateTime;
++import java.util.Date;
+ import lombok.Builder;
+ import lombok.Data;
+-import lombok.EqualsAndHashCode;
+-import lombok.Getter;
+-import lombok.NoArgsConstructor;
+-import lombok.Setter;
+-
+-import java.util.Date;
+ 
+ @Data
+ @Builder
+-@NoArgsConstructor
+-@AllArgsConstructor
+ public class Account {
++
+     private int id;
+     private int userId;
+     private String firstName;
+@@ -24,6 +18,6 @@
+     private String phone;
+     private String gender;
+     private String photoUrl;
+-    private Date createdAt;
+-    private Date updatedAt;
++    private LocalDateTime createdAt;
++    private LocalDateTime updatedAt;
+ }
+Index: src/main/java/com/jd2/moviebase/model/AccountMovie.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/model/AccountMovie.java b/src/main/java/com/jd2/moviebase/model/AccountMovie.java
+--- a/src/main/java/com/jd2/moviebase/model/AccountMovie.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/model/AccountMovie.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,17 +1,13 @@
+ package com.jd2.moviebase.model;
+ 
+-import lombok.AllArgsConstructor;
++import java.util.Date;
+ import lombok.Builder;
+ import lombok.Data;
+-import lombok.NoArgsConstructor;
+-
+-import java.util.Date;
+ 
+ @Data
+ @Builder
+-@NoArgsConstructor
+-@AllArgsConstructor
+ public class AccountMovie {
++
+     private int accountId;
+     private int movieId;
+     private String status;
+Index: src/main/java/com/jd2/moviebase/model/Comment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/model/Comment.java b/src/main/java/com/jd2/moviebase/model/Comment.java
+--- a/src/main/java/com/jd2/moviebase/model/Comment.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/model/Comment.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,17 +1,13 @@
+ package com.jd2.moviebase.model;
+ 
+-import lombok.AllArgsConstructor;
++import java.util.Date;
+ import lombok.Builder;
+ import lombok.Data;
+-import lombok.NoArgsConstructor;
+-
+-import java.util.Date;
+ 
+ @Data
+ @Builder
+-@NoArgsConstructor
+-@AllArgsConstructor
+ public class Comment {
++
+     private int id;
+     private int accountId;
+     private int movieId;
+Index: src/main/java/com/jd2/moviebase/model/Genre.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/model/Genre.java b/src/main/java/com/jd2/moviebase/model/Genre.java
+--- a/src/main/java/com/jd2/moviebase/model/Genre.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/model/Genre.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,16 +1,13 @@
+ package com.jd2.moviebase.model;
+ 
+-import lombok.AllArgsConstructor;
+ import lombok.Builder;
+ import lombok.Data;
+-import lombok.NoArgsConstructor;
+ 
+ @Data
+ @Builder
+-@NoArgsConstructor
+-@AllArgsConstructor
+ public class Genre {
+-    private int id;
+-    private int tmdbId;
++
++    private Long id;
++    private Long tmdbId;
+     private String name;
+ }
+Index: src/main/java/com/jd2/moviebase/model/Movie.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/model/Movie.java b/src/main/java/com/jd2/moviebase/model/Movie.java
+--- a/src/main/java/com/jd2/moviebase/model/Movie.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/model/Movie.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,18 +1,14 @@
+ package com.jd2.moviebase.model;
+ 
+-import lombok.AllArgsConstructor;
+-import lombok.Builder;
+-import lombok.Data;
+-import lombok.NoArgsConstructor;
+-
+ import java.sql.Date;
+ import java.util.List;
++import lombok.Builder;
++import lombok.Data;
+ 
+ @Data
+ @Builder
+-@NoArgsConstructor
+-@AllArgsConstructor
+ public class Movie {
++
+     private int id;
+     private int tmdbId;
+     private String name;
+Index: src/main/java/com/jd2/moviebase/model/User.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/model/User.java b/src/main/java/com/jd2/moviebase/model/User.java
+--- a/src/main/java/com/jd2/moviebase/model/User.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/model/User.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,21 +1,18 @@
+ package com.jd2.moviebase.model;
+ 
+-import lombok.AllArgsConstructor;
++import java.time.LocalDateTime;
++import java.util.Date;
+ import lombok.Builder;
+ import lombok.Data;
+-import lombok.NoArgsConstructor;
+-
+-import java.util.Date;
+ 
+ @Data
+ @Builder
+-@NoArgsConstructor
+-@AllArgsConstructor
+ public class User {
++
+     private int id;
+     private String email;
+     private String password;
+     private String role;
+-    private Date createdAt;
+-    private Date updatedAt;
++    private LocalDateTime createdAt;
++    private LocalDateTime updatedAt;
+ }
+Index: src/main/java/com/jd2/moviebase/repository/AccountMovieRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/repository/AccountMovieRepository.java b/src/main/java/com/jd2/moviebase/repository/AccountMovieRepository.java
+--- a/src/main/java/com/jd2/moviebase/repository/AccountMovieRepository.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/repository/AccountMovieRepository.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,20 +1,20 @@
+ package com.jd2.moviebase.repository;
+ 
++import static com.jd2.moviebase.util.ConstantsHelper.MovieStatus;
++
+ import com.jd2.moviebase.model.AccountMovie;
+-import org.springframework.stereotype.Repository;
+-
+-import javax.sql.DataSource;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+ import java.util.ArrayList;
+ import java.util.List;
+-
+-import static com.jd2.moviebase.util.ConstantsHelper.MovieStatus;
++import javax.sql.DataSource;
++import org.springframework.stereotype.Repository;
+ 
+ @Repository
+ public class AccountMovieRepository {
++
+     private final DataSource ds;
+ 
+     public AccountMovieRepository(DataSource ds) {
+@@ -28,7 +28,7 @@
+ 
+     public void create(AccountMovie accountMovie) {
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(CREATE_ACC_MOVIE_SQL)) {
++            PreparedStatement ps = conn.prepareStatement(CREATE_ACC_MOVIE_SQL)) {
+             ps.setInt(1, accountMovie.getAccountId());
+             ps.setInt(2, accountMovie.getMovieId());
+             ps.setString(3, accountMovie.getStatus());
+@@ -40,22 +40,15 @@
+ 
+     public List<AccountMovie> findAllByAccountId(int accountId) {
+         List<AccountMovie> accountMovies = new ArrayList<>();
+-
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(FIND_ALL_ACC_MOVIE_BY_ACC_ID_SQL)) {
++            PreparedStatement ps = conn.prepareStatement(FIND_ALL_ACC_MOVIE_BY_ACC_ID_SQL)) {
+             ps.setInt(1, accountId);
+             ResultSet resultSet = ps.executeQuery();
+             while (resultSet.next()) {
+-                AccountMovie accountMovie = new AccountMovie();
+-                accountMovie.setAccountId(resultSet.getInt("account_id"));
+-                accountMovie.setMovieId(resultSet.getInt("movie_id"));
+-                accountMovie.setStatus(resultSet.getString("status"));
+-                accountMovie.setCreatedAt(resultSet.getDate("created_at"));
+-                accountMovie.setUpdatedAt(resultSet.getDate("updated_at"));
+-                accountMovies.add(accountMovie);
++                accountMovies.add(getAccountMovieObject(resultSet));
+             }
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error getting account movies", e);
+         }
+ 
+         return accountMovies;
+@@ -63,7 +56,7 @@
+ 
+     public void updateStatusByAccId(int accountId, int movie_id, MovieStatus status) {
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(UPDATE_ACC_MOVIE_STATUS_BY_ACC_ID_SQL)) {
++            PreparedStatement ps = conn.prepareStatement(UPDATE_ACC_MOVIE_STATUS_BY_ACC_ID_SQL)) {
+             ps.setString(1, String.valueOf(status));
+             ps.setInt(2, accountId);
+             ps.setInt(3, movie_id);
+@@ -75,11 +68,25 @@
+ 
+     public void deleteByAccId(int id) {
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(DELETE_ACC_MOVIE_BY_ACC_ID_SQL)) {
++            PreparedStatement ps = conn.prepareStatement(DELETE_ACC_MOVIE_BY_ACC_ID_SQL)) {
+             ps.setInt(1, id);
+             ps.executeUpdate();
+         } catch (SQLException e) {
+             throw new RuntimeException(e);
+         }
+     }
++
++    private AccountMovie getAccountMovieObject(ResultSet resultSet) {
++        try {
++            return AccountMovie.builder()
++                .accountId(resultSet.getInt("account_id"))
++                .movieId(resultSet.getInt("movie_id"))
++                .status(resultSet.getString("status"))
++                .createdAt(resultSet.getDate("created_at"))
++                .updatedAt(resultSet.getDate("updated_at"))
++                .build();
++        } catch (SQLException e) {
++            throw new RuntimeException("Error creating AccountMovie object", e);
++        }
++    }
+ }
+Index: src/main/java/com/jd2/moviebase/repository/AccountRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/repository/AccountRepository.java b/src/main/java/com/jd2/moviebase/repository/AccountRepository.java
+--- a/src/main/java/com/jd2/moviebase/repository/AccountRepository.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/repository/AccountRepository.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,25 +1,28 @@
+ package com.jd2.moviebase.repository;
+ 
+-import com.jd2.moviebase.dto.AccountDto;
+ import com.jd2.moviebase.model.Account;
+-import org.springframework.stereotype.Repository;
+-
+-import javax.sql.DataSource;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+-import java.util.Date;
++import java.sql.Timestamp;
++import java.time.LocalDateTime;
++import java.time.ZoneId;
+ import java.util.Optional;
++import javax.sql.DataSource;
++import org.springframework.stereotype.Repository;
+ 
+ @Repository
+ public class AccountRepository {
++
+     private final DataSource ds;
+-    private final String CREATE_SQL = "INSERT INTO accounts (user_id, first_name, last_name, preferred_name, date_of_birth, " +
+-            "phone, gender, photo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
++    private final String CREATE_SQL =
++        "INSERT INTO accounts (user_id, first_name, last_name, preferred_name, date_of_birth, " +
++            "phone, gender, photo_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+     private final String FIND_BY_ID_SQL = "SELECT * FROM accounts WHERE id = ?";
+     private final String FIND_BY_USER_ID_SQL = "SELECT * FROM accounts WHERE user_id = ?";
+-    private final String UPDATE_SQL = "UPDATE accounts SET user_id = ?, first_name = ?, last_name = ?, preferred_name = ?, " +
++    private final String UPDATE_SQL =
++        "UPDATE accounts SET user_id = ?, first_name = ?, last_name = ?, preferred_name = ?, " +
+             "date_of_birth = ?, phone = ?, gender = ?, photo_url = ?, updated_at = ? WHERE id = ?";
+     private final String DELETE_BY_ID_FROM_ACCOUNTS_SQL = "DELETE FROM accounts WHERE id = ?";
+ 
+@@ -27,40 +30,38 @@
+         this.ds = ds;
+     }
+ 
+-    public Account create(AccountDto accountDto) {
++    public Account create(Account account) {
+         int insertedId = 0;
+-        Date createdAt = null;
+-        Date updatedAt = null;
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, PreparedStatement.RETURN_GENERATED_KEYS)) {
+-            ps.setInt(1, accountDto.getUserId());
+-            ps.setString(2, accountDto.getFirstName());
+-            ps.setString(3, accountDto.getLastName());
+-            ps.setString(4, accountDto.getPreferredName());
+-            ps.setDate(5, new java.sql.Date(accountDto.getDateOfBirth().getTime()));
+-            ps.setString(6, accountDto.getPhone());
+-            ps.setString(7, accountDto.getGender());
+-            ps.setString(8, accountDto.getPhotoUrl());
++            PreparedStatement ps = conn.prepareStatement(CREATE_SQL, PreparedStatement.RETURN_GENERATED_KEYS)) {
++            ps.setInt(1, account.getUserId());
++            ps.setString(2, account.getFirstName());
++            ps.setString(3, account.getLastName());
++            ps.setString(4, account.getPreferredName());
++            ps.setDate(5, new java.sql.Date(account.getDateOfBirth().getTime()));
++            ps.setString(6, account.getPhone());
++            ps.setString(7, account.getGender());
++            ps.setString(8, account.getPhotoUrl());
++            ps.setTimestamp(9, Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
++            ps.setTimestamp(10, Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
+             ps.executeUpdate();
+             ResultSet generatedKeys = ps.getGeneratedKeys();
+             if (generatedKeys.next()) {
+                 insertedId = generatedKeys.getInt(1);
+-                createdAt = generatedKeys.getDate(10);
+-                updatedAt = generatedKeys.getDate(11);
+-                accountDto.setId(insertedId);
++                account.setId(insertedId);
++            } else {
++                throw new SQLException("Creating account failed, no ID obtained.");
+             }
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error creating account", e);
+         }
+-        return new Account(insertedId, accountDto.getUserId(), accountDto.getFirstName(), accountDto.getLastName(),
+-                accountDto.getPreferredName(), accountDto.getDateOfBirth(), accountDto.getPhone(),
+-                accountDto.getGender(), accountDto.getPhotoUrl(), createdAt, updatedAt);
++        return account;
+     }
+ 
+     public Account findById(int id) {
+         Account account = null;
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
++            PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
+             ps.setInt(1, id);
+             ResultSet resultSet = ps.executeQuery();
+             if (resultSet.next()) {
+@@ -70,57 +71,51 @@
+             throw new RuntimeException(e);
+         }
+         return Optional.ofNullable(account)
+-                .orElseThrow(() -> new RuntimeException("Account with ID " + id + " not found"));
++            .orElseThrow(() -> new RuntimeException("Account with ID " + id + " not found"));
+     }
+ 
+     public Account findByUserId(int userId) {
+-        Account account = null;
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(FIND_BY_USER_ID_SQL)) {
++            PreparedStatement ps = conn.prepareStatement(FIND_BY_USER_ID_SQL)) {
+             ps.setInt(1, userId);
+             ResultSet resultSet = ps.executeQuery();
+             if (resultSet.next()) {
+-                account = getAccountObject(resultSet);
++                return getAccountObject(resultSet);
++            } else {
++                throw new RuntimeException("Account with user ID " + userId + " not found");
+             }
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error getting account", e);
+         }
+-        return Optional.ofNullable(account)
+-                .orElseThrow(() -> new RuntimeException("Account with user ID " + userId + " not found"));
+     }
+ 
+-    public Account update(int id, AccountDto accountDto) {
+-        Date createdAt = null;
+-        Date updatedAt = null;
++    public Account update(Account account) {
++        account.setUpdatedAt(LocalDateTime.now(ZoneId.of("UTC")));
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
+-            ps.setInt(1, accountDto.getUserId());
+-            ps.setString(2, accountDto.getFirstName());
+-            ps.setString(3, accountDto.getLastName());
+-            ps.setString(4, accountDto.getPreferredName());
+-            ps.setDate(5, new java.sql.Date(accountDto.getDateOfBirth().getTime()));
+-            ps.setString(6, accountDto.getPhone());
+-            ps.setString(7, accountDto.getGender());
+-            ps.setString(8, accountDto.getPhotoUrl());
+-            ps.setDate(9, new java.sql.Date(System.currentTimeMillis()));
+-            ps.setInt(10, id);
+-            ps.executeUpdate();
+-            ResultSet generatedKeys = ps.getGeneratedKeys();
+-            if (generatedKeys.next()) {
+-                createdAt = generatedKeys.getDate(10);
+-                updatedAt = generatedKeys.getDate(11);
++            PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
++            ps.setInt(1, account.getUserId());
++            ps.setString(2, account.getFirstName());
++            ps.setString(3, account.getLastName());
++            ps.setString(4, account.getPreferredName());
++            ps.setDate(5, new java.sql.Date(account.getDateOfBirth().getTime()));
++            ps.setString(6, account.getPhone());
++            ps.setString(7, account.getGender());
++            ps.setString(8, account.getPhotoUrl());
++            ps.setTimestamp(9, Timestamp.valueOf(account.getUpdatedAt()));
++            ps.setInt(10, account.getId());
++            if (ps.executeUpdate() > 0) {
++                return account;
++            } else {
++                throw new RuntimeException("Updating account failed, no rows affected. Account ID: " + account.getId());
+             }
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error updating account ", e);
+         }
+-        return new Account(id, accountDto.getUserId(), accountDto.getFirstName(), accountDto.getLastName(),
+-                accountDto.getPreferredName(), accountDto.getDateOfBirth(), accountDto.getPhone(),
+-                accountDto.getGender(), accountDto.getPhotoUrl(), createdAt, updatedAt);
+     }
+ 
+     public void deleteById(int id) {
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement psAccounts = conn.prepareStatement(DELETE_BY_ID_FROM_ACCOUNTS_SQL)) {
++            PreparedStatement psAccounts = conn.prepareStatement(DELETE_BY_ID_FROM_ACCOUNTS_SQL)) {
+             psAccounts.setInt(1, id);
+             psAccounts.executeUpdate();
+         } catch (SQLException e) {
+@@ -129,18 +124,20 @@
+     }
+ 
+     private Account getAccountObject(ResultSet resultSet) throws SQLException {
+-        return new Account(
+-                resultSet.getInt("id"),
+-                resultSet.getInt("user_id"),
+-                resultSet.getString("first_name"),
+-                resultSet.getString("last_name"),
+-                resultSet.getString("preferred_name"),
+-                resultSet.getDate("date_of_birth"),
+-                resultSet.getString("phone"),
+-                resultSet.getString("gender"),
+-                resultSet.getString("photo_url"),
+-                resultSet.getDate("created_at"),
+-                resultSet.getDate("updated_at")
+-        );
++        return Account.builder()
++            .id(resultSet.getInt("id"))
++            .userId(resultSet.getInt("user_id"))
++            .firstName(resultSet.getString("first_name"))
++            .lastName(resultSet.getString("last_name"))
++            .preferredName(resultSet.getString("preferred_name"))
++            .dateOfBirth(resultSet.getDate("date_of_birth"))
++            .phone(resultSet.getString("phone"))
++            .gender(resultSet.getString("gender"))
++            .photoUrl(resultSet.getString("photo_url"))
++            .createdAt(LocalDateTime.from(resultSet.getTimestamp("created_at").toLocalDateTime()
++                .atZone(ZoneId.of("UTC"))))
++            .updatedAt(
++                LocalDateTime.from(resultSet.getTimestamp("updated_at").toLocalDateTime().atZone(ZoneId.of("UTC"))))
++            .build();
+     }
+ }
+Index: src/main/java/com/jd2/moviebase/repository/CommentRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/repository/CommentRepository.java b/src/main/java/com/jd2/moviebase/repository/CommentRepository.java
+--- a/src/main/java/com/jd2/moviebase/repository/CommentRepository.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/repository/CommentRepository.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -2,10 +2,6 @@
+ 
+ import com.jd2.moviebase.dto.CommentDto;
+ import com.jd2.moviebase.model.Comment;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.stereotype.Repository;
+-
+-import javax.sql.DataSource;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+ import java.sql.ResultSet;
+@@ -15,6 +11,9 @@
+ import java.util.Date;
+ import java.util.List;
+ import java.util.Optional;
++import javax.sql.DataSource;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.stereotype.Repository;
+ 
+ @Repository
+ public class CommentRepository {
+@@ -36,8 +35,8 @@
+         List<Comment> comments = new ArrayList<>();
+ 
+         try (Connection conn = dataSource.getConnection();
+-             Statement st = conn.createStatement();
+-             ResultSet rs = st.executeQuery(FIND_SQL)) {
++            Statement st = conn.createStatement();
++            ResultSet rs = st.executeQuery(FIND_SQL)) {
+ 
+             while (rs.next()) {
+                 comments.add(mapRow(rs));
+@@ -52,7 +51,7 @@
+     public Comment findById(int id) {
+         Comment comment = null;
+         try (Connection conn = dataSource.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
++            PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
+ 
+             ps.setInt(1, id);
+ 
+@@ -66,7 +65,7 @@
+         }
+ 
+         return Optional.ofNullable(comment)
+-                .orElseThrow(() -> new RuntimeException("Comment with ID " + id + " not found"));
++            .orElseThrow(() -> new RuntimeException("Comment with ID " + id + " not found"));
+     }
+ 
+     public Comment create(CommentDto commentDto) {
+@@ -74,7 +73,7 @@
+         Date createdAt = null;
+         Date updatedAt = null;
+         try (Connection conn = dataSource.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
++            PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+ 
+             ps.setInt(1, commentDto.getAccountId());
+             ps.setInt(2, commentDto.getMovieId());
+@@ -96,15 +95,22 @@
+         } catch (SQLException e) {
+             throw new RuntimeException(e);
+         }
+-        return new Comment(commentDto.getId(), commentDto.getAccountId(), commentDto.getMovieId(),
+-                commentDto.getNote(), createdAt, updatedAt, commentDto.getIsActive());
++        return Comment.builder()
++            .id(commentDto.getId())
++            .accountId(commentDto.getAccountId())
++            .movieId(commentDto.getMovieId())
++            .note(commentDto.getNote())
++            .createdAt(createdAt)
++            .updatedAt(updatedAt)
++            .isActive(commentDto.getIsActive())
++            .build();
+     }
+ 
+     public Comment update(int id, CommentDto commentDto) {
+         Date createdAt = null;
+         Date updatedAt = null;
+         try (Connection conn = dataSource.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
++            PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
+             ps.setString(1, commentDto.getNote());
+             ps.setDate(2, new java.sql.Date(System.currentTimeMillis()));
+             ps.setBoolean(3, commentDto.getIsActive());
+@@ -122,36 +128,38 @@
+         } catch (SQLException e) {
+             throw new RuntimeException(e);
+         }
+-        return new Comment(id, commentDto.getAccountId(), commentDto.getMovieId(),
+-                commentDto.getNote(), createdAt, updatedAt, commentDto.getIsActive());
++        return Comment.builder()
++            .id(id)
++            .accountId(commentDto.getAccountId())
++            .movieId(commentDto.getMovieId())
++            .note(commentDto.getNote())
++            .createdAt(createdAt)
++            .updatedAt(updatedAt)
++            .isActive(commentDto.getIsActive())
++            .build();
+     }
+ 
+ 
+     public void deactivateByAccId(int id) {
+         try (Connection conn = dataSource.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(DEACTIVATE_COMMENT_BY_ACC_ID_SQL)) {
++            PreparedStatement ps = conn.prepareStatement(DEACTIVATE_COMMENT_BY_ACC_ID_SQL)) {
+ 
+             ps.setInt(1, id);
+-
+-            int rowsAffected = ps.executeUpdate();
+-            if (rowsAffected == 0) {
+-                throw new SQLException("Deactivating comment failed, no rows affected.");
+-            }
+-
++            ps.executeUpdate();
+         } catch (SQLException e) {
+             throw new RuntimeException(e);
+         }
+     }
+ 
+     private Comment mapRow(ResultSet rs) throws SQLException {
+-        return new Comment(
+-                rs.getInt("id"),
+-                rs.getInt("account_id"),
+-                rs.getInt("movie_id"),
+-                rs.getString("note"),
+-                rs.getDate("created_at"),
+-                rs.getDate("updated_at"),
+-                rs.getBoolean("is_active")
+-        );
++        return Comment.builder()
++            .id(rs.getInt("id"))
++            .accountId(rs.getInt("account_id"))
++            .movieId(rs.getInt("movie_id"))
++            .note(rs.getString("note"))
++            .createdAt(rs.getDate("created_at"))
++            .updatedAt(rs.getDate("updated_at"))
++            .isActive(rs.getBoolean("is_active"))
++            .build();
+     }
+ }
+Index: src/main/java/com/jd2/moviebase/repository/GenreRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/repository/GenreRepository.java b/src/main/java/com/jd2/moviebase/repository/GenreRepository.java
+--- a/src/main/java/com/jd2/moviebase/repository/GenreRepository.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/repository/GenreRepository.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,16 +1,17 @@
+ package com.jd2.moviebase.repository;
+ 
+ import com.jd2.moviebase.model.Genre;
+-
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.stereotype.Repository;
+-
+-import javax.sql.DataSource;
+-import java.sql.*;
++import java.sql.Connection;
++import java.sql.PreparedStatement;
++import java.sql.ResultSet;
++import java.sql.SQLException;
++import java.sql.Statement;
+ import java.util.ArrayList;
+-import java.util.Collections;
+ import java.util.List;
+ import java.util.Optional;
++import javax.sql.DataSource;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.stereotype.Repository;
+ 
+ @Repository
+ public class GenreRepository {
+@@ -30,104 +31,87 @@
+ 
+     public List<Genre> findAll() {
+         List<Genre> genres = new ArrayList<>();
+-
+         try (Connection conn = dataSource.getConnection();
+-             Statement st = conn.createStatement();
+-             ResultSet rs = st.executeQuery(FIND_SQL)) {
+-
++            Statement st = conn.createStatement();
++            ResultSet rs = st.executeQuery(FIND_SQL)) {
+             while (rs.next()) {
+-                genres.add(mapRow(rs));
++                genres.add(createGenre(rs));
+             }
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error while finding all genres", e);
+         }
+-
+         return genres;
+     }
+ 
+     public Optional<Genre> findById(int id) {
+-
+         try (Connection conn = dataSource.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
+-
++            PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
+             ps.setInt(1, id);
+-
+-            try (ResultSet rs = ps.executeQuery()) {
+-                if (rs.next()) {
+-                    return Optional.of(mapRow(rs));
+-                }
++            ResultSet rs = ps.executeQuery();
++            if (rs.next()) {
++                return Optional.of(createGenre(rs));
++            } else {
++                return Optional.empty();
+             }
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error while fetching genre by ID", e);
+         }
+-
+-        return Optional.empty();
+     }
+ 
+     public Genre create(Genre genre) {
+         try (Connection conn = dataSource.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+-
+-            ps.setInt(1, genre.getTmdbId());
++            PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
++            ps.setLong(1, genre.getTmdbId());
+             ps.setString(2, genre.getName());
+             ps.executeUpdate();
+-
+             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                 if (generatedKeys.next()) {
+-                    genre.setId(generatedKeys.getInt(1));
++                    genre.setId(generatedKeys.getLong(1));
+                 } else {
+                     throw new SQLException("Creating genre failed, no ID obtained.");
+                 }
+             }
+-
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error while creating genre", e);
+         }
+         return genre;
+     }
+ 
+     public Genre update(Genre genre) {
+         try (Connection conn = dataSource.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
+-
+-            ps.setInt(1, genre.getTmdbId());
++            PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
++            ps.setLong(1, genre.getTmdbId());
+             ps.setString(2, genre.getName());
+-            ps.setInt(3, genre.getId());
+-
+-            int rowsAffected = ps.executeUpdate();
+-            if (rowsAffected == 0) {
+-                throw new SQLException("Updating genre failed, no rows affected.");
++            ps.setLong(3, genre.getId());
++            if (ps.executeUpdate() > 0) {
++                return genre;
++            } else {
++                throw new RuntimeException("Updating genre failed, no rows affected. Genre ID: " + genre.getId());
+             }
+-
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error updating genre", e);
+         }
+-        return genre;
+     }
+ 
+-    public void deleteById(int id) {
++    public void deleteById(Long id) {
+         try (Connection conn = dataSource.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
+-
+-            ps.setInt(1, id);
+-
++            PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
++            ps.setLong(1, id);
+             int rowsAffected = ps.executeUpdate();
+-            if (rowsAffected == 0) {
+-                throw new SQLException("Deleting genre failed, no rows affected.");
++            if (rowsAffected != 1) {
++                throw new SQLException("Deleting genre failed. Genre ID: " + id);
+             }
+-
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error deleting genre", e);
+         }
+     }
+ 
+-    private Genre mapRow(ResultSet rs) throws SQLException {
+-        Genre genre = new Genre();
+-        genre.setId(rs.getInt("id"));
+-        genre.setTmdbId(rs.getInt("tmdb_id"));
+-        genre.setName(rs.getString("name"));
+-
+-        return genre;
++    private Genre createGenre(ResultSet rs) throws SQLException {
++        return Genre.builder()
++            .id(rs.getLong("id"))
++            .tmdbId(rs.getLong("tmdb_id"))
++            .name(rs.getString("name"))
++            .build();
+     }
+ 
+ }
+Index: src/main/java/com/jd2/moviebase/repository/MovieRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/repository/MovieRepository.java b/src/main/java/com/jd2/moviebase/repository/MovieRepository.java
+--- a/src/main/java/com/jd2/moviebase/repository/MovieRepository.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/repository/MovieRepository.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,25 +1,28 @@
+ package com.jd2.moviebase.repository;
+ 
+ import com.jd2.moviebase.model.Movie;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.stereotype.Repository;
+-
+-import javax.sql.DataSource;
+-import java.sql.*;
++import java.sql.Array;
++import java.sql.Connection;
++import java.sql.PreparedStatement;
++import java.sql.ResultSet;
++import java.sql.SQLException;
++import java.sql.Statement;
+ import java.util.ArrayList;
+-import java.util.Collections;
+ import java.util.List;
+ import java.util.Optional;
++import javax.sql.DataSource;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.stereotype.Repository;
+ 
+ @Repository
+ public class MovieRepository {
+ 
+     private static final String CREATE_SQL = "INSERT INTO movies " +
+-            "(tmdb_id, name, genre_id, release_date, rating, overview, original_language) VALUES (?, ?, ?, ?, ?, ?, ?)";
++        "(tmdb_id, name, genre_id, release_date, rating, overview, original_language) VALUES (?, ?, ?, ?, ?, ?, ?)";
+     private static final String FIND_BY_ID_SQL = "SELECT * FROM movies WHERE id = ?";
+     private static final String FIND_SQL = "SELECT * FROM movies";
+     private static final String UPDATE_SQL = "UPDATE movies SET tmdb_id = ?, name = ?, genre_id = ?, " +
+-            "release_date = ?, rating = ?, overview = ?, original_language = ? WHERE id = ?";
++        "release_date = ?, rating = ?, overview = ?, original_language = ? WHERE id = ?";
+     private static final String DELETE_SQL = "DELETE FROM movies WHERE id = ?";
+ 
+     private final DataSource dataSource;
+@@ -31,130 +34,112 @@
+ 
+     public List<Movie> findAll() {
+         List<Movie> movies = new ArrayList<>();
+-
+         try (Connection conn = dataSource.getConnection();
+-             Statement st = conn.createStatement();
+-             ResultSet rs = st.executeQuery(FIND_SQL)) {
+-
++            Statement st = conn.createStatement();
++            ResultSet rs = st.executeQuery(FIND_SQL)) {
+             while (rs.next()) {
+-                movies.add(mapRow(rs));
++                movies.add(createMovie(rs));
+             }
+-
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error while finding all movies", e);
+         }
+         return movies;
+     }
+ 
+     public Optional<Movie> findById(int id) {
+-
+         try (Connection conn = dataSource.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
+-
++            PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
+             ps.setInt(1, id);
+-
+-            try (ResultSet rs = ps.executeQuery()){
+-                if (rs.next()) {
+-                    return Optional.of(mapRow(rs));
+-                }
++            ResultSet rs = ps.executeQuery();
++            if (rs.next()) {
++                return Optional.of(createMovie(rs));
++            } else {
++                return Optional.empty();
+             }
+-
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error while fetching movie by ID", e);
+         }
+-        return Optional.empty();
+     }
+ 
+     public Movie create(Movie movie) {
+-
+         try (Connection conn = dataSource.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)){
+-
+-            composeStatement(ps, movie, conn);
++            PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
++            ps.setInt(1, movie.getTmdbId());
++            ps.setString(2, movie.getName());
++            ps.setArray(3, conn.createArrayOf("integer", movie.getGenreId().toArray()));
++            ps.setDate(4, movie.getReleaseDate());
++            ps.setInt(5, movie.getRating());
++            ps.setString(6, movie.getOverview());
++            ps.setString(7, movie.getOriginalLanguage());
+             ps.executeUpdate();
+-
+             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                 if (generatedKeys.next()) {
+-                    movie.setId(generatedKeys.getInt("id"));
+-                    return movie;
++                    movie.setId(generatedKeys.getInt(1));
+                 } else {
+                     throw new SQLException("Creating movie failed, no ID obtained.");
+                 }
+             }
+-
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error while creating movie", e);
+         }
++        return movie;
+     }
+ 
+     public Movie update(Movie movie) {
+-
+         try (Connection conn = dataSource.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)){
+-
+-            composeStatement(ps, movie, conn);
++            PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
++            ps.setInt(1, movie.getTmdbId());
++            ps.setString(2, movie.getName());
++            ps.setArray(3, conn.createArrayOf("integer", movie.getGenreId().toArray()));
++            ps.setDate(4, movie.getReleaseDate());
++            ps.setInt(5, movie.getRating());
++            ps.setString(6, movie.getOverview());
++            ps.setString(7, movie.getOriginalLanguage());
+             ps.setInt(8, movie.getId());
+-
+-            int rowsAffected = ps.executeUpdate();
+-            if (rowsAffected == 0) {
+-                throw new SQLException("Updating movie failed, no rows affected.");
++            if (ps.executeUpdate() > 0) {
++                return movie;
++            } else {
++                throw new SQLException("Updating movie failed, no rows affected. Movie ID: " + movie.getId());
+             }
+-
+-        } catch(SQLException e) {
++        } catch (SQLException e) {
+             throw new RuntimeException(e);
+         }
+-        return movie;
+     }
+ 
+     public void deleteById(int id) {
+-
+         try (Connection conn = dataSource.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
+-
++            PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
+             ps.setInt(1, id);
+-
+             int rowsAffected = ps.executeUpdate();
+-            if (rowsAffected == 0) {
+-                throw new SQLException("Deleting movie failed, no rows affected.");
++            if (rowsAffected != 1) {
++                throw new SQLException("Deleting movie failed. Genre ID: " + id);
+             }
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error deleting genre", e);
+         }
+ 
+     }
+ 
+-    private Movie mapRow(ResultSet rs) throws SQLException {
+-        Movie movie = new Movie();
+-        movie.setId(rs.getInt("id"));
+-        movie.setId(rs.getInt("tmdb_id"));
+-        movie.setName(rs.getString("name"));
++    private Movie createMovie(ResultSet rs) throws SQLException {
++        return Movie.builder()
++            .id(rs.getInt("id"))
++            .tmdbId(rs.getInt("tmdb_id"))
++            .name(rs.getString("name"))
++            .genreId(getGenres(rs))
++            .releaseDate(rs.getDate("release_date"))
++            .rating(rs.getInt("rating"))
++            .overview(rs.getString("overview"))
++            .originalLanguage(rs.getString("original_language"))
++            .build();
++    }
+ 
++    private List<Integer> getGenres(ResultSet rs) throws SQLException {
+         Array sqlArray = rs.getArray("genre_id");
+         if (sqlArray != null) {
+             Integer[] genreIds = (Integer[]) sqlArray.getArray();
+-            movie.setGenreId(List.of(genreIds));
++            return List.of(genreIds);
+         } else {
+-            movie.setGenreId(new ArrayList<Integer>());
++            return List.of();
+         }
+-
+-        movie.setReleaseDate(rs.getDate("release_date"));
+-        movie.setRating(rs.getInt("rating"));
+-        movie.setOverview(rs.getString("overview"));
+-        movie.setOriginalLanguage(rs.getString("original_language"));
+-
+-        return movie;
+-
+     }
+-
+-    private void composeStatement(PreparedStatement ps, Movie movie, Connection conn) throws SQLException {
+-        ps.setInt(1, movie.getTmdbId());
+-        ps.setString(2, movie.getName());
+-        ps.setArray(3, conn.createArrayOf("integer", movie.getGenreId().toArray()));
+-        ps.setDate(4, movie.getReleaseDate());
+-        ps.setInt(5, movie.getRating());
+-        ps.setString(6, movie.getOverview());
+-        ps.setString(7, movie.getOriginalLanguage());
+-
+-    }
+-
+ }
+Index: src/main/java/com/jd2/moviebase/repository/UserRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/repository/UserRepository.java b/src/main/java/com/jd2/moviebase/repository/UserRepository.java
+--- a/src/main/java/com/jd2/moviebase/repository/UserRepository.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/repository/UserRepository.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,23 +1,26 @@
+ package com.jd2.moviebase.repository;
+ 
+ import com.jd2.moviebase.model.User;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.stereotype.Repository;
+-
+-import javax.sql.DataSource;
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
+ import java.sql.Statement;
++import java.sql.Timestamp;
++import java.time.LocalDateTime;
++import java.time.ZoneId;
+ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Optional;
++import javax.sql.DataSource;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.stereotype.Repository;
+ 
+ @Repository
+ public class UserRepository {
++
+     private final DataSource ds;
+-    private final String CREATE_SQL = "INSERT INTO users (email, password, role) VALUES (?, ?, ?)";
++    private final String CREATE_SQL = "INSERT INTO users (email, password, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
+     private final String FIND_BY_ID_SQL = "SELECT * FROM users WHERE id = ?";
+     private final String FIND_ALL_SQL = "SELECT * FROM users";
+     private final String UPDATE_SQL = "UPDATE users SET email = ?, password = ?, role = ?, updated_at = ? WHERE id = ?";
+@@ -30,74 +33,77 @@
+ 
+     public User create(User user) {
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+-            int insertedId;
++            PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+             ps.setString(1, user.getEmail());
+             ps.setString(2, user.getPassword());
+             ps.setString(3, user.getRole());
++            ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
++            ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
+             ps.executeUpdate();
+-            ResultSet generatedKeys = ps.getGeneratedKeys();
+-            if (generatedKeys.next()) {
+-                insertedId = generatedKeys.getInt(1);
+-                user.setId(insertedId);
++            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
++                if (generatedKeys.next()) {
++                    user.setId(generatedKeys.getInt(1));
++                } else {
++                    throw new SQLException("Creating user failed, no ID obtained.");
++                }
+             }
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error while creating user", e);
+         }
+         return user;
+     }
+ 
+-    public User findById(int id) {
+-        User user = null;
++    public Optional<User> findById(int id) {
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
++            PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
+             ps.setInt(1, id);
+             ResultSet resultSet = ps.executeQuery();
+             if (resultSet.next()) {
+-                user = getUserObject(resultSet);
++                return Optional.of(createUser(resultSet));
++            } else {
++                return Optional.empty();
+             }
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error while fetching movie by ID", e);
+         }
+-        return Optional.ofNullable(user)
+-                .orElseThrow(() -> new RuntimeException("User with ID " + id + " not found"));
+     }
+ 
+     public List<User> findAll() {
+         List<User> users = new ArrayList<>();
+-
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(FIND_ALL_SQL)) {
+-            ResultSet resultSet = ps.executeQuery();
++            Statement st = conn.createStatement()) {
++            ResultSet resultSet = st.executeQuery(FIND_ALL_SQL);
+             while (resultSet.next()) {
+-                User user = getUserObject(resultSet);
+-                users.add(user);
++                users.add(createUser(resultSet));
+             }
+-
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error while finding all users", e);
+         }
+         return users;
+     }
+ 
+     public User update(User user) {
++        user.setUpdatedAt(LocalDateTime.now(ZoneId.of("UTC")));
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
++            PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
+             ps.setString(1, user.getEmail());
+             ps.setString(2, user.getPassword());
+             ps.setString(3, user.getRole());
+-            ps.setTimestamp(4, new java.sql.Timestamp(user.getUpdatedAt().getTime()));
++            ps.setTimestamp(4, Timestamp.valueOf(user.getUpdatedAt()));
+             ps.setInt(5, user.getId());
+-            ps.executeUpdate();
++            if (ps.executeUpdate() > 0) {
++                return user;
++            } else {
++                throw new RuntimeException("Updating user failed, no rows affected. User ID: " + user.getId());
++            }
+         } catch (SQLException e) {
+-            throw new RuntimeException(e);
++            throw new RuntimeException("Error updating account ", e);
+         }
+-        return user;
+     }
+ 
+     public void deleteById(int id) {
+         try (Connection conn = ds.getConnection();
+-             PreparedStatement psUsers = conn.prepareStatement(DELETE_BY_ID_FROM_USERS_SQL)) {
++            PreparedStatement psUsers = conn.prepareStatement(DELETE_BY_ID_FROM_USERS_SQL)) {
+             psUsers.setInt(1, id);
+             psUsers.executeUpdate();
+         } catch (SQLException e) {
+@@ -105,14 +111,16 @@
+         }
+     }
+ 
+-    private User getUserObject(ResultSet resultSet) throws SQLException {
+-        User user = new User();
+-        user.setId(resultSet.getInt("id"));
+-        user.setEmail(resultSet.getString("email"));
+-        user.setPassword(resultSet.getString("password"));
+-        user.setRole(resultSet.getString("role"));
+-        user.setCreatedAt(resultSet.getDate("created_at"));
+-        user.setUpdatedAt(resultSet.getDate("updated_at"));
+-        return user;
++    private User createUser(ResultSet resultSet) throws SQLException {
++        return User.builder()
++            .id(resultSet.getInt("id"))
++            .email(resultSet.getString("email"))
++            .password(resultSet.getString("password"))
++            .role(resultSet.getString("role"))
++            .createdAt(LocalDateTime.from(resultSet.getTimestamp("created_at").toLocalDateTime()
++                .atZone(ZoneId.of("UTC"))))
++            .updatedAt(
++                LocalDateTime.from(resultSet.getTimestamp("updated_at").toLocalDateTime().atZone(ZoneId.of("UTC"))))
++            .build();
+     }
+ }
+Index: src/main/java/com/jd2/moviebase/service/AccountService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/service/AccountService.java b/src/main/java/com/jd2/moviebase/service/AccountService.java
+--- a/src/main/java/com/jd2/moviebase/service/AccountService.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/service/AccountService.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -1,6 +1,7 @@
+ package com.jd2.moviebase.service;
+ 
+ import com.jd2.moviebase.dto.AccountDto;
++import com.jd2.moviebase.model.Account;
+ import com.jd2.moviebase.repository.AccountRepository;
+ import com.jd2.moviebase.util.ModelMapper;
+ import org.slf4j.Logger;
+@@ -10,13 +11,15 @@
+ 
+ @Service
+ public class AccountService {
++
+     private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
+     private final AccountRepository accountRepository;
+     private final CommentService commentService;
+     private final AccountMovieService accountMovieService;
+ 
+     @Autowired
+-    public AccountService(AccountRepository accountRepository, CommentService commentService, AccountMovieService accountMovieService) {
++    public AccountService(AccountRepository accountRepository, CommentService commentService,
++        AccountMovieService accountMovieService) {
+         this.accountRepository = accountRepository;
+         this.commentService = commentService;
+         this.accountMovieService = accountMovieService;
+@@ -24,7 +27,8 @@
+ 
+     public AccountDto create(AccountDto accountDto) {
+         logger.info("Creating account: {}", accountDto);
+-        return ModelMapper.toAccountDto(accountRepository.create(accountDto));
++        Account account = accountRepository.create(ModelMapper.toAccount(accountDto));
++        return ModelMapper.toAccountDto(account);
+     }
+ 
+     public AccountDto findById(int id) {
+@@ -39,18 +43,17 @@
+ 
+     public AccountDto update(int id, AccountDto accountDto) {
+         logger.info("Updating account: {}", accountDto);
+-        return ModelMapper.toAccountDto(accountRepository.update(id, accountDto));
++        accountDto.setId(id);
++        Account account = ModelMapper.toAccount(accountDto);
++        return ModelMapper.toAccountDto(accountRepository.update(account));
+     }
+ 
+     public void deleteById(int id) {
+         logger.info("Deleting account by id: {}", id);
+-
+         // deactivate comments and set null account id
+         commentService.deactivateByAccId(id);
+-
+         // delete account_movie
+         accountMovieService.deleteByAccId(id);
+-
+         // delete account
+         accountRepository.deleteById(id);
+     }
+Index: src/main/java/com/jd2/moviebase/service/GenreService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/service/GenreService.java b/src/main/java/com/jd2/moviebase/service/GenreService.java
+--- a/src/main/java/com/jd2/moviebase/service/GenreService.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/service/GenreService.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -39,12 +39,13 @@
+         return genreRepository.create(genre);
+     }
+ 
+-    public Genre update(Genre genre) {
++    public Genre update(Long id, Genre genre) {
+         logger.info("Executing method: update(genre={})", genre);
++        genre.setId(id);
+         return genreRepository.update(genre);
+     }
+ 
+-    public void deleteById(int id) {
++    public void deleteById(Long id) {
+         logger.info("Executing method: deleteByID(id={})", id);
+         genreRepository.deleteById(id);
+     }
+Index: src/main/java/com/jd2/moviebase/service/UserService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/service/UserService.java b/src/main/java/com/jd2/moviebase/service/UserService.java
+--- a/src/main/java/com/jd2/moviebase/service/UserService.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/service/UserService.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -35,7 +35,8 @@
+ 
+     public User findById(int id) {
+         logger.info("Finding user by id: {}", id);
+-        return userRepository.findById(id);
++        return userRepository.findById(id)
++            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+     }
+ 
+     public List<User> findAll() {
+Index: src/main/java/com/jd2/moviebase/util/ModelMapper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/jd2/moviebase/util/ModelMapper.java b/src/main/java/com/jd2/moviebase/util/ModelMapper.java
+--- a/src/main/java/com/jd2/moviebase/util/ModelMapper.java	(revision 705c40f88050d0bd8a4b92155571658c1352c416)
++++ b/src/main/java/com/jd2/moviebase/util/ModelMapper.java	(revision f3aaff0b7eeb3a5ad3ae4c27ec3dda3310a9ea8b)
+@@ -29,4 +29,18 @@
+                 .isActive(comment.getIsActive())
+                 .build();
+     }
++
++    public static Account toAccount(AccountDto accountDto) {
++        return Account.builder()
++            .id(accountDto.getId())
++            .userId(accountDto.getUserId())
++            .firstName(accountDto.getFirstName())
++            .lastName(accountDto.getLastName())
++            .preferredName(accountDto.getPreferredName())
++            .dateOfBirth(accountDto.getDateOfBirth())
++            .phone(accountDto.getPhone())
++            .gender(accountDto.getGender())
++            .photoUrl(accountDto.getPhotoUrl())
++            .build();
++    }
+ }

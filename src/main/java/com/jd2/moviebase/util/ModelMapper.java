@@ -29,4 +29,18 @@ public class ModelMapper {
                 .isActive(comment.getIsActive())
                 .build();
     }
+
+    public static Account toAccount(AccountDto accountDto) {
+        return Account.builder()
+            .id(accountDto.getId())
+            .userId(accountDto.getUserId())
+            .firstName(accountDto.getFirstName())
+            .lastName(accountDto.getLastName())
+            .preferredName(accountDto.getPreferredName())
+            .dateOfBirth(accountDto.getDateOfBirth())
+            .phone(accountDto.getPhone())
+            .gender(accountDto.getGender())
+            .photoUrl(accountDto.getPhotoUrl())
+            .build();
+    }
 }
