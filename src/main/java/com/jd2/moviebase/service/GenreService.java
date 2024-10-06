@@ -39,12 +39,13 @@ public class GenreService {
         return genreRepository.create(genre);
     }
 
-    public Genre update(Genre genre) {
+    public Genre update(Long id, Genre genre) {
         logger.info("Executing method: update(genre={})", genre);
+        genre.setId(id);
         return genreRepository.update(genre);
     }
 
-    public void deleteById(int id) {
+    public void deleteById(Long id) {
         logger.info("Executing method: deleteByID(id={})", id);
         genreRepository.deleteById(id);
     }

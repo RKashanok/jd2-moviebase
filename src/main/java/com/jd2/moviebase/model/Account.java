@@ -1,20 +1,14 @@
 package com.jd2.moviebase.model;
 
-import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.Date;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.Date;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Account {
+
     private int id;
     private int userId;
     private String firstName;
@@ -24,6 +18,6 @@ public class Account {
     private String phone;
     private String gender;
     private String photoUrl;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

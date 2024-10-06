@@ -1,19 +1,15 @@
 package com.jd2.moviebase.dto;
 
-import lombok.AllArgsConstructor;
+import java.util.Date;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class AccountDto {
-    private int id;
-    private int userId;
+
+    private Integer id;
+    private Integer userId;
     private String firstName;
     private String lastName;
     private String preferredName;
