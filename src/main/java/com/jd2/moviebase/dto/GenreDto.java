@@ -1,11 +1,11 @@
-package com.jd2.moviebase.model;
+package com.jd2.moviebase.dto;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class Genre {
+public class GenreDto {
     private int id;
     private int tmdbId;
     private String name;
