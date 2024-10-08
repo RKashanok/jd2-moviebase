@@ -1,10 +1,8 @@
 package com.jd2.moviebase.util;
 
-import com.jd2.moviebase.dto.AccountDto;
-import com.jd2.moviebase.dto.CommentDto;
-import com.jd2.moviebase.dto.MovieDto;
+import com.jd2.moviebase.dto.*;
 import com.jd2.moviebase.model.Account;
-import com.jd2.moviebase.dto.GenreDto;
+import com.jd2.moviebase.model.AccountMovie;
 import com.jd2.moviebase.model.Genre;
 import com.jd2.moviebase.model.Movie;
 
@@ -90,4 +88,24 @@ public class ModelMapper {
                 .originalLanguage(movieDto.getOriginalLanguage())
                 .build();
     }
+
+        public static AccountMovieDto toAccountMovieDto(AccountMovie accountMovie) {
+            return AccountMovieDto.builder()
+                    .accountId(accountMovie.getAccountId())
+                    .movieId(accountMovie.getMovieId())
+                    .status(accountMovie.getStatus())
+                    .createdAt(accountMovie.getCreatedAt())
+                    .updatedAt(accountMovie.getUpdatedAt())
+                    .build();
+        }
+
+        public static AccountMovie toAccountMovie(AccountMovieDto accountMovieDto) {
+            return AccountMovie.builder()
+                    .accountId(accountMovieDto.getAccountId())
+                    .movieId(accountMovieDto.getMovieId())
+                    .status(accountMovieDto.getStatus())
+                    .createdAt(accountMovieDto.getCreatedAt())
+                    .updatedAt(accountMovieDto.getUpdatedAt())
+                    .build();
+        }
 }

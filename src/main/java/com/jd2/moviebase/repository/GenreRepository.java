@@ -35,7 +35,7 @@ public class GenreRepository {
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(FIND_SQL)) {
             while (rs.next()) {
-                genres.add(createGenre(rs));
+                genres.add(mapRow(rs));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error while finding all genres", e);
@@ -49,7 +49,7 @@ public class GenreRepository {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return Optional.of(createGenre(rs));
+                return Optional.of(mapRow(rs));
             } else {
                 return Optional.empty();
             }
@@ -106,12 +106,11 @@ public class GenreRepository {
         }
     }
 
-    private Genre createGenre(ResultSet rs) throws SQLException {
+    private Genre mapRow(ResultSet rs) throws SQLException {
         return Genre.builder()
             .id(rs.getLong("id"))
             .tmdbId(rs.getLong("tmdb_id"))
             .name(rs.getString("name"))
             .build();
     }
-
 }

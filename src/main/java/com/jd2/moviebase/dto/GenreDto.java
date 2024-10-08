@@ -9,5 +9,4 @@ public class GenreDto {
     private Long id;
     private Long tmdbId;
     private String name;
-
 }

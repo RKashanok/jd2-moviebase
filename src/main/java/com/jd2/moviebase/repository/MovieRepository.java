@@ -38,7 +38,7 @@ public class MovieRepository {
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(FIND_SQL)) {
             while (rs.next()) {
-                movies.add(createMovie(rs));
+                movies.add(mapRow(rs));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error while finding all movies", e);
@@ -52,7 +52,7 @@ public class MovieRepository {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return Optional.of(createMovie(rs));
+                return Optional.of(mapRow(rs));
             } else {
                 return Optional.empty();
             }
@@ -120,7 +120,7 @@ public class MovieRepository {
 
     }
 
-    private Movie createMovie(ResultSet rs) throws SQLException {
+    private Movie mapRow(ResultSet rs) throws SQLException {
         return Movie.builder()
             .id(rs.getInt("id"))
             .tmdbId(rs.getInt("tmdb_id"))
