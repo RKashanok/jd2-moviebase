@@ -25,3 +25,13 @@ postgres-data
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Ignore all macOS system files across the project
+**/.DS_Store
+
+# Ignore SmartTomcat plugin configuration directory
+.smarttomcat/
+
+# Ignore Apache Tomcat directories
+apache-tomcat-10.1.24/
+apache-tomcat-9.0.95/
