@@ -34,16 +34,14 @@ public class GenreController {
         return genreService.create(genreDTO);
     }
 
-    @PutMapping
-    public GenreDto update(@RequestBody GenreDto genreDTO) {
-        return genreService.update(genreDTO);
-
+    @PutMapping("/{id}")
+    public GenreDto update(@PathVariable("id") long id, @RequestBody GenreDto genreDto) {
+        return genreService.update(id, genreDto);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") int id) {
+    public void deleteById(@PathVariable("id") long id) {
         genreService.deleteById(id);
-
     }
 }
 

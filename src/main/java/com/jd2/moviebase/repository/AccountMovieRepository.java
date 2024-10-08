@@ -1,20 +1,20 @@
 package com.jd2.moviebase.repository;
 
-import com.jd2.moviebase.model.AccountMovie;
-import org.springframework.stereotype.Repository;
+import static com.jd2.moviebase.util.ConstantsHelper.MovieStatus;
 
-import javax.sql.DataSource;
+import com.jd2.moviebase.model.AccountMovie;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.jd2.moviebase.util.ConstantsHelper.MovieStatus;
+import javax.sql.DataSource;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class AccountMovieRepository {
+
     private final DataSource ds;
 
     public AccountMovieRepository(DataSource ds) {
@@ -28,7 +28,7 @@ public class AccountMovieRepository {
 
     public void create(AccountMovie accountMovie) {
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(CREATE_ACC_MOVIE_SQL)) {
+            PreparedStatement ps = conn.prepareStatement(CREATE_ACC_MOVIE_SQL)) {
             ps.setInt(1, accountMovie.getAccountId());
             ps.setInt(2, accountMovie.getMovieId());
             ps.setString(3, accountMovie.getStatus());
@@ -40,22 +40,15 @@ public class AccountMovieRepository {
 
     public List<AccountMovie> findAllByAccountId(int accountId) {
         List<AccountMovie> accountMovies = new ArrayList<>();
-
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_ALL_ACC_MOVIE_BY_ACC_ID_SQL)) {
+            PreparedStatement ps = conn.prepareStatement(FIND_ALL_ACC_MOVIE_BY_ACC_ID_SQL)) {
             ps.setInt(1, accountId);
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
-                AccountMovie accountMovie = new AccountMovie();
-                accountMovie.setAccountId(resultSet.getInt("account_id"));
-                accountMovie.setMovieId(resultSet.getInt("movie_id"));
-                accountMovie.setStatus(resultSet.getString("status"));
-                accountMovie.setCreatedAt(resultSet.getDate("created_at"));
-                accountMovie.setUpdatedAt(resultSet.getDate("updated_at"));
-                accountMovies.add(accountMovie);
+                accountMovies.add(getAccountMovieObject(resultSet));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error getting account movies", e);
         }
 
         return accountMovies;
@@ -63,7 +56,7 @@ public class AccountMovieRepository {
 
     public void updateStatusByAccId(int accountId, int movie_id, MovieStatus status) {
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(UPDATE_ACC_MOVIE_STATUS_BY_ACC_ID_SQL)) {
+            PreparedStatement ps = conn.prepareStatement(UPDATE_ACC_MOVIE_STATUS_BY_ACC_ID_SQL)) {
             ps.setString(1, String.valueOf(status));
             ps.setInt(2, accountId);
             ps.setInt(3, movie_id);
@@ -75,11 +68,25 @@ public class AccountMovieRepository {
 
     public void deleteByAccId(int id) {
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(DELETE_ACC_MOVIE_BY_ACC_ID_SQL)) {
+            PreparedStatement ps = conn.prepareStatement(DELETE_ACC_MOVIE_BY_ACC_ID_SQL)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private AccountMovie getAccountMovieObject(ResultSet resultSet) {
+        try {
+            return AccountMovie.builder()
+                .accountId(resultSet.getInt("account_id"))
+                .movieId(resultSet.getInt("movie_id"))
+                .status(resultSet.getString("status"))
+                .createdAt(resultSet.getDate("created_at"))
+                .updatedAt(resultSet.getDate("updated_at"))
+                .build();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error creating AccountMovie object", e);
         }
     }
 }

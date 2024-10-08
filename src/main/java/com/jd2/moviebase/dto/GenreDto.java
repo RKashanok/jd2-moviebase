@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 @Builder
 public class GenreDto {
-    private int id;
-    private int tmdbId;
+    private Long id;
+    private Long tmdbId;
     private String name;
 
 }

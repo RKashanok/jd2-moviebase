@@ -49,14 +49,15 @@ public class GenreService {
         return ModelMapper.toGenreDto(createdGenre);
     }
 
-    public GenreDto update(GenreDto genreDto) {
-        logger.info("Executing method: update(genre={})", genreDto);
+    public GenreDto update(Long id, GenreDto genreDto) {
+        logger.info("Executing method: update(id={}, genre={})", id, genreDto);
+        genreDto.setId(id);
         Genre genre = ModelMapper.toGenre(genreDto);
         Genre updatedGenre = genreRepository.update(genre);
         return ModelMapper.toGenreDto(updatedGenre);
     }
 
-    public void deleteById(int id) {
+    public void deleteById(Long id) {
         logger.info("Executing method: deleteByID(id={})", id);
         genreRepository.deleteById(id);
     }

@@ -1,18 +1,15 @@
-package com.jd2.moviebase.model;
+package com.jd2.moviebase.dto;
 
-import java.util.Date;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class Comment {
+public class CommentDto {
 
     private int id;
     private int accountId;
     private int movieId;
     private String note;
-    private Date createdAt;
-    private Date updatedAt;
     private Boolean isActive;
 }
