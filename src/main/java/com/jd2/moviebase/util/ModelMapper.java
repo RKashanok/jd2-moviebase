@@ -2,9 +2,11 @@ package com.jd2.moviebase.util;
 
 import com.jd2.moviebase.dto.AccountDto;
 import com.jd2.moviebase.dto.CommentDto;
+import com.jd2.moviebase.dto.MovieDto;
 import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.dto.GenreDto;
 import com.jd2.moviebase.model.Genre;
+import com.jd2.moviebase.model.Movie;
 
 public class ModelMapper {
 
@@ -62,4 +64,30 @@ public class ModelMapper {
                     .name(genreDTO.getName())
                     .build();
         }
+
+    public static MovieDto toMovieDto(Movie movie) {
+        return MovieDto.builder()
+                .id(movie.getId())
+                .tmdbId(movie.getTmdbId())
+                .name(movie.getName())
+                .genreId(movie.getGenreId())
+                .releaseDate(movie.getReleaseDate())
+                .rating(movie.getRating())
+                .overview(movie.getOverview())
+                .originalLanguage(movie.getOriginalLanguage())
+                .build();
+    }
+
+    public static Movie toMovie(MovieDto movieDto) {
+        return Movie.builder()
+                .id(movieDto.getId())
+                .tmdbId(movieDto.getTmdbId())
+                .name(movieDto.getName())
+                .genreId(movieDto.getGenreId())
+                .releaseDate(movieDto.getReleaseDate())
+                .rating(movieDto.getRating())
+                .overview(movieDto.getOverview())
+                .originalLanguage(movieDto.getOriginalLanguage())
+                .build();
+    }
 }
