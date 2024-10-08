@@ -1,5 +1,7 @@
 package com.jd2.moviebase.service;
 
+import com.jd2.moviebase.dto.GenreDto;
+import com.jd2.moviebase.util.ModelMapper;
 import com.jd2.moviebase.model.Genre;
 import com.jd2.moviebase.repository.GenreRepository;
 
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GenreService {
@@ -23,26 +26,35 @@ public class GenreService {
         this.genreRepository = genreRepository;
     }
 
-    public List<Genre> findAll() {
+    public List<GenreDto> findAll() {
         logger.info("Executing method: findAll()");
-        return genreRepository.findAll();
+        List<Genre> genres = genreRepository.findAll();
+        return genres.stream()
+                .map(ModelMapper::toGenreDto)
+                .collect(Collectors.toList());
     }
 
-    public Genre findById(int id) {
+    public GenreDto findById(int id) {
         logger.info("Executing method: findById(id={})", id);
-        return genreRepository.findById(id)
+        Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Genre not found with id: " + id));
+        return ModelMapper.toGenreDto(genre);
+
     }
 
-    public Genre create(Genre genre) {
-        logger.info("Executing method: create(genre={})", genre);
-        return genreRepository.create(genre);
+    public GenreDto create(GenreDto genreDto) {
+        logger.info("Executing method: create(genre={})", genreDto);
+        Genre genre = ModelMapper.toGenre(genreDto);
+        Genre createdGenre = genreRepository.create(genre);
+        return ModelMapper.toGenreDto(createdGenre);
     }
 
-    public Genre update(Long id, Genre genre) {
-        logger.info("Executing method: update(genre={})", genre);
-        genre.setId(id);
-        return genreRepository.update(genre);
+    public GenreDto update(Long id, GenreDto genreDto) {
+        logger.info("Executing method: update(id={}, genre={})", id, genreDto);
+        genreDto.setId(id);
+        Genre genre = ModelMapper.toGenre(genreDto);
+        Genre updatedGenre = genreRepository.update(genre);
+        return ModelMapper.toGenreDto(updatedGenre);
     }
 
     public void deleteById(Long id) {

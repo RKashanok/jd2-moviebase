@@ -3,6 +3,8 @@ package com.jd2.moviebase.util;
 import com.jd2.moviebase.dto.AccountDto;
 import com.jd2.moviebase.dto.CommentDto;
 import com.jd2.moviebase.model.Account;
+import com.jd2.moviebase.dto.GenreDto;
+import com.jd2.moviebase.model.Genre;
 
 public class ModelMapper {
 
@@ -30,6 +32,7 @@ public class ModelMapper {
                 .build();
     }
 
+
     public static Account toAccount(AccountDto accountDto) {
         return Account.builder()
             .id(accountDto.getId())
@@ -43,4 +46,20 @@ public class ModelMapper {
             .photoUrl(accountDto.getPhotoUrl())
             .build();
     }
+
+        public static GenreDto toGenreDto(Genre genre) {
+            return GenreDto.builder()
+                    .id(genre.getId())
+                    .tmdbId(genre.getTmdbId())
+                    .name(genre.getName())
+                    .build();
+        }
+
+        public static Genre toGenre(GenreDto genreDTO) {
+            return Genre.builder()
+                    .id(genreDTO.getId())
+                    .tmdbId(genreDTO.getTmdbId())
+                    .name(genreDTO.getName())
+                    .build();
+        }
 }
