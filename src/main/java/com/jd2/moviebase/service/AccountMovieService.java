@@ -1,15 +1,16 @@
 package com.jd2.moviebase.service;
 
-import com.jd2.moviebase.dto.AccountMovieDTO;
+import com.jd2.moviebase.dto.AccountMovieDto;
 import com.jd2.moviebase.model.AccountMovie;
-import com.jd2.moviebase.model.GenericMapper;
 import com.jd2.moviebase.repository.AccountMovieRepository;
+import com.jd2.moviebase.util.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.jd2.moviebase.util.ConstantsHelper.MovieStatus;
 
@@ -24,19 +25,18 @@ public class AccountMovieService {
         this.accountMovieRepository = accountMovieRepository;
     }
 
-    public void create(AccountMovieDTO accountMovieDTO) {
-        logger.info("Creating account movie: {}", accountMovieDTO);
-        accountMovieRepository.create(GenericMapper.accountMovieDtoToModel(accountMovieDTO));
+    public void create(AccountMovieDto accountMovieDto) {
+        logger.info("Creating account movie: {}", accountMovieDto);
+        accountMovieRepository.create(ModelMapper.toAccountMovie(accountMovieDto));
     }
 
-    public List<AccountMovieDTO> findAllByAccountId(int accountId) {
+    public List<AccountMovieDto> findAllByAccountId(int accountId) {
         logger.info("Finding all account movies by account id: {}", accountId);
         List<AccountMovie> accountMovies = accountMovieRepository.findAllByAccountId(accountId);
-        List<AccountMovieDTO> accountMovieDTOS = accountMovies.stream()
-                .map(GenericMapper::accountMovieToDto)
-                .toList();
-
-        return accountMovieDTOS;
+        List<AccountMovieDto> accountMovieDtos = accountMovies.stream()
+                .map(ModelMapper::toAccountMovieDto)
+                .collect(Collectors.toList());
+        return accountMovieDtos;
     }
 
     public void updateStatusByAccId(int accountId, int movieId, MovieStatus status) {

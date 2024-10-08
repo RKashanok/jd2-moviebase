@@ -1,7 +1,6 @@
 package com.jd2.moviebase.controller;
 
-import com.jd2.moviebase.dto.AccountMovieDTO;
-import com.jd2.moviebase.model.AccountMovie;
+import com.jd2.moviebase.dto.AccountMovieDto;
 import com.jd2.moviebase.service.AccountMovieService;
 import com.jd2.moviebase.util.ConstantsHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +19,13 @@ public class AccountMovieController {
     }
 
     @GetMapping("/account-movies/{accountId}")
-    public List<AccountMovieDTO> findByAccountId(@PathVariable(value = "accountId") int accountId) {
+    public List<AccountMovieDto> findByAccountId(@PathVariable(value = "accountId") int accountId) {
         return accountMovieService.findAllByAccountId(accountId);
     }
 
     @PostMapping("/account-movies")
-    public void create(@RequestBody AccountMovieDTO accountMovieDTO) {
-        accountMovieService.create(accountMovieDTO);
+    public void create(@RequestBody AccountMovieDto accountMovieDto) {
+        accountMovieService.create(accountMovieDto);
     }
 
     // Обновление статуса account_movie по accountId и movieId
@@ -40,7 +39,4 @@ public class AccountMovieController {
     public void deleteAccountMovieByAccountId(@PathVariable int accountId) {
         accountMovieService.deleteByAccId(accountId);
     }
-
-
-
 }
