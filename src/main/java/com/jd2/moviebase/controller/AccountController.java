@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,11 +26,6 @@ public class AccountController {
     @GetMapping("/{id}")
     public AccountDto findById(@PathVariable("id") Integer id) {
         return accountService.findById(id);
-    }
-
-    @GetMapping
-    public AccountDto findByUserId(@RequestParam(name = "userId", required = false) Integer id) {
-        return accountService.findByUserId(id);
     }
 
     @PostMapping

@@ -1,3 +1,9 @@
+-- Create the database
+CREATE DATABASE movies_db;
+
+-- Connect to the newly created database
+\c movies_db;
+
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
