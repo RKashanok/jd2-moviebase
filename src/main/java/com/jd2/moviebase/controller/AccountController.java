@@ -2,6 +2,7 @@ package com.jd2.moviebase.controller;
 
 import com.jd2.moviebase.dto.AccountDto;
 import com.jd2.moviebase.service.AccountService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,11 +28,6 @@ public class AccountController {
     @GetMapping("/{id}")
     public AccountDto findById(@PathVariable("id") Integer id) {
         return accountService.findById(id);
-    }
-
-    @GetMapping
-    public AccountDto findByUserId(@RequestParam(name = "userId", required = false) Integer id) {
-        return accountService.findByUserId(id);
     }
 
     @PostMapping

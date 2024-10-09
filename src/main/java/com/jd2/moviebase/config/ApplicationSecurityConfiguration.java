@@ -22,7 +22,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 @ComponentScan(basePackages = "com.jd2.moviebase")
 @PropertySource("classpath:application.properties")
-public class ApplicationSecurityConfiguration extends AbstractSecurityWebApplicationInitializer implements WebMvcConfigurer  {
+public class ApplicationSecurityConfiguration extends AbstractSecurityWebApplicationInitializer  {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
