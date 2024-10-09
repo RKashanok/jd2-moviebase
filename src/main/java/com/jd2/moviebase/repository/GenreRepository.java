@@ -1,5 +1,8 @@
 package com.jd2.moviebase.repository;
 
+import com.jd2.moviebase.exception.DataCreationException;
+import com.jd2.moviebase.exception.DataDeletionException;
+import com.jd2.moviebase.exception.DataUpdateException;
 import com.jd2.moviebase.model.Genre;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +42,7 @@ public class GenreRepository {
                 genres.add(mapRow(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error while finding all genres", e);
         }
 
         return genres;
@@ -58,7 +61,7 @@ public class GenreRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error while fetching genre by ID", e);
         }
 
         return Optional.empty();
@@ -76,7 +79,7 @@ public class GenreRepository {
                 if (generatedKeys.next()) {
                     genre.setId(generatedKeys.getInt(1));
                 } else {
-                    throw new SQLException("Creating genre failed, no ID obtained.");
+                    throw new DataCreationException("Creating genre failed, no ID obtained.");
                 }
             }
 
@@ -96,7 +99,7 @@ public class GenreRepository {
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new SQLException("Updating genre failed, no rows affected.");
+                throw new DataUpdateException("Updating genre failed, no rows affected.");
             }
 
         } catch (SQLException e) {
@@ -113,7 +116,7 @@ public class GenreRepository {
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new SQLException("Deleting genre failed, no rows affected.");
+                throw new DataDeletionException("Deleting genre failed, no rows affected.");
             }
 
         } catch (SQLException e) {

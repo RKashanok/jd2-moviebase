@@ -1,5 +1,6 @@
 package com.jd2.moviebase.service;
 
+import com.jd2.moviebase.exception.DataNotFoundException;
 import com.jd2.moviebase.model.Genre;
 import com.jd2.moviebase.repository.GenreRepository;
 
@@ -31,7 +32,7 @@ public class GenreService {
     public Genre findById(int id) {
         logger.info("Executing method: findById(id={})", id);
         return genreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Genre not found with id: " + id));
+                .orElseThrow(() -> new DataNotFoundException("Genre not found with id: " + id));
     }
 
     public Genre create(Genre genre) {
