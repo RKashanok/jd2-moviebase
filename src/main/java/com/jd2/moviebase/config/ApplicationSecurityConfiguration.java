@@ -15,13 +15,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 @ComponentScan(basePackages = "com.jd2.moviebase")
 @PropertySource("classpath:application.properties")
-public class ApplicationSecurityConfiguration implements WebMvcConfigurer {
+public class ApplicationSecurityConfiguration extends AbstractSecurityWebApplicationInitializer implements WebMvcConfigurer  {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
