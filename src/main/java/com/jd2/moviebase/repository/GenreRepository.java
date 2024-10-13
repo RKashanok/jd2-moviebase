@@ -1,19 +1,17 @@
 package com.jd2.moviebase.repository;
 
-import com.jd2.moviebase.exception.DataCreationException;
-import com.jd2.moviebase.exception.DataDeletionException;
-import com.jd2.moviebase.exception.DataUpdateException;
 import com.jd2.moviebase.model.Genre;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class GenreRepository {
@@ -33,104 +31,86 @@ public class GenreRepository {
 
     public List<Genre> findAll() {
         List<Genre> genres = new ArrayList<>();
-
         try (Connection conn = dataSource.getConnection();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(FIND_SQL)) {
-
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(FIND_SQL)) {
             while (rs.next()) {
                 genres.add(mapRow(rs));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error while finding all genres", e);
         }
-
         return genres;
     }
 
     public Optional<Genre> findById(int id) {
-
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
-
+            PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
             ps.setInt(1, id);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(mapRow(rs));
-                }
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return Optional.of(mapRow(rs));
+            } else {
+                return Optional.empty();
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error while fetching genre by ID", e);
         }
-
-        return Optional.empty();
     }
 
     public Genre create(Genre genre) {
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-
-            ps.setInt(1, genre.getTmdbId());
+            PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setLong(1, genre.getTmdbId());
             ps.setString(2, genre.getName());
             ps.executeUpdate();
-
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    genre.setId(generatedKeys.getInt(1));
+                    genre.setId(generatedKeys.getLong(1));
                 } else {
-                    throw new DataCreationException("Creating genre failed, no ID obtained.");
+                    throw new SQLException("Creating genre failed, no ID obtained.");
                 }
             }
-
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error while creating genre", e);
         }
         return genre;
     }
 
     public Genre update(Genre genre) {
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
-
-            ps.setInt(1, genre.getTmdbId());
+            PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
+            ps.setLong(1, genre.getTmdbId());
             ps.setString(2, genre.getName());
-            ps.setInt(3, genre.getId());
-
-            int rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new DataUpdateException("Updating genre failed, no rows affected.");
+            ps.setLong(3, genre.getId());
+            if (ps.executeUpdate() > 0) {
+                return genre;
+            } else {
+                throw new RuntimeException("Updating genre failed, no rows affected. Genre ID: " + genre.getId());
             }
-
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error updating genre", e);
         }
-        return genre;
     }
 
-    public void deleteById(int id) {
+    public void deleteById(Long id) {
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
-
-            ps.setInt(1, id);
-
+            PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
+            ps.setLong(1, id);
             int rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new DataDeletionException("Deleting genre failed, no rows affected.");
+            if (rowsAffected != 1) {
+                throw new SQLException("Deleting genre failed. Genre ID: " + id);
             }
-
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error deleting genre", e);
         }
     }
 
     private Genre mapRow(ResultSet rs) throws SQLException {
-        Genre genre = new Genre();
-        genre.setId(rs.getInt("id"));
-        genre.setTmdbId(rs.getInt("tmdb_id"));
-        genre.setName(rs.getString("name"));
-
-        return genre;
+        return Genre.builder()
+            .id(rs.getLong("id"))
+            .tmdbId(rs.getLong("tmdb_id"))
+            .name(rs.getString("name"))
+            .build();
     }
-
 }

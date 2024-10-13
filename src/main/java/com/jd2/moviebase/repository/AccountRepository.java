@@ -1,23 +1,28 @@
 package com.jd2.moviebase.repository;
 
 import com.jd2.moviebase.model.Account;
-import org.springframework.stereotype.Repository;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
+import javax.sql.DataSource;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class AccountRepository {
+
     private final DataSource ds;
-    private final String CREATE_SQL = "INSERT INTO accounts (user_id, first_name, last_name, preferred_name, date_of_birth, " +
-            "phone, gender, photo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private final String CREATE_SQL =
+        "INSERT INTO accounts (user_id, first_name, last_name, preferred_name, date_of_birth, " +
+            "phone, gender, photo_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private final String FIND_BY_ID_SQL = "SELECT * FROM accounts WHERE id = ?";
     private final String FIND_BY_USER_ID_SQL = "SELECT * FROM accounts WHERE user_id = ?";
-    private final String UPDATE_SQL = "UPDATE accounts SET user_id = ?, first_name = ?, last_name = ?, preferred_name = ?, " +
+    private final String UPDATE_SQL =
+        "UPDATE accounts SET user_id = ?, first_name = ?, last_name = ?, preferred_name = ?, " +
             "date_of_birth = ?, phone = ?, gender = ?, photo_url = ?, updated_at = ? WHERE id = ?";
     private final String DELETE_BY_ID_FROM_ACCOUNTS_SQL = "DELETE FROM accounts WHERE id = ?";
 
@@ -26,9 +31,9 @@ public class AccountRepository {
     }
 
     public Account create(Account account) {
+        int insertedId = 0;
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            int insertedId;
+            PreparedStatement ps = conn.prepareStatement(CREATE_SQL, PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, account.getUserId());
             ps.setString(2, account.getFirstName());
             ps.setString(3, account.getLastName());
@@ -37,14 +42,18 @@ public class AccountRepository {
             ps.setString(6, account.getPhone());
             ps.setString(7, account.getGender());
             ps.setString(8, account.getPhotoUrl());
+            ps.setTimestamp(9, Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
+            ps.setTimestamp(10, Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))));
             ps.executeUpdate();
             ResultSet generatedKeys = ps.getGeneratedKeys();
             if (generatedKeys.next()) {
                 insertedId = generatedKeys.getInt(1);
                 account.setId(insertedId);
+            } else {
+                throw new SQLException("Creating account failed, no ID obtained.");
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error creating account", e);
         }
         return account;
     }
@@ -52,60 +61,38 @@ public class AccountRepository {
     public Account findById(int id) {
         Account account = null;
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
+            PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
             ps.setInt(1, id);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
-                account = new Account();
-                account.setId(resultSet.getInt("id"));
-                account.setUserId(resultSet.getInt("user_id"));
-                account.setFirstName(resultSet.getString("first_name"));
-                account.setLastName(resultSet.getString("last_name"));
-                account.setPreferredName(resultSet.getString("preferred_name"));
-                account.setDateOfBirth(resultSet.getDate("date_of_birth"));
-                account.setPhone(resultSet.getString("phone"));
-                account.setGender(resultSet.getString("gender"));
-                account.setPhotoUrl(resultSet.getString("photo_url"));
-                account.setCreatedAt(resultSet.getDate("created_at"));
-                account.setUpdatedAt(resultSet.getDate("updated_at"));
+                account = getAccountObject(resultSet);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return Optional.ofNullable(account)
-                .orElseThrow(() -> new RuntimeException("Account with ID " + id + " not found"));
+            .orElseThrow(() -> new RuntimeException("Account with ID " + id + " not found"));
     }
 
     public Account findByUserId(int userId) {
-        Account account = null;
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(FIND_BY_USER_ID_SQL)) {
+            PreparedStatement ps = conn.prepareStatement(FIND_BY_USER_ID_SQL)) {
             ps.setInt(1, userId);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
-                account = new Account();
-                account.setId(resultSet.getInt("id"));
-                account.setUserId(resultSet.getInt("user_id"));
-                account.setFirstName(resultSet.getString("first_name"));
-                account.setLastName(resultSet.getString("last_name"));
-                account.setPreferredName(resultSet.getString("preferred_name"));
-                account.setDateOfBirth(resultSet.getDate("date_of_birth"));
-                account.setPhone(resultSet.getString("phone"));
-                account.setGender(resultSet.getString("gender"));
-                account.setPhotoUrl(resultSet.getString("photo_url"));
-                account.setCreatedAt(resultSet.getDate("created_at"));
-                account.setUpdatedAt(resultSet.getDate("updated_at"));
+                return getAccountObject(resultSet);
+            } else {
+                throw new RuntimeException("Account with user ID " + userId + " not found");
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error getting account", e);
         }
-        return Optional.ofNullable(account)
-                .orElseThrow(() -> new RuntimeException("Account with user ID " + userId + " not found"));
     }
 
     public Account update(Account account) {
+        account.setUpdatedAt(LocalDateTime.now(ZoneId.of("UTC")));
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
+            PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
             ps.setInt(1, account.getUserId());
             ps.setString(2, account.getFirstName());
             ps.setString(3, account.getLastName());
@@ -114,22 +101,43 @@ public class AccountRepository {
             ps.setString(6, account.getPhone());
             ps.setString(7, account.getGender());
             ps.setString(8, account.getPhotoUrl());
-            ps.setTimestamp(9, new java.sql.Timestamp(account.getUpdatedAt().getTime()));
+            ps.setTimestamp(9, Timestamp.valueOf(account.getUpdatedAt()));
             ps.setInt(10, account.getId());
-            ps.executeUpdate();
+            if (ps.executeUpdate() > 0) {
+                return account;
+            } else {
+                throw new RuntimeException("Updating account failed, no rows affected. Account ID: " + account.getId());
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error updating account ", e);
         }
-        return account;
     }
 
     public void deleteById(int id) {
         try (Connection conn = ds.getConnection();
-             PreparedStatement psAccounts = conn.prepareStatement(DELETE_BY_ID_FROM_ACCOUNTS_SQL)) {
+            PreparedStatement psAccounts = conn.prepareStatement(DELETE_BY_ID_FROM_ACCOUNTS_SQL)) {
             psAccounts.setInt(1, id);
             psAccounts.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Account getAccountObject(ResultSet resultSet) throws SQLException {
+        return Account.builder()
+            .id(resultSet.getInt("id"))
+            .userId(resultSet.getInt("user_id"))
+            .firstName(resultSet.getString("first_name"))
+            .lastName(resultSet.getString("last_name"))
+            .preferredName(resultSet.getString("preferred_name"))
+            .dateOfBirth(resultSet.getDate("date_of_birth"))
+            .phone(resultSet.getString("phone"))
+            .gender(resultSet.getString("gender"))
+            .photoUrl(resultSet.getString("photo_url"))
+            .createdAt(LocalDateTime.from(resultSet.getTimestamp("created_at").toLocalDateTime()
+                .atZone(ZoneId.of("UTC"))))
+            .updatedAt(
+                LocalDateTime.from(resultSet.getTimestamp("updated_at").toLocalDateTime().atZone(ZoneId.of("UTC"))))
+            .build();
     }
 }

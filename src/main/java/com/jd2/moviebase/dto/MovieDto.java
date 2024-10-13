@@ -1,14 +1,13 @@
-package com.jd2.moviebase.model;
+package com.jd2.moviebase.dto;
 
-import java.sql.Date;
-import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 
+import java.sql.Date;
+import java.util.List;
 @Data
 @Builder
-public class Movie {
-
+public class MovieDto {
     private int id;
     private int tmdbId;
     private String name;

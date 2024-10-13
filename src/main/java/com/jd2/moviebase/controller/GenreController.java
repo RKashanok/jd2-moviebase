@@ -1,6 +1,6 @@
 package com.jd2.moviebase.controller;
 
-import com.jd2.moviebase.model.Genre;
+import com.jd2.moviebase.dto.GenreDto;
 import com.jd2.moviebase.service.GenreService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,30 +20,28 @@ public class GenreController {
     }
 
     @GetMapping
-    public List<Genre> findAll() {
+    public List<GenreDto> findAll() {
         return genreService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Genre findById(@PathVariable("id") int id) {
+    public GenreDto findById(@PathVariable("id") int id) {
         return genreService.findById(id);
     }
 
     @PostMapping
-    public Genre create(@RequestBody Genre genre) {
-        return genreService.create(genre);
+    public GenreDto create(@RequestBody GenreDto genreDTO) {
+        return genreService.create(genreDTO);
     }
 
-    @PutMapping
-    public Genre update(@RequestBody Genre genre) {
-        return genreService.update(genre);
-
+    @PutMapping("/{id}")
+    public GenreDto update(@PathVariable("id") long id, @RequestBody GenreDto genreDto) {
+        return genreService.update(id, genreDto);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") int id) {
+    public void deleteById(@PathVariable("id") long id) {
         genreService.deleteById(id);
-
     }
 }
 
