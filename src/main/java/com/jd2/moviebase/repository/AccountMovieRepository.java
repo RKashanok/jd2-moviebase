@@ -1,9 +1,10 @@
 package com.jd2.moviebase.repository;
 
-import static com.jd2.moviebase.util.ConstantsHelper.MovieStatus;
-
+import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.AccountMovie;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,9 +13,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import javax.sql.DataSource;
 
-import org.springframework.stereotype.Repository;
+import static com.jd2.moviebase.util.ConstantsHelper.MovieStatus;
 
 @Repository
 public class AccountMovieRepository {
@@ -24,6 +24,7 @@ public class AccountMovieRepository {
     private final String DELETE_ACC_MOVIE_BY_ACC_ID_SQL = "DELETE FROM account_movie WHERE account_id = ?";
     private final String FIND_ALL_ACC_MOVIE_BY_ACC_ID_SQL = "SELECT * FROM account_movie WHERE account_id = ?";
     private final String UPDATE_ACC_MOVIE_STATUS_BY_ACC_ID_SQL = "UPDATE account_movie SET status = ? WHERE account_id = ? AND movie_id = ?";
+
     public AccountMovieRepository(DataSource ds) {
         this.ds = ds;
     }
@@ -36,7 +37,7 @@ public class AccountMovieRepository {
             ps.setString(3, accountMovie.getStatus());
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MovieDbRepositoryOperationException("Error creating account movies", e, "test details");
         }
     }
 
@@ -50,7 +51,7 @@ public class AccountMovieRepository {
                 accountMovies.add(mapRow(resultSet));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error getting account movies", e);
+            throw new MovieDbRepositoryOperationException("Error getting account movies", e);
         }
 
         return accountMovies;
@@ -64,7 +65,7 @@ public class AccountMovieRepository {
             ps.setInt(3, movie_id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MovieDbRepositoryOperationException("Error updating account movies ", e);
         }
     }
 
@@ -74,7 +75,7 @@ public class AccountMovieRepository {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MovieDbRepositoryOperationException("Error deleting account movies ", e);
         }
     }
 
