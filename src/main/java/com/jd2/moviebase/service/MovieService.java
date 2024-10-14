@@ -1,6 +1,7 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.MovieDto;
+import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.Movie;
 import com.jd2.moviebase.repository.MovieRepository;
 import com.jd2.moviebase.util.ModelMapper;
@@ -35,7 +36,7 @@ public class MovieService {
     public MovieDto findById(int id) {
         logger.info("Executing method: findById(id={})", id);
         Movie movie = movieRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Movie not found with id: " + id));
+                .orElseThrow(() -> new MovieDbRepositoryOperationException("Movie not found with id: " + id));
         return ModelMapper.toMovieDto(movie);
     }
 

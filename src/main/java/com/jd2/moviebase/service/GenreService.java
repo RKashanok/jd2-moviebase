@@ -1,6 +1,7 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.GenreDto;
+import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.util.ModelMapper;
 import com.jd2.moviebase.model.Genre;
 import com.jd2.moviebase.repository.GenreRepository;
@@ -37,7 +38,7 @@ public class GenreService {
     public GenreDto findById(int id) {
         logger.info("Executing method: findById(id={})", id);
         Genre genre = genreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Genre not found with id: " + id));
+                .orElseThrow(() -> new MovieDbRepositoryOperationException("Genre not found with id: " + id));
         return ModelMapper.toGenreDto(genre);
 
     }

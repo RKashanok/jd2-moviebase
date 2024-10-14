@@ -1,5 +1,6 @@
 package com.jd2.moviebase.repository;
 
+import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.Genre;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,7 +39,7 @@ public class GenreRepository {
                 genres.add(mapRow(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error while finding all genres", e);
+            throw new MovieDbRepositoryOperationException("Error while finding all genres", e);
         }
         return genres;
     }
@@ -54,7 +55,7 @@ public class GenreRepository {
                 return Optional.empty();
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error while fetching genre by ID", e);
+            throw new MovieDbRepositoryOperationException("Error while fetching genre by ID " + id, e);
         }
     }
 
@@ -72,7 +73,7 @@ public class GenreRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error while creating genre", e);
+            throw new MovieDbRepositoryOperationException("Error while creating genre", e);
         }
         return genre;
     }
@@ -86,10 +87,10 @@ public class GenreRepository {
             if (ps.executeUpdate() > 0) {
                 return genre;
             } else {
-                throw new RuntimeException("Updating genre failed, no rows affected. Genre ID: " + genre.getId());
+                throw new SQLException("Updating genre failed, no rows affected. Genre ID: " + genre.getId());
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error updating genre", e);
+            throw new MovieDbRepositoryOperationException("Error updating genre", e);
         }
     }
 
@@ -102,7 +103,7 @@ public class GenreRepository {
                 throw new SQLException("Deleting genre failed. Genre ID: " + id);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error deleting genre", e);
+            throw new MovieDbRepositoryOperationException("Error deleting genre", e);
         }
     }
 

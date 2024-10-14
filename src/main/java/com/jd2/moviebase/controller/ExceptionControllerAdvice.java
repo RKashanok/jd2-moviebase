@@ -13,8 +13,8 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public class ExceptionControllerAdvice {
 
     @ExceptionHandler(MovieDbRepositoryOperationException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFoundException(MovieDbRepositoryOperationException ex) {
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleMovieDbRepositoryOperationException(MovieDbRepositoryOperationException ex) {
         return ErrorResponse.builder()
                 .status(INTERNAL_SERVER_ERROR)
                 .message(ex.getMessage())
@@ -24,7 +24,7 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleRuntimeException(RuntimeException ex) {
+    public ErrorResponse handleException(Exception ex) {
         return ErrorResponse.builder()
                 .status(INTERNAL_SERVER_ERROR)
                 .message(ex.getMessage())

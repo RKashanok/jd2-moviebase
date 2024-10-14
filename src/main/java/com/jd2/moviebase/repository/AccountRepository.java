@@ -1,5 +1,6 @@
 package com.jd2.moviebase.repository;
 
+import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.Account;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -53,7 +54,7 @@ public class AccountRepository {
                 throw new SQLException("Creating account failed, no ID obtained.");
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error creating account", e);
+            throw new MovieDbRepositoryOperationException("Error creating account", e);
         }
         return account;
     }
@@ -68,10 +69,10 @@ public class AccountRepository {
                 account = getAccountObject(resultSet);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MovieDbRepositoryOperationException("Error while fetching account by ID", e);
         }
         return Optional.ofNullable(account)
-            .orElseThrow(() -> new RuntimeException("Account with ID " + id + " not found"));
+            .orElseThrow(() -> new MovieDbRepositoryOperationException("Account with ID " + id + " not found"));
     }
 
     public Account findByUserId(int userId) {
@@ -82,10 +83,10 @@ public class AccountRepository {
             if (resultSet.next()) {
                 return getAccountObject(resultSet);
             } else {
-                throw new RuntimeException("Account with user ID " + userId + " not found");
+                throw new SQLException("Account with user ID " + userId + " not found");
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error getting account", e);
+            throw new MovieDbRepositoryOperationException("Error getting account", e);
         }
     }
 
@@ -106,10 +107,10 @@ public class AccountRepository {
             if (ps.executeUpdate() > 0) {
                 return account;
             } else {
-                throw new RuntimeException("Updating account failed, no rows affected. Account ID: " + account.getId());
+                throw new SQLException("Updating account failed, no rows affected. Account ID: " + account.getId());
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error updating account ", e);
+            throw new MovieDbRepositoryOperationException("Error updating account ", e);
         }
     }
 
@@ -119,7 +120,7 @@ public class AccountRepository {
             psAccounts.setInt(1, id);
             psAccounts.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MovieDbRepositoryOperationException("Error deleting account", e);
         }
     }
 
