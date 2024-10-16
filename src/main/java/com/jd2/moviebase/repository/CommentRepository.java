@@ -1,6 +1,7 @@
 package com.jd2.moviebase.repository;
 
 import com.jd2.moviebase.dto.CommentDto;
+import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.Comment;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -42,7 +43,7 @@ public class CommentRepository {
                 comments.add(mapRow(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MovieDbRepositoryOperationException("Error while finding all comments", e);
         }
 
         return comments;
@@ -61,11 +62,11 @@ public class CommentRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MovieDbRepositoryOperationException("Error while fetching comment by ID " + id, e);
         }
 
         return Optional.ofNullable(comment)
-            .orElseThrow(() -> new RuntimeException("Comment with ID " + id + " not found"));
+            .orElseThrow(() -> new MovieDbRepositoryOperationException("Comment with ID " + id + " not found"));
     }
 
     public Comment create(CommentDto commentDto) {
@@ -93,7 +94,7 @@ public class CommentRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MovieDbRepositoryOperationException("Error while creating comment", e);
         }
         return Comment.builder()
             .id(commentDto.getId())
@@ -126,7 +127,7 @@ public class CommentRepository {
                 updatedAt = generatedKeys.getDate(11);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MovieDbRepositoryOperationException("Error updating comment", e);
         }
         return Comment.builder()
             .id(id)
@@ -147,7 +148,7 @@ public class CommentRepository {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MovieDbRepositoryOperationException("Error deactivating comment", e);
         }
     }
 

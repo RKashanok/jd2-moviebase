@@ -1,5 +1,6 @@
 package com.jd2.moviebase.repository;
 
+import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -48,7 +49,7 @@ public class UserRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error while creating user", e);
+            throw new MovieDbRepositoryOperationException("Error while creating user", e);
         }
         return user;
     }
@@ -64,7 +65,7 @@ public class UserRepository {
                 return Optional.empty();
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error while fetching movie by ID", e);
+            throw new MovieDbRepositoryOperationException("Error while fetching user by ID " + id, e);
         }
     }
 
@@ -77,7 +78,7 @@ public class UserRepository {
                 users.add(createUser(resultSet));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error while finding all users", e);
+            throw new MovieDbRepositoryOperationException("Error while finding all users", e);
         }
         return users;
     }
@@ -94,10 +95,10 @@ public class UserRepository {
             if (ps.executeUpdate() > 0) {
                 return user;
             } else {
-                throw new RuntimeException("Updating user failed, no rows affected. User ID: " + user.getId());
+                throw new SQLException("Updating user failed, no rows affected. User ID: " + user.getId());
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error updating account ", e);
+            throw new MovieDbRepositoryOperationException("Error updating account ", e);
         }
     }
 
@@ -107,7 +108,7 @@ public class UserRepository {
             psUsers.setInt(1, id);
             psUsers.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MovieDbRepositoryOperationException("Error deleting user", e);
         }
     }
 

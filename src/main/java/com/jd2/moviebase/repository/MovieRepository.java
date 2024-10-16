@@ -1,5 +1,6 @@
 package com.jd2.moviebase.repository;
 
+import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.Movie;
 import java.sql.Array;
 import java.sql.Connection;
@@ -41,7 +42,7 @@ public class MovieRepository {
                 movies.add(mapRow(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error while finding all movies", e);
+            throw new MovieDbRepositoryOperationException("Error while finding all movies", e);
         }
         return movies;
     }
@@ -57,7 +58,7 @@ public class MovieRepository {
                 return Optional.empty();
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error while fetching movie by ID", e);
+            throw new MovieDbRepositoryOperationException("Error while fetching movie by ID", e);
         }
     }
 
@@ -80,7 +81,7 @@ public class MovieRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error while creating movie", e);
+            throw new MovieDbRepositoryOperationException("Error while creating movie", e);
         }
         return movie;
     }
@@ -102,7 +103,7 @@ public class MovieRepository {
                 throw new SQLException("Updating movie failed, no rows affected. Movie ID: " + movie.getId());
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MovieDbRepositoryOperationException("Error updating movie", e);
         }
     }
 
@@ -115,7 +116,7 @@ public class MovieRepository {
                 throw new SQLException("Deleting movie failed. Genre ID: " + id);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error deleting genre", e);
+            throw new MovieDbRepositoryOperationException("Error deleting movie", e);
         }
 
     }
