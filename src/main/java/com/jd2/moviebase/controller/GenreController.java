@@ -30,7 +30,7 @@ public class GenreController {
     }
 
     @GetMapping("/{id}")
-    public GenreDto findById(@PathVariable("id") int id) {
+    public GenreDto findById(@PathVariable("id") Long id) {
         return genreService.findById(id);
     }
 
@@ -40,12 +40,12 @@ public class GenreController {
     }
 
     @PutMapping("/{id}")
-    public GenreDto update(@PathVariable("id") long id, @RequestBody GenreDto genreDto) {
+    public GenreDto update(@PathVariable("id") Long id, @RequestBody GenreDto genreDto) {
         return genreService.update(id, genreDto);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") long id) {
+    public void deleteById(@PathVariable("id") Long id) {
         genreService.deleteById(id);
     }
 }
