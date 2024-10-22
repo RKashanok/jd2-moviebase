@@ -35,7 +35,7 @@ public class GenreService {
                 .collect(Collectors.toList());
     }
 
-    public GenreDto findById(int id) {
+    public GenreDto findById(Long id) {
         logger.info("Executing method: findById(id={})", id);
         Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new MovieDbRepositoryOperationException("Genre not found with id: " + id));
