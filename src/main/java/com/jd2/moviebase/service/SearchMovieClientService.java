@@ -1,8 +1,8 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.clients.SearchMovieClient;
-import com.jd2.moviebase.model.api.SearchMovieParams;
-import okhttp3.Response;
+import com.jd2.moviebase.dto.MovieDto;
+import com.jd2.moviebase.model.api.SearchMovieRequestParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +15,9 @@ public class SearchMovieClientService {
         this.searchMovieClient = searchMovieClient;
     }
 
-    public String searchMovie(SearchMovieParams searchMovieParams) {
-        Response response = searchMovieClient.searchMovie(searchMovieParams);
-
+    public MovieDto searchMovie(SearchMovieRequestParams searchMovieParams) {
         try {
-            if (response.isSuccessful() && response.body() != null) {
-                return response.body().string();
-            } else {
-                throw new RuntimeException("Failed to search movie: " + response.message());
-            }
+            return searchMovieClient.searchMovie(searchMovieParams);
         } catch (Exception e) {
             throw new RuntimeException("Error processing movie search", e);
         }

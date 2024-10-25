@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class SearchMovieParams {
+public class SearchMovieRequestParams {
     private String query;
     private boolean includeAdult;
     private String language;
