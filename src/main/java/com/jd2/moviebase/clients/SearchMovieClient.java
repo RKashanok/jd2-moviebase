@@ -8,12 +8,14 @@ import lombok.RequiredArgsConstructor;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -24,7 +26,7 @@ public class SearchMovieClient {
     private final String searchMovieEndpoint = "/search/movie";
     private final String token = System.getenv("TMDB_TOKEN");
 
-    public MovieDto searchMovie(SearchMovieRequestParams searchMovieParams) {
+    public List<MovieDto> searchMovie(SearchMovieRequestParams searchMovieParams) {
         HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(baseUrl + searchMovieEndpoint)).newBuilder();
         urlBuilder.addQueryParameter("query", searchMovieParams.getQuery());
         urlBuilder.addQueryParameter("include_adult", String.valueOf(searchMovieParams.isIncludeAdult()));
@@ -35,12 +37,19 @@ public class SearchMovieClient {
                 .url(urlBuilder.build().toString())
                 .header("Authorization", String.format("Bearer %s", token))
                 .build();
-
         try {
             String response = okHttpClient.newCall(request).execute().body().string();
             SearchMovieResponse searchMovieResponse = objectMapper.readValue(response, SearchMovieResponse.class);
-            SearchMovieResponse.Movie movie = searchMovieResponse.getResults().get(0);
-            return MovieDto.builder()
+            return mapMovies(searchMovieResponse.getResults());
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing movie search", e);
+        }
+    }
+
+    private List<MovieDto> mapMovies(List<SearchMovieResponse.Movie> results) {
+        List<MovieDto> movieDtos = new ArrayList<>();
+        for (SearchMovieResponse.Movie movie : results) {
+            movieDtos.add(MovieDto.builder()
                     .tmdbId(movie.getId())
                     .name(movie.getTitle())
                     .genreId(new ArrayList<>(List.of(1)))
@@ -48,9 +57,8 @@ public class SearchMovieClient {
                     .rating((int) movie.getVote_average())
                     .overview(movie.getOverview())
                     .originalLanguage(movie.getOriginal_language())
-                    .build();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+                    .build());
         }
+        return movieDtos;
     }
 }

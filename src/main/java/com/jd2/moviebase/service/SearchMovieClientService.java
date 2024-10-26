@@ -6,6 +6,8 @@ import com.jd2.moviebase.model.api.SearchMovieRequestParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SearchMovieClientService {
     private final SearchMovieClient searchMovieClient;
@@ -15,7 +17,7 @@ public class SearchMovieClientService {
         this.searchMovieClient = searchMovieClient;
     }
 
-    public MovieDto searchMovie(SearchMovieRequestParams searchMovieParams) {
+    public List<MovieDto> searchMovie(SearchMovieRequestParams searchMovieParams) {
         try {
             return searchMovieClient.searchMovie(searchMovieParams);
         } catch (Exception e) {
