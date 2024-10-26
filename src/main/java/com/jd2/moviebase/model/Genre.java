@@ -10,13 +10,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @NoArgsConstructor
-@Table(name="Genres")
+@Table(name="genres")
 @AllArgsConstructor
 public class Genre {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
     @Column(name = "tmdb_id")
     private Long tmdbId;
+
     private String name;
 }
