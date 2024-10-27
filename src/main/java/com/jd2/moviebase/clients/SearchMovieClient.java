@@ -48,16 +48,20 @@ public class SearchMovieClient {
 
     private List<MovieDto> mapMovies(List<SearchMovieResponse.Movie> results) {
         List<MovieDto> movieDtos = new ArrayList<>();
-        for (SearchMovieResponse.Movie movie : results) {
-            movieDtos.add(MovieDto.builder()
-                    .tmdbId(movie.getId())
-                    .name(movie.getTitle())
-                    .genreId(new ArrayList<>(List.of(1)))
-                    .releaseDate(Date.valueOf(movie.getRelease_date()))
-                    .rating((int) movie.getVote_average())
-                    .overview(movie.getOverview())
-                    .originalLanguage(movie.getOriginal_language())
-                    .build());
+        try {
+            for (SearchMovieResponse.Movie movie : results) {
+                movieDtos.add(MovieDto.builder()
+                        .tmdbId(movie.getId())
+                        .name(!Objects.equals(movie.getTitle(), "") ? movie.getTitle() : "Unknown Title")
+                        .genreId(new ArrayList<>(List.of(1)))
+                        .releaseDate(!Objects.equals(movie.getRelease_date(), "") ? Date.valueOf(movie.getRelease_date()) : null)
+                        .rating((int) (movie.getVote_average() != 0 ? movie.getVote_average() : 0))
+                        .overview(!Objects.equals(movie.getOverview(), "") ? movie.getOverview() : "No overview available")
+                        .originalLanguage(!Objects.equals(movie.getOriginal_language(), "") ? movie.getOriginal_language() : "Unknown Language")
+                        .build());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error mapping movies", e);
         }
         return movieDtos;
     }
