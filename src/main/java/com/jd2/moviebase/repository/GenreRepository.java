@@ -2,11 +2,11 @@ package com.jd2.moviebase.repository;
 
 import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.Genre;
+import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,12 +25,12 @@ public class GenreRepository {
         return sessionFactory.getCurrentSession();
     }
 
-    @Transactional(readOnly = true)
+
     public List<Genre> findAll() {
         return getCurrentSession().createQuery("FROM Genre", Genre.class).getResultList();
     }
 
-    @Transactional(readOnly = true)
+
     public Optional<Genre> findById(Long id) {
         Genre genre = getCurrentSession().get(Genre.class, id);
         return Optional.ofNullable(genre);
