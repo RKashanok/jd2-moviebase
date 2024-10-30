@@ -33,7 +33,7 @@ public class UserService {
         return userRepository.create(user);
     }
 
-    public User findById(int id) {
+    public User findById(Long id) {
         logger.info("Finding user by id: {}", id);
         return userRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
@@ -49,11 +49,11 @@ public class UserService {
         return userRepository.update(user);
     }
 
-    public void deleteById(int id) {
+    public void deleteById(Long id) {
         logger.info("Deleting user by id: {}", id);
 
         // get account id
-        int accId = accountService.findByUserId(id).getId();
+        Long accId = accountService.findByUserId(id).getId();
 
         // deactivate comments and set null account id
         commentService.deactivateByAccId(accId);

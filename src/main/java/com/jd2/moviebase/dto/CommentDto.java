@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 @Builder
 public class CommentDto {
-    private int id;
-    private int accountId;
-    private int movieId;
+    private Long id;
+    private Long accountId;
+    private Long movieId;
     private String note;
     private Boolean isActive;
 }

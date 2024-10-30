@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class AccountMovieDto {
-    private int accountId;
-    private int movieId;
+    private Long accountId;
+    private Long movieId;
     private String status;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;

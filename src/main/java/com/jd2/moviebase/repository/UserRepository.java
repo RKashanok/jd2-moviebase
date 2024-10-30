@@ -43,7 +43,7 @@ public class UserRepository {
             ps.executeUpdate();
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    user.setId(generatedKeys.getInt(1));
+                    user.setId(generatedKeys.getLong(1));
                 } else {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
@@ -54,10 +54,10 @@ public class UserRepository {
         return user;
     }
 
-    public Optional<User> findById(int id) {
+    public Optional<User> findById(Long id) {
         try (Connection conn = ds.getConnection();
             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
-            ps.setInt(1, id);
+            ps.setLong(1, id);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
                 return Optional.of(createUser(resultSet));
@@ -91,7 +91,7 @@ public class UserRepository {
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getRole());
             ps.setTimestamp(4, Timestamp.valueOf(user.getUpdatedAt()));
-            ps.setInt(5, user.getId());
+            ps.setLong(5, user.getId());
             if (ps.executeUpdate() > 0) {
                 return user;
             } else {
@@ -102,10 +102,10 @@ public class UserRepository {
         }
     }
 
-    public void deleteById(int id) {
+    public void deleteById(Long id) {
         try (Connection conn = ds.getConnection();
             PreparedStatement psUsers = conn.prepareStatement(DELETE_BY_ID_FROM_USERS_SQL)) {
-            psUsers.setInt(1, id);
+            psUsers.setLong(1, id);
             psUsers.executeUpdate();
         } catch (SQLException e) {
             throw new MovieDbRepositoryOperationException("Error deleting user", e);
@@ -114,7 +114,7 @@ public class UserRepository {
 
     private User createUser(ResultSet resultSet) throws SQLException {
         return User.builder()
-            .id(resultSet.getInt("id"))
+            .id(resultSet.getLong("id"))
             .email(resultSet.getString("email"))
             .password(resultSet.getString("password"))
             .role(resultSet.getString("role"))

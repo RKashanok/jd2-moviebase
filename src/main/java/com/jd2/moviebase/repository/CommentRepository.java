@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,12 +51,12 @@ public class CommentRepository {
         return comments;
     }
 
-    public Comment findById(int id) {
+    public Comment findById(Long id) {
         Comment comment = null;
         try (Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
 
-            ps.setInt(1, id);
+            ps.setLong(1, id);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -70,26 +72,26 @@ public class CommentRepository {
     }
 
     public Comment create(Comment comment) {
-        int insertedId = 0;
+        long insertedId = 0L;
         Date createdAt = null;
         Date updatedAt = null;
         try (Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setInt(1, comment.getAccountId());
-            ps.setInt(2, comment.getMovieId());
+            ps.setLong(1, comment.getAccountId());
+            ps.setLong(2, comment.getMovieId());
             ps.setString(3, comment.getNote());
             ps.setBoolean(4, comment.getIsActive());
             ps.executeUpdate();
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    insertedId = generatedKeys.getInt(1);
+                    insertedId = generatedKeys.getLong(1);
                     createdAt = generatedKeys.getDate(5);
                     updatedAt = generatedKeys.getDate(6);
                     comment.setId(insertedId);
-                    comment.setCreatedAt(createdAt);
-                    comment.setUpdatedAt(updatedAt);
+                    comment.setCreatedAt(createdAt.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime());
+                    comment.setUpdatedAt(updatedAt.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime());
                 } else {
                     throw new SQLException("Creating comment failed, no ID obtained.");
                 }
@@ -109,7 +111,7 @@ public class CommentRepository {
             ps.setString(1, comment.getNote());
             ps.setDate(2, new java.sql.Date(System.currentTimeMillis()));
             ps.setBoolean(3, comment.getIsActive());
-            ps.setInt(4, comment.getId());
+            ps.setLong(4, comment.getId());
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
@@ -119,8 +121,8 @@ public class CommentRepository {
             if (generatedKeys.next()) {
                 createdAt = generatedKeys.getDate(10);
                 updatedAt = generatedKeys.getDate(11);
-                comment.setCreatedAt(createdAt);
-                comment.setUpdatedAt(updatedAt);
+                comment.setCreatedAt(createdAt.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime());
+                comment.setUpdatedAt(updatedAt.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime());
             }
         } catch (SQLException e) {
             throw new MovieDbRepositoryOperationException("Error updating comment", e);
@@ -128,11 +130,11 @@ public class CommentRepository {
         return comment;
     }
 
-    public void deactivateByAccId(int id) {
+    public void deactivateByAccId(Long id) {
         try (Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement(DEACTIVATE_COMMENT_BY_ACC_ID_SQL)) {
 
-            ps.setInt(1, id);
+            ps.setLong(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new MovieDbRepositoryOperationException("Error deactivating comment", e);
@@ -141,12 +143,12 @@ public class CommentRepository {
 
     private Comment mapRow(ResultSet rs) throws SQLException {
         return Comment.builder()
-            .id(rs.getInt("id"))
-            .accountId(rs.getInt("account_id"))
-            .movieId(rs.getInt("movie_id"))
+            .id(rs.getLong("id"))
+            .accountId(rs.getLong("account_id"))
+            .movieId(rs.getLong("movie_id"))
             .note(rs.getString("note"))
-            .createdAt(rs.getDate("created_at"))
-            .updatedAt(rs.getDate("updated_at"))
+            .createdAt(rs.getTimestamp("created_at").toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime())
+            .updatedAt(rs.getTimestamp("updated_at").toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime())
             .isActive(rs.getBoolean("is_active"))
             .build();
     }

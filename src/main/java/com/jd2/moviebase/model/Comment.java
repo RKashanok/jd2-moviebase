@@ -1,5 +1,6 @@
 package com.jd2.moviebase.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.Builder;
 import lombok.Data;
@@ -8,11 +9,11 @@ import lombok.Data;
 @Builder
 public class Comment {
 
-    private int id;
-    private int accountId;
-    private int movieId;
+    private Long id;
+    private Long accountId;
+    private Long movieId;
     private String note;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private Boolean isActive;
 }

@@ -30,7 +30,7 @@ public class MovieController {
     }
 
     @GetMapping("/{id}")
-    public MovieDto findById(@PathVariable("id") int id) {
+    public MovieDto findById(@PathVariable("id") Long id) {
         return movieService.findById(id);
     }
 
@@ -45,7 +45,7 @@ public class MovieController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") int id) {
+    public void deleteById(@PathVariable("id") Long id) {
         movieService.deleteByID(id);
     }
 }

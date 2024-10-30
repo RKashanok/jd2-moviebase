@@ -31,24 +31,24 @@ public class AccountService {
         return ModelMapper.toAccountDto(account);
     }
 
-    public AccountDto findById(int id) {
+    public AccountDto findById(Long id) {
         logger.info("Finding account by id: {}", id);
         return ModelMapper.toAccountDto(accountRepository.findById(id));
     }
 
-    public AccountDto findByUserId(int userId) {
+    public AccountDto findByUserId(Long userId) {
         logger.info("Finding account by user_id: {}", userId);
         return ModelMapper.toAccountDto(accountRepository.findByUserId(userId));
     }
 
-    public AccountDto update(int id, AccountDto accountDto) {
+    public AccountDto update(Long id, AccountDto accountDto) {
         logger.info("Updating account: {}", accountDto);
         accountDto.setId(id);
         Account account = ModelMapper.toAccount(accountDto);
         return ModelMapper.toAccountDto(accountRepository.update(account));
     }
 
-    public void deleteById(int id) {
+    public void deleteById(Long id) {
         logger.info("Deleting account by id: {}", id);
         // deactivate comments and set null account id
         commentService.deactivateByAccId(id);

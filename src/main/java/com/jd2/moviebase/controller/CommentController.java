@@ -30,7 +30,7 @@ public class CommentController {
     }
 
     @GetMapping("/{id}")
-    public CommentDto findById(@PathVariable("id") int id) {
+    public CommentDto findById(@PathVariable("id") Long id) {
         return commentService.findById(id);
     }
 
@@ -40,12 +40,12 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
-    public CommentDto update(@PathVariable("id") Integer id, @RequestBody CommentDto commentDto) {
+    public CommentDto update(@PathVariable("id") Long id, @RequestBody CommentDto commentDto) {
         return commentService.update(id, commentDto);
     }
 
     @DeleteMapping("/{id}")
-    public void deactivateByAccId(@PathVariable("id") Integer id) {
+    public void deactivateByAccId(@PathVariable("id") Long id) {
         commentService.deactivateByAccId(id);
     }
 }

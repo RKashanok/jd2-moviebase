@@ -32,14 +32,14 @@ public class AccountRepository {
     }
 
     public Account create(Account account) {
-        int insertedId = 0;
+        Long insertedId = 0L;
         try (Connection conn = ds.getConnection();
             PreparedStatement ps = conn.prepareStatement(CREATE_SQL, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, account.getUserId());
+            ps.setLong(1, account.getUserId());
             ps.setString(2, account.getFirstName());
             ps.setString(3, account.getLastName());
             ps.setString(4, account.getPreferredName());
-            ps.setDate(5, new java.sql.Date(account.getDateOfBirth().getTime()));
+            ps.setDate(5, java.sql.Date.valueOf(account.getDateOfBirth()));
             ps.setString(6, account.getPhone());
             ps.setString(7, account.getGender());
             ps.setString(8, account.getPhotoUrl());
@@ -48,7 +48,7 @@ public class AccountRepository {
             ps.executeUpdate();
             ResultSet generatedKeys = ps.getGeneratedKeys();
             if (generatedKeys.next()) {
-                insertedId = generatedKeys.getInt(1);
+                insertedId = generatedKeys.getLong(1);
                 account.setId(insertedId);
             } else {
                 throw new SQLException("Creating account failed, no ID obtained.");
@@ -59,11 +59,11 @@ public class AccountRepository {
         return account;
     }
 
-    public Account findById(int id) {
+    public Account findById(Long id) {
         Account account = null;
         try (Connection conn = ds.getConnection();
             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
-            ps.setInt(1, id);
+            ps.setLong(1, id);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
                 account = getAccountObject(resultSet);
@@ -75,10 +75,10 @@ public class AccountRepository {
             .orElseThrow(() -> new MovieDbRepositoryOperationException("Account with ID " + id + " not found"));
     }
 
-    public Account findByUserId(int userId) {
+    public Account findByUserId(Long userId) {
         try (Connection conn = ds.getConnection();
             PreparedStatement ps = conn.prepareStatement(FIND_BY_USER_ID_SQL)) {
-            ps.setInt(1, userId);
+            ps.setLong(1, userId);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
                 return getAccountObject(resultSet);
@@ -94,16 +94,16 @@ public class AccountRepository {
         account.setUpdatedAt(LocalDateTime.now(ZoneId.of("UTC")));
         try (Connection conn = ds.getConnection();
             PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
-            ps.setInt(1, account.getUserId());
+            ps.setLong(1, account.getUserId());
             ps.setString(2, account.getFirstName());
             ps.setString(3, account.getLastName());
             ps.setString(4, account.getPreferredName());
-            ps.setDate(5, new java.sql.Date(account.getDateOfBirth().getTime()));
+            ps.setDate(5, java.sql.Date.valueOf(account.getDateOfBirth()));
             ps.setString(6, account.getPhone());
             ps.setString(7, account.getGender());
             ps.setString(8, account.getPhotoUrl());
             ps.setTimestamp(9, Timestamp.valueOf(account.getUpdatedAt()));
-            ps.setInt(10, account.getId());
+            ps.setLong(10, account.getId());
             if (ps.executeUpdate() > 0) {
                 return account;
             } else {
@@ -114,10 +114,10 @@ public class AccountRepository {
         }
     }
 
-    public void deleteById(int id) {
+    public void deleteById(Long id) {
         try (Connection conn = ds.getConnection();
             PreparedStatement psAccounts = conn.prepareStatement(DELETE_BY_ID_FROM_ACCOUNTS_SQL)) {
-            psAccounts.setInt(1, id);
+            psAccounts.setLong(1, id);
             psAccounts.executeUpdate();
         } catch (SQLException e) {
             throw new MovieDbRepositoryOperationException("Error deleting account", e);
@@ -126,12 +126,12 @@ public class AccountRepository {
 
     private Account getAccountObject(ResultSet resultSet) throws SQLException {
         return Account.builder()
-            .id(resultSet.getInt("id"))
-            .userId(resultSet.getInt("user_id"))
+            .id(resultSet.getLong("id"))
+            .userId(resultSet.getLong("user_id"))
             .firstName(resultSet.getString("first_name"))
             .lastName(resultSet.getString("last_name"))
             .preferredName(resultSet.getString("preferred_name"))
-            .dateOfBirth(resultSet.getDate("date_of_birth"))
+            .dateOfBirth(resultSet.getDate("date_of_birth").toLocalDate())
             .phone(resultSet.getString("phone"))
             .gender(resultSet.getString("gender"))
             .photoUrl(resultSet.getString("photo_url"))

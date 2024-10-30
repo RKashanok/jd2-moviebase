@@ -4,16 +4,17 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 @Data
 @Builder
 public class MovieDto {
-    private int id;
-    private int tmdbId;
+    private Long id;
+    private Long tmdbId;
     private String name;
-    private List<Integer> genreId;
-    private Date releaseDate;
-    private int rating;
+    private List<Long> genreId;
+    private LocalDate releaseDate;
+    private Long rating;
     private String overview;
     private String originalLanguage;
 }

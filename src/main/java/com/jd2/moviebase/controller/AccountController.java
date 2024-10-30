@@ -24,7 +24,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public AccountDto findById(@PathVariable("id") Integer id) {
+    public AccountDto findById(@PathVariable("id") Long id) {
         return accountService.findById(id);
     }
 
@@ -34,12 +34,12 @@ public class AccountController {
     }
 
     @PutMapping("/{id}")
-    public AccountDto update(@PathVariable("id") Integer id, @RequestBody AccountDto accountDto) {
+    public AccountDto update(@PathVariable("id") Long id, @RequestBody AccountDto accountDto) {
         return accountService.update(id, accountDto);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") Integer id) {
+    public void deleteById(@PathVariable("id") Long id) {
         accountService.deleteById(id);
     }
 }

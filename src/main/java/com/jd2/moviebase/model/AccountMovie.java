@@ -9,8 +9,8 @@ import lombok.Data;
 @Builder
 public class AccountMovie {
 
-    private int accountId;
-    private int movieId;
+    private Long accountId;
+    private Long movieId;
     private String status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

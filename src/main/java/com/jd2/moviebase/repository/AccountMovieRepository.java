@@ -32,8 +32,8 @@ public class AccountMovieRepository {
     public void create(AccountMovie accountMovie) {
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(CREATE_ACC_MOVIE_SQL)) {
-            ps.setInt(1, accountMovie.getAccountId());
-            ps.setInt(2, accountMovie.getMovieId());
+            ps.setLong(1, accountMovie.getAccountId());
+            ps.setLong(2, accountMovie.getMovieId());
             ps.setString(3, accountMovie.getStatus());
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -41,11 +41,11 @@ public class AccountMovieRepository {
         }
     }
 
-    public List<AccountMovie> findAllByAccountId(int accountId) {
+    public List<AccountMovie> findAllByAccountId(Long accountId) {
         List<AccountMovie> accountMovies = new ArrayList<>();
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(FIND_ALL_ACC_MOVIE_BY_ACC_ID_SQL)) {
-            ps.setInt(1, accountId);
+            ps.setLong(1, accountId);
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
                 accountMovies.add(mapRow(resultSet));
@@ -57,22 +57,22 @@ public class AccountMovieRepository {
         return accountMovies;
     }
 
-    public void updateStatusByAccId(int accountId, int movie_id, MovieStatus status) {
+    public void updateStatusByAccId(Long accountId, Long movie_id, MovieStatus status) {
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(UPDATE_ACC_MOVIE_STATUS_BY_ACC_ID_SQL)) {
             ps.setString(1, String.valueOf(status));
-            ps.setInt(2, accountId);
-            ps.setInt(3, movie_id);
+            ps.setLong(2, accountId);
+            ps.setLong(3, movie_id);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new MovieDbRepositoryOperationException("Error updating account movies ", e);
         }
     }
 
-    public void deleteByAccId(int id) {
+    public void deleteByAccId(Long id) {
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(DELETE_ACC_MOVIE_BY_ACC_ID_SQL)) {
-            ps.setInt(1, id);
+            ps.setLong(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new MovieDbRepositoryOperationException("Error deleting account movies ", e);
@@ -81,8 +81,8 @@ public class AccountMovieRepository {
 
     private AccountMovie mapRow(ResultSet resultSet) throws SQLException {
         return AccountMovie.builder()
-                .accountId(resultSet.getInt("account_id"))
-                .movieId(resultSet.getInt("movie_id"))
+                .accountId(resultSet.getLong("account_id"))
+                .movieId(resultSet.getLong("movie_id"))
                 .status(resultSet.getString("status"))
                 .createdAt(LocalDateTime.from(resultSet.getTimestamp("created_at").toLocalDateTime()
                         .atZone(ZoneId.of("UTC"))))

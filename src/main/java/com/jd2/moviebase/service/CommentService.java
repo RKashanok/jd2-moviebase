@@ -29,7 +29,7 @@ public class CommentService {
         return commentRepository.findAll().stream().map(ModelMapper::toCommentDto).toList();
     }
 
-    public CommentDto findById(int id) {
+    public CommentDto findById(Long id) {
         logger.info("Executing method: findById(id={})", id);
         return ModelMapper.toCommentDto(commentRepository.findById(id));
     }
@@ -41,7 +41,7 @@ public class CommentService {
         return ModelMapper.toCommentDto(createdComment);
     }
 
-    public CommentDto update(int id, CommentDto commentDto) {
+    public CommentDto update(Long id, CommentDto commentDto) {
         logger.info("Executing method: update(comment={})", commentDto);
         commentDto.setId(id);
         Comment comment = ModelMapper.toComment(commentDto);
@@ -49,7 +49,7 @@ public class CommentService {
         return ModelMapper.toCommentDto(updatedComment);
     }
 
-    public void deactivateByAccId(int accountId) {
+    public void deactivateByAccId(Long accountId) {
         logger.info("Executing method: deactivateByAccId(accountId={})", accountId);
         commentRepository.deactivateByAccId(accountId);
     }
