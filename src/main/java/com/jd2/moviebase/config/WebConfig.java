@@ -2,9 +2,8 @@ package com.jd2.moviebase.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
 
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -23,16 +22,30 @@ import java.util.Properties;
 @PropertySource("classpath:application.properties")
 public class WebConfig implements WebMvcConfigurer {
 
-    @Autowired
-    private Environment env;
+    @Value("${db.host}")
+    private String dbHost;
+    @Value("${db.username}")
+    private String dbUsername;
+    @Value("${db.password}")
+    private String dbPassword;
+    @Value("${db.driver}")
+    private String driverClassName;
+    @Value("${hibernate.hbm2ddl.auto}")
+    private String hbm2ddl;
+    @Value("${hibernate.show_sql}")
+    private String showSQL;
+    @Value("${hibernate.format_sql=true}")
+    private String formatSQL;
+    @Value("${hibernate.dialect}")
+    private String dialect;
 
     @Bean
     public DataSource dataSource() {
         HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl(env.getProperty("db.url"));
-        ds.setUsername(env.getProperty("db.username"));
-        ds.setPassword(env.getProperty("db.password"));
-        ds.setDriverClassName(env.getProperty("db.driver"));
+        ds.setJdbcUrl(dbHost);
+        ds.setUsername(dbUsername);
+        ds.setPassword(dbPassword);
+        ds.setDriverClassName(driverClassName);
         return ds;
     }
 
@@ -64,10 +77,10 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
-        hibernateProperties.setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
-        hibernateProperties.setProperty("hibernate.format_sql", env.getProperty("hibernate.format_sql"));
-//        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        hibernateProperties.setProperty("hibernate.dialect", dialect);
+        hibernateProperties.setProperty("hibernate.show_sql", showSQL);
+        hibernateProperties.setProperty("hibernate.format_sql", formatSQL);
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", hbm2ddl);
         return hibernateProperties;
     }
 }
