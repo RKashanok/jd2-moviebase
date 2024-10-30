@@ -1,10 +1,7 @@
 package com.jd2.moviebase.util;
 
 import com.jd2.moviebase.dto.*;
-import com.jd2.moviebase.model.Account;
-import com.jd2.moviebase.model.AccountMovie;
-import com.jd2.moviebase.model.Genre;
-import com.jd2.moviebase.model.Movie;
+import com.jd2.moviebase.model.*;
 
 public class ModelMapper {
 
@@ -29,6 +26,16 @@ public class ModelMapper {
                 .movieId(comment.getMovieId())
                 .note(comment.getNote())
                 .isActive(comment.getIsActive())
+                .build();
+    }
+
+    public static Comment toComment(CommentDto commentDto) {
+        return Comment.builder()
+                .id(commentDto.getId())
+                .accountId(commentDto.getAccountId())
+                .movieId(commentDto.getMovieId())
+                .note(commentDto.getNote())
+                .isActive(commentDto.getIsActive())
                 .build();
     }
 
