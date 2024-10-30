@@ -2,149 +2,61 @@ package com.jd2.moviebase.repository;
 
 import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.Movie;
-import java.sql.Array;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import javax.sql.DataSource;
+
+import jakarta.transaction.Transactional;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class MovieRepository {
 
-    private static final String CREATE_SQL = "INSERT INTO movies " +
-        "(tmdb_id, name, genre_id, release_date, rating, overview, original_language) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    private static final String FIND_BY_ID_SQL = "SELECT * FROM movies WHERE id = ?";
-    private static final String FIND_SQL = "SELECT * FROM movies";
-    private static final String UPDATE_SQL = "UPDATE movies SET tmdb_id = ?, name = ?, genre_id = ?, " +
-        "release_date = ?, rating = ?, overview = ?, original_language = ? WHERE id = ?";
-    private static final String DELETE_SQL = "DELETE FROM movies WHERE id = ?";
-
-    private final DataSource dataSource;
+    private final SessionFactory sessionFactory;
 
     @Autowired
-    public MovieRepository(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public MovieRepository(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    private Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
     }
 
     public List<Movie> findAll() {
-        List<Movie> movies = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(FIND_SQL)) {
-            while (rs.next()) {
-                movies.add(mapRow(rs));
-            }
-        } catch (SQLException e) {
-            throw new MovieDbRepositoryOperationException("Error while finding all movies", e);
-        }
-        return movies;
+        return getCurrentSession().createQuery("FROM Movie", Movie.class).getResultList();
     }
 
     public Optional<Movie> findById(Long id) {
-        try (Connection conn = dataSource.getConnection();
-            PreparedStatement ps = conn.prepareStatement(FIND_BY_ID_SQL)) {
-            ps.setLong(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return Optional.of(mapRow(rs));
-            } else {
-                return Optional.empty();
-            }
-        } catch (SQLException e) {
-            throw new MovieDbRepositoryOperationException("Error while fetching movie by ID", e);
-        }
+        Movie movie = getCurrentSession().find(Movie.class, id);
+        return Optional.ofNullable(movie);
     }
 
+    @Transactional
     public Movie create(Movie movie) {
-        try (Connection conn = dataSource.getConnection();
-            PreparedStatement ps = conn.prepareStatement(CREATE_SQL, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, movie.getTmdbId());
-            ps.setString(2, movie.getName());
-            ps.setArray(3, conn.createArrayOf("integer", movie.getGenreId().toArray()));
-            ps.setDate(4, java.sql.Date.valueOf(movie.getReleaseDate()));
-            ps.setLong(5, movie.getRating());
-            ps.setString(6, movie.getOverview());
-            ps.setString(7, movie.getOriginalLanguage());
-            ps.executeUpdate();
-            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    movie.setId(generatedKeys.getLong(1));
-                } else {
-                    throw new SQLException("Creating movie failed, no ID obtained.");
-                }
-            }
-        } catch (SQLException e) {
-            throw new MovieDbRepositoryOperationException("Error while creating movie", e);
-        }
+        getCurrentSession().persist(movie);
         return movie;
     }
 
+    @Transactional
     public Movie update(Movie movie) {
-        try (Connection conn = dataSource.getConnection();
-            PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
-            ps.setLong(1, movie.getTmdbId());
-            ps.setString(2, movie.getName());
-            ps.setArray(3, conn.createArrayOf("integer", movie.getGenreId().toArray()));
-            ps.setDate(4, java.sql.Date.valueOf(movie.getReleaseDate()));
-            ps.setLong(5, movie.getRating());
-            ps.setString(6, movie.getOverview());
-            ps.setString(7, movie.getOriginalLanguage());
-            ps.setLong(8, movie.getId());
-            if (ps.executeUpdate() > 0) {
-                return movie;
-            } else {
-                throw new SQLException("Updating movie failed, no rows affected. Movie ID: " + movie.getId());
-            }
-        } catch (SQLException e) {
-            throw new MovieDbRepositoryOperationException("Error updating movie", e);
+        Movie existingMovie = getCurrentSession().get(Movie.class, movie.getId());
+        if (existingMovie == null) {
+            throw new MovieDbRepositoryOperationException("Movie with ID " + movie.getId() + " not found");
         }
+        getCurrentSession().merge(movie);
+        return movie;
     }
 
+    @Transactional
     public void deleteById(Long id) {
-        try (Connection conn = dataSource.getConnection();
-            PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
-            ps.setLong(1, id);
-            int rowsAffected = ps.executeUpdate();
-            if (rowsAffected != 1) {
-                throw new SQLException("Deleting movie failed. Genre ID: " + id);
-            }
-        } catch (SQLException e) {
-            throw new MovieDbRepositoryOperationException("Error deleting movie", e);
-        }
-
-    }
-
-    private Movie mapRow(ResultSet rs) throws SQLException {
-        Long[] genreIds = (Long[]) rs.getArray("genre_id").getArray(); // Извлечение массива
-        List<Long> genreIdList = Arrays.asList(genreIds); // Преобразование в List<Long>
-
-        return Movie.builder()
-                .id(rs.getLong("id"))
-                .tmdbId(rs.getLong("tmdb_id"))
-                .name(rs.getString("name"))
-                .genreId(genreIdList) // Установка списка идентификаторов жанров
-                .releaseDate(rs.getDate("release_date").toLocalDate())
-                .rating(rs.getLong("rating"))
-                .overview(rs.getString("overview"))
-                .originalLanguage(rs.getString("original_language"))
-                .build();
-    }
-
-    private List<Integer> getGenres(ResultSet rs) throws SQLException {
-        Array sqlArray = rs.getArray("genre_id");
-        if (sqlArray != null) {
-            Integer[] genreIds = (Integer[]) sqlArray.getArray();
-            return List.of(genreIds);
+        Movie movie = getCurrentSession().find(Movie.class, id);
+        if (movie != null) {
+            getCurrentSession().remove(movie);
         } else {
-            return List.of();
+            throw new MovieDbRepositoryOperationException("Movie with ID " + id + " not found for deletion");
         }
     }
 }

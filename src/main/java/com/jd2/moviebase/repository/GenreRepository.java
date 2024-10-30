@@ -44,12 +44,12 @@ public class GenreRepository {
 
     @Transactional
     public Genre update(Genre genre) {
-        Session session = getCurrentSession();
-        Genre existingGenre = session.get(Genre.class, genre.getId());
+        Genre existingGenre = getCurrentSession().find(Genre.class, genre.getId());
         if (existingGenre == null) {
             throw new MovieDbRepositoryOperationException("Genre with ID " + genre.getId() + " not found");
         }
-        return (Genre) session.merge(genre);
+        getCurrentSession().merge(genre);
+        return genre;
     }
 
     @Transactional

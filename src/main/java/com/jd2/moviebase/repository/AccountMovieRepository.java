@@ -26,7 +26,6 @@ public class AccountMovieRepository {
         return sessionFactory.getCurrentSession();
     }
 
-    @Transactional
     public List<AccountMovie> findAllByAccountId(Long accountId) {
         String hql = "FROM AccountMovie am WHERE am.account.id = :accountId";
         return getCurrentSession().createQuery(hql, AccountMovie.class)
@@ -34,10 +33,12 @@ public class AccountMovieRepository {
                 .getResultList();
     }
 
+    @Transactional
     public void create(AccountMovie accountMovie) {
         getCurrentSession().persist(accountMovie);
     }
 
+    @Transactional
     public void updateStatusByAccId(Long accountId, Long movieId, MovieStatus status) {
         String hql = "UPDATE AccountMovie am SET am.status = :status WHERE am.account.id = :accountId AND am.movie.id = :movieId";
         int updatedRows = getCurrentSession().createMutationQuery(hql)
@@ -48,14 +49,15 @@ public class AccountMovieRepository {
 
         if (updatedRows == 0) {
             throw new MovieDbRepositoryOperationException("Error updating account movies with Account ID"
-                                                          + accountId + " and Movie ID " + movieId);
+                    + accountId + " and Movie ID " + movieId);
         }
     }
 
-    public void deleteByAccId(Long id) {
+    @Transactional
+    public void deleteByAccId(Long accountId) {
         String hql = "DELETE FROM AccountMovie am WHERE am.account.id = :accountId";
         getCurrentSession().createMutationQuery(hql)
-                .setParameter("accountId", id)
+                .setParameter("accountId", accountId)
                 .executeUpdate();
     }
 }
