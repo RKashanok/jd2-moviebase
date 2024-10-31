@@ -13,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
+
 import java.util.Properties;
 
 @EnableTransactionManagement
@@ -77,10 +78,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.dialect", dialect);
+//        hibernateProperties.setProperty("hibernate.dialect", dialect);
         hibernateProperties.setProperty("hibernate.show_sql", showSQL);
         hibernateProperties.setProperty("hibernate.format_sql", formatSQL);
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto", hbm2ddl);
+//        hibernateProperties.setProperty("hibernate.jdbc.time_zone", "UTC");
         return hibernateProperties;
     }
 }

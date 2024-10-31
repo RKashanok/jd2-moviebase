@@ -30,7 +30,7 @@ public class Movie {
     @Column(name = "release_date", nullable = false)
     private LocalDate releaseDate;
 
-    private Integer rating;
+    private Long rating;
     private String overview;
 
     @Column(name = "original_language")

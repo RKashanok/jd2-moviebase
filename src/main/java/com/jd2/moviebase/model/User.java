@@ -1,7 +1,6 @@
 package com.jd2.moviebase.model;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,14 +8,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
+
 
 @Data
 @Builder
 @Entity
 @NoArgsConstructor
-@Table(name="users")
 @AllArgsConstructor
+@Table(name="users")
 public class User {
 
     @Id

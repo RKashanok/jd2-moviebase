@@ -41,5 +41,5 @@ public class Comment {
     private LocalDateTime updatedAt;
 
     @Column(name = "is_active")
-    private Boolean isActive = true;
+    private Boolean isActive;
 }

@@ -8,4 +8,10 @@
         <sqlFile path="config/liquibase/20242209-create-users-table.sql" />
     </changeSet>
 
+    <include file="20242710-create-movie-genres-table.xml"
+             relativeToChangelogFile="true" />
+
+    <include file="20242710-insert-into-movie-genres.xml"
+             relativeToChangelogFile="true" />
+
 </databaseChangeLog>

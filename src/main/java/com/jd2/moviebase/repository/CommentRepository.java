@@ -6,6 +6,7 @@ import com.jd2.moviebase.model.Comment;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,13 @@ public class CommentRepository {
             .orElseThrow(() -> new MovieDbRepositoryOperationException("Comment with ID " + id + " not found"));
     }
 
+    @Transactional
     public Comment create(Comment comment) {
         getCurrentSession().persist(comment);
         return comment;
     }
 
+    @Transactional
     public Comment update(Comment comment) {
         Comment existingComment = getCurrentSession().find(Comment.class, comment.getId());
         if (existingComment == null) {
@@ -49,6 +52,7 @@ public class CommentRepository {
         return comment;
     }
 
+    @Transactional
     public void deactivateByAccId(Long id) {
         String hql = "UPDATE Comment c SET c.isActive = false, c.account = null WHERE c.account.id = :accountId";
         int updatedRows = getCurrentSession().createMutationQuery(hql)

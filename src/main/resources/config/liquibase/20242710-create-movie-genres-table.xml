@@ -1,0 +1,38 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1-create-movie-genres-table" author="pavel">
+        <createTable tableName="movie_genres">
+            <column name="movie_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="genre_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_movie_genre_movie"
+                                 baseTableName="movie_genres"
+                                 baseColumnNames="movie_id"
+                                 referencedTableName="movies"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint constraintName="fk_movie_genre_genre"
+                                 baseTableName="movie_genres"
+                                 baseColumnNames="genre_id"
+                                 referencedTableName="genres"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addPrimaryKey columnNames="movie_id, genre_id" tableName="movie_genres"/>
+
+        <rollback>
+            <dropTable tableName="movie_genres" cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

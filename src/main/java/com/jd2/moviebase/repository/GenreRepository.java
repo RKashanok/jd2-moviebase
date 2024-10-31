@@ -30,7 +30,7 @@ public class GenreRepository {
         return getCurrentSession().createQuery("FROM Genre", Genre.class).getResultList();
     }
 
-
+    @Transactional
     public Optional<Genre> findById(Long id) {
         Genre genre = getCurrentSession().get(Genre.class, id);
         return Optional.ofNullable(genre);

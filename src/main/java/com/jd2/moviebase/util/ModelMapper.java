@@ -36,8 +36,8 @@ public class ModelMapper {
     public static CommentDto toCommentDto(com.jd2.moviebase.model.Comment comment) {
         return CommentDto.builder()
                 .id(comment.getId())
-                .accountId(comment.getAccountId())
-                .movieId(comment.getMovieId())
+//                .accountId(comment.getAccountId())
+//                .movieId(comment.getMovieId())
                 .note(comment.getNote())
                 .isActive(comment.getIsActive())
                 .build();
@@ -98,8 +98,8 @@ public class ModelMapper {
 
         public static AccountMovieDto toAccountMovieDto(AccountMovie accountMovie) {
             return AccountMovieDto.builder()
-                    .accountId(accountMovie.getAccountId())
-                    .movieId(accountMovie.getMovieId())
+//                    .accountId(accountMovie.getAccountId())
+//                    .movieId(accountMovie.getMovieId())
                     .status(accountMovie.getStatus())
                     .createdAt(accountMovie.getCreatedAt())
                     .updatedAt(accountMovie.getUpdatedAt())
@@ -108,8 +108,8 @@ public class ModelMapper {
 
         public static AccountMovie toAccountMovie(AccountMovieDto accountMovieDto) {
             return AccountMovie.builder()
-                    .accountId(accountMovieDto.getAccountId())
-                    .movieId(accountMovieDto.getMovieId())
+//                    .accountId(accountMovieDto.getAccountId())
+//                    .movieId(accountMovieDto.getMovieId())
                     .status(accountMovieDto.getStatus())
                     .createdAt(accountMovieDto.getCreatedAt())
                     .updatedAt(accountMovieDto.getUpdatedAt())
