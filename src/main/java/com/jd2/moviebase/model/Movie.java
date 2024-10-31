@@ -22,7 +22,7 @@ public class Movie {
     private Long id;
 
     @Column(name = "tmdb_id", nullable = false)
-    private Integer tmdbId;
+    private Long tmdbId;
 
     @Column(nullable = false)
     private String name;
