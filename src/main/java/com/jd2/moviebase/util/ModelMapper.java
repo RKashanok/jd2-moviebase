@@ -8,7 +8,7 @@ public class ModelMapper {
     public static AccountDto toAccountDto(Account account) {
         return AccountDto.builder()
                 .id(account.getId())
-                .userId(account.getUserId())
+//                .userId(account.getUserId())
                 .firstName(account.getFirstName())
                 .lastName(account.getLastName())
                 .preferredName(account.getPreferredName())
@@ -22,7 +22,7 @@ public class ModelMapper {
     public static Account toAccount(AccountDto accountDto) {
         return Account.builder()
                 .id(accountDto.getId())
-                .userId(accountDto.getUserId())
+//                .userId(accountDto.getUserId())
                 .firstName(accountDto.getFirstName())
                 .lastName(accountDto.getLastName())
                 .preferredName(accountDto.getPreferredName())
@@ -46,8 +46,8 @@ public class ModelMapper {
     public static Comment toComment(CommentDto commentDto) {
         return Comment.builder()
                 .id(commentDto.getId())
-                .accountId(commentDto.getAccountId())
-                .movieId(commentDto.getMovieId())
+//                .accountId(commentDto.getAccountId())
+//                .movieId(commentDto.getMovieId())
                 .note(commentDto.getNote())
                 .isActive(commentDto.getIsActive())
                 .build();
@@ -75,7 +75,7 @@ public class ModelMapper {
                 .id(movie.getId())
                 .tmdbId(movie.getTmdbId())
                 .name(movie.getName())
-                .genreId(movie.getGenreId())
+//                .genreId(movie.getGenreId())
                 .releaseDate(movie.getReleaseDate())
                 .rating(movie.getRating())
                 .overview(movie.getOverview())
@@ -88,7 +88,7 @@ public class ModelMapper {
                 .id(movieDto.getId())
                 .tmdbId(movieDto.getTmdbId())
                 .name(movieDto.getName())
-                .genreId(movieDto.getGenreId())
+//                .genreId(movieDto.getGenreId())
                 .releaseDate(movieDto.getReleaseDate())
                 .rating(movieDto.getRating())
                 .overview(movieDto.getOverview())
