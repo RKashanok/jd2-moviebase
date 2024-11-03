@@ -26,6 +26,7 @@ public class AccountMovieRepository {
         return sessionFactory.getCurrentSession();
     }
 
+    @Transactional
     public List<AccountMovie> findAllByAccountId(Long accountId) {
         String hql = "FROM AccountMovie am WHERE am.account.id = :accountId";
         return getCurrentSession().createQuery(hql, AccountMovie.class)

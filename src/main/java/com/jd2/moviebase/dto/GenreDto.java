@@ -2,6 +2,7 @@ package com.jd2.moviebase.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder

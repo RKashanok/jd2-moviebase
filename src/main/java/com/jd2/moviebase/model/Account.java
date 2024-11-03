@@ -28,8 +28,13 @@ public class Account {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "preferred_name")
     private String preferredName;
 
     @Column(name = "date_of_birth")

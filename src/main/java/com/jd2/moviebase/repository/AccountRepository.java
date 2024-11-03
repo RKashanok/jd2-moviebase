@@ -25,12 +25,14 @@ public class AccountRepository {
         return sessionFactory.getCurrentSession();
     }
 
+    @Transactional
     public Account findById(Long id) {
         Account account = getCurrentSession().find(Account.class, id);
         return Optional.ofNullable(account)
                 .orElseThrow(() -> new MovieDbRepositoryOperationException("Account with ID " + id + " not found"));
     }
 
+    @Transactional
     public Account findByUserId(Long userId) {
         return getCurrentSession()
                 .createQuery("FROM Account a WHERE a.user.id = :userId", Account.class)

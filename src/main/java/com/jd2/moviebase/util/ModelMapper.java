@@ -8,7 +8,7 @@ public class ModelMapper {
     public static AccountDto toAccountDto(Account account) {
         return AccountDto.builder()
                 .id(account.getId())
-//                .userId(account.getUserId())
+                .userId(account.getUser() != null ? account.getUser().getId() : null)
                 .firstName(account.getFirstName())
                 .lastName(account.getLastName())
                 .preferredName(account.getPreferredName())
@@ -36,8 +36,8 @@ public class ModelMapper {
     public static CommentDto toCommentDto(com.jd2.moviebase.model.Comment comment) {
         return CommentDto.builder()
                 .id(comment.getId())
-//                .accountId(comment.getAccountId())
-//                .movieId(comment.getMovieId())
+                .accountId(comment.getAccount() != null ? comment.getAccount().getId() : null)
+                .movieId(comment.getMovie() != null ? comment.getMovie().getId() : null)
                 .note(comment.getNote())
                 .isActive(comment.getIsActive())
                 .build();
@@ -75,7 +75,7 @@ public class ModelMapper {
                 .id(movie.getId())
                 .tmdbId(movie.getTmdbId())
                 .name(movie.getName())
-//                .genreId(movie.getGenreId())
+                .genreId(movie.getGenres() != null ? movie.getGenres().stream().map(Genre::getId).toList() : null)
                 .releaseDate(movie.getReleaseDate())
                 .rating(movie.getRating())
                 .overview(movie.getOverview())
@@ -98,8 +98,8 @@ public class ModelMapper {
 
         public static AccountMovieDto toAccountMovieDto(AccountMovie accountMovie) {
             return AccountMovieDto.builder()
-//                    .accountId(accountMovie.getAccountId())
-//                    .movieId(accountMovie.getMovieId())
+                    .accountId(accountMovie.getAccount() != null ? accountMovie.getAccount().getId() : null)
+                    .movieId(accountMovie.getMovie() != null ? accountMovie.getMovie().getId() : null)
                     .status(accountMovie.getStatus())
                     .createdAt(accountMovie.getCreatedAt())
                     .updatedAt(accountMovie.getUpdatedAt())

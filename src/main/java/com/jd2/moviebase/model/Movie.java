@@ -36,7 +36,7 @@ public class Movie {
     @Column(name = "original_language")
     private String originalLanguage;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "movie_genres",
             joinColumns = @JoinColumn(name = "movie_id"),

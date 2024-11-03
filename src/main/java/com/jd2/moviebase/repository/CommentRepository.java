@@ -26,10 +26,12 @@ public class CommentRepository {
         return sessionFactory.getCurrentSession();
     }
 
+    @Transactional
     public List<Comment> findAll() {
         return getCurrentSession().createQuery("FROM Comment", Comment.class).getResultList();
     }
 
+    @Transactional
     public Comment findById(Long id) {
         Comment comment = getCurrentSession().find(Comment.class, id);
         return Optional.ofNullable(comment)

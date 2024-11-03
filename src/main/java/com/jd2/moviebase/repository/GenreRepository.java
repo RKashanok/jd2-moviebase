@@ -25,9 +25,9 @@ public class GenreRepository {
         return sessionFactory.getCurrentSession();
     }
 
-
+    @Transactional
     public List<Genre> findAll() {
-        return getCurrentSession().createQuery("FROM Genre", Genre.class).getResultList();
+        return sessionFactory.openSession().createQuery("FROM Genre", Genre.class).getResultList();
     }
 
     @Transactional
