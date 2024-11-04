@@ -26,16 +26,18 @@ public class CommentRepository {
         return sessionFactory.getCurrentSession();
     }
 
-    @Transactional
     public List<Comment> findAll() {
-        return getCurrentSession().createQuery("FROM Comment", Comment.class).getResultList();
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery("FROM Comment", Comment.class).getResultList();
+        }
     }
 
-    @Transactional
     public Comment findById(Long id) {
-        Comment comment = getCurrentSession().find(Comment.class, id);
-        return Optional.ofNullable(comment)
-            .orElseThrow(() -> new MovieDbRepositoryOperationException("Comment with ID " + id + " not found"));
+        try (Session session = sessionFactory.openSession()) {
+            Comment comment = session.find(Comment.class, id);
+            return Optional.ofNullable(comment)
+                    .orElseThrow(() -> new MovieDbRepositoryOperationException("Comment with ID " + id + " not found"));
+        }
     }
 
     @Transactional

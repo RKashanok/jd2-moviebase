@@ -25,15 +25,17 @@ public class GenreRepository {
         return sessionFactory.getCurrentSession();
     }
 
-    @Transactional
     public List<Genre> findAll() {
-        return sessionFactory.openSession().createQuery("FROM Genre", Genre.class).getResultList();
+        try (Session session = sessionFactory.openSession()) {
+        return session.createQuery("FROM Genre", Genre.class).getResultList();
+        }
     }
 
-    @Transactional
     public Optional<Genre> findById(Long id) {
-        Genre genre = getCurrentSession().get(Genre.class, id);
-        return Optional.ofNullable(genre);
+        try (Session session = sessionFactory.openSession()) {
+            Genre genre = session.get(Genre.class, id);
+            return Optional.ofNullable(genre);
+        }
     }
 
     @Transactional

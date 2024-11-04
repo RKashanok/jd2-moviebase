@@ -26,15 +26,17 @@ public class UserRepository {
         return sessionFactory.getCurrentSession();
     }
 
-    @Transactional
     public List<User> findAll() {
-        return getCurrentSession().createQuery("FROM User", User.class).getResultList();
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery("FROM User", User.class).getResultList();
+        }
     }
 
-    @Transactional
     public Optional<User> findById(Long id) {
-        User user = getCurrentSession().get(User.class, id);
-        return Optional.ofNullable(user);
+        try (Session session = sessionFactory.openSession()) {
+            User user = session.get(User.class, id);
+            return Optional.ofNullable(user);
+        }
     }
 
     @Transactional

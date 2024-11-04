@@ -25,15 +25,17 @@ public class MovieRepository {
         return sessionFactory.getCurrentSession();
     }
 
-    @Transactional
     public List<Movie> findAll() {
-        return getCurrentSession().createQuery("FROM Movie", Movie.class).getResultList();
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery("FROM Movie", Movie.class).getResultList();
+        }
     }
 
-    @Transactional
     public Optional<Movie> findById(Long id) {
-        Movie movie = getCurrentSession().find(Movie.class, id);
-        return Optional.ofNullable(movie);
+        try (Session session = sessionFactory.openSession()) {
+            Movie movie = session.find(Movie.class, id);
+            return Optional.ofNullable(movie);
+        }
     }
 
     @Transactional
