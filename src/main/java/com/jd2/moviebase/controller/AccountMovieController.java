@@ -44,7 +44,7 @@ public class AccountMovieController {
     }
 
     @DeleteMapping("/account-movies/{accountId}")
-    public void deleteAccountMovieByAccountId(@PathVariable Long accountId) {
+    public void deleteAccountMovieByAccountId(@PathVariable(value = "accountId") Long accountId) {
         accountMovieService.deleteByAccId(accountId);
     }
 }

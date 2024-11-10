@@ -3,6 +3,8 @@ package com.jd2.moviebase.util;
 import com.jd2.moviebase.dto.*;
 import com.jd2.moviebase.model.*;
 
+import java.util.List;
+
 public class ModelMapper {
 
     public static AccountDto toAccountDto(Account account) {
@@ -20,9 +22,13 @@ public class ModelMapper {
     }
 
     public static Account toAccount(AccountDto accountDto) {
+        User user = User.builder()
+                .id(accountDto.getUserId())
+                .build();
+
         return Account.builder()
                 .id(accountDto.getId())
-//                .userId(accountDto.getUserId())
+                .user(user)
                 .firstName(accountDto.getFirstName())
                 .lastName(accountDto.getLastName())
                 .preferredName(accountDto.getPreferredName())
@@ -44,31 +50,39 @@ public class ModelMapper {
     }
 
     public static Comment toComment(CommentDto commentDto) {
+        Account account = Account.builder()
+                .id(commentDto.getAccountId())
+                .build();
+
+        Movie movie = Movie.builder()
+                .id(commentDto.getMovieId())
+                .build();
+
         return Comment.builder()
                 .id(commentDto.getId())
-//                .accountId(commentDto.getAccountId())
-//                .movieId(commentDto.getMovieId())
+                .account(account)
+                .movie(movie)
                 .note(commentDto.getNote())
                 .isActive(commentDto.getIsActive())
                 .build();
     }
 
 
-        public static GenreDto toGenreDto(Genre genre) {
-            return GenreDto.builder()
-                    .id(genre.getId())
-                    .tmdbId(genre.getTmdbId())
-                    .name(genre.getName())
-                    .build();
-        }
+    public static GenreDto toGenreDto(Genre genre) {
+        return GenreDto.builder()
+                .id(genre.getId())
+                .tmdbId(genre.getTmdbId())
+                .name(genre.getName())
+                .build();
+    }
 
-        public static Genre toGenre(GenreDto genreDTO) {
-            return Genre.builder()
-                    .id(genreDTO.getId())
-                    .tmdbId(genreDTO.getTmdbId())
-                    .name(genreDTO.getName())
-                    .build();
-        }
+    public static Genre toGenre(GenreDto genreDTO) {
+        return Genre.builder()
+                .id(genreDTO.getId())
+                .tmdbId(genreDTO.getTmdbId())
+                .name(genreDTO.getName())
+                .build();
+    }
 
     public static MovieDto toMovieDto(Movie movie) {
         return MovieDto.builder()
@@ -84,11 +98,17 @@ public class ModelMapper {
     }
 
     public static Movie toMovie(MovieDto movieDto) {
+        List<Genre> genres = movieDto.getGenreId().stream()
+                .map(genreId -> Genre.builder()
+                        .id(genreId)
+                        .build())
+                .toList();
+
         return Movie.builder()
                 .id(movieDto.getId())
                 .tmdbId(movieDto.getTmdbId())
                 .name(movieDto.getName())
-//                .genreId(movieDto.getGenreId())
+                .genres(genres)
                 .releaseDate(movieDto.getReleaseDate())
                 .rating(movieDto.getRating())
                 .overview(movieDto.getOverview())
@@ -96,23 +116,31 @@ public class ModelMapper {
                 .build();
     }
 
-        public static AccountMovieDto toAccountMovieDto(AccountMovie accountMovie) {
-            return AccountMovieDto.builder()
-                    .accountId(accountMovie.getAccount() != null ? accountMovie.getAccount().getId() : null)
-                    .movieId(accountMovie.getMovie() != null ? accountMovie.getMovie().getId() : null)
-                    .status(accountMovie.getStatus())
-                    .createdAt(accountMovie.getCreatedAt())
-                    .updatedAt(accountMovie.getUpdatedAt())
-                    .build();
-        }
+    public static AccountMovieDto toAccountMovieDto(AccountMovie accountMovie) {
+        return AccountMovieDto.builder()
+                .accountId(accountMovie.getAccount() != null ? accountMovie.getAccount().getId() : null)
+                .movieId(accountMovie.getMovie() != null ? accountMovie.getMovie().getId() : null)
+                .status(accountMovie.getStatus())
+                .createdAt(accountMovie.getCreatedAt())
+                .updatedAt(accountMovie.getUpdatedAt())
+                .build();
+    }
 
-        public static AccountMovie toAccountMovie(AccountMovieDto accountMovieDto) {
-            return AccountMovie.builder()
-//                    .accountId(accountMovieDto.getAccountId())
-//                    .movieId(accountMovieDto.getMovieId())
-                    .status(accountMovieDto.getStatus())
-                    .createdAt(accountMovieDto.getCreatedAt())
-                    .updatedAt(accountMovieDto.getUpdatedAt())
-                    .build();
-        }
+    public static AccountMovie toAccountMovie(AccountMovieDto accountMovieDto) {
+        Account account = Account.builder()
+                .id(accountMovieDto.getAccountId())
+                .build();
+
+        Movie movie = Movie.builder()
+                .id(accountMovieDto.getMovieId())
+                .build();
+
+        return AccountMovie.builder()
+                .account(account)
+                .movie(movie)
+                .status(accountMovieDto.getStatus())
+                .createdAt(accountMovieDto.getCreatedAt())
+                .updatedAt(accountMovieDto.getUpdatedAt())
+                .build();
+    }
 }

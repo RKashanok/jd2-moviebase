@@ -56,10 +56,10 @@ public class UserService {
         Long accId = accountService.findByUserId(id).getId();
 
         // deactivate comments and set null account id
-        commentService.deactivateByAccId(accId);
+//        commentService.deactivateByAccId(accId);
 
         // delete user_movie
-        accountMovieService.deleteByAccId(accId);
+//        accountMovieService.deleteByAccId(accId);
 
         //delete account
         accountService.deleteById(accId);

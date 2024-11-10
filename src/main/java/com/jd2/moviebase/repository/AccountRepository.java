@@ -27,7 +27,7 @@ public class AccountRepository {
 
     public Account findById(Long id) {
         try (Session session = sessionFactory.openSession()) {
-            Account account = getCurrentSession().find(Account.class, id);
+            Account account = session.find(Account.class, id);
             return Optional.ofNullable(account)
                     .orElseThrow(() -> new MovieDbRepositoryOperationException("Account with ID " + id + " not found"));
         }

@@ -35,3 +35,4 @@ replay_pid*
 # Ignore Apache Tomcat directories
 apache-tomcat-10.1.24/
 apache-tomcat-9.0.95/
+apache-tomcat-10.1.31/
