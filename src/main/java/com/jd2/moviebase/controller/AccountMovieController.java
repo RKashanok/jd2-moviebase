@@ -26,7 +26,7 @@ public class AccountMovieController {
     }
 
     @GetMapping("/account-movies/{accountId}")
-    public List<AccountMovieDto> findByAccountId(@PathVariable(value = "accountId") int accountId) {
+    public List<AccountMovieDto> findByAccountId(@PathVariable(value = "accountId") Long accountId) {
         return accountMovieService.findAllByAccountId(accountId);
     }
 
@@ -37,14 +37,14 @@ public class AccountMovieController {
 
     // Обновление статуса account_movie по accountId и movieId
     @PutMapping("/account-movies/{accountId}/{movieId}")
-    public void updateMovieStatus(@PathVariable(value = "accountId") int accountId,
-        @PathVariable(value = "movieId") int movieId,
+    public void updateMovieStatus(@PathVariable(value = "accountId") Long accountId,
+        @PathVariable(value = "movieId") Long movieId,
         @RequestBody ConstantsHelper.MovieStatus status) {
         accountMovieService.updateStatusByAccId(accountId, movieId, status);
     }
 
     @DeleteMapping("/account-movies/{accountId}")
-    public void deleteAccountMovieByAccountId(@PathVariable int accountId) {
+    public void deleteAccountMovieByAccountId(@PathVariable(value = "accountId") Long accountId) {
         accountMovieService.deleteByAccId(accountId);
     }
 }

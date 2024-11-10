@@ -30,7 +30,7 @@ public class AccountMovieService {
         accountMovieRepository.create(ModelMapper.toAccountMovie(accountMovieDto));
     }
 
-    public List<AccountMovieDto> findAllByAccountId(int accountId) {
+    public List<AccountMovieDto> findAllByAccountId(Long accountId) {
         logger.info("Finding all account movies by account id: {}", accountId);
         List<AccountMovie> accountMovies = accountMovieRepository.findAllByAccountId(accountId);
         List<AccountMovieDto> accountMovieDtos = accountMovies.stream()
@@ -39,12 +39,12 @@ public class AccountMovieService {
         return accountMovieDtos;
     }
 
-    public void updateStatusByAccId(int accountId, int movieId, MovieStatus status) {
+    public void updateStatusByAccId(Long accountId, Long movieId, MovieStatus status) {
         logger.info("Updating account movie status by account id: {}", accountId);
         accountMovieRepository.updateStatusByAccId(accountId, movieId, status);
     }
 
-    public void deleteByAccId(int id) {
+    public void deleteByAccId(Long id) {
         logger.info("Deleting user movie by account id: {}", id);
         accountMovieRepository.deleteByAccId(id);
     }

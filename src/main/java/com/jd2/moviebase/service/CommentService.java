@@ -1,6 +1,8 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.CommentDto;
+import com.jd2.moviebase.model.Comment;
+import com.jd2.moviebase.model.Genre;
 import com.jd2.moviebase.repository.CommentRepository;
 import com.jd2.moviebase.util.ModelMapper;
 import org.slf4j.Logger;
@@ -27,22 +29,27 @@ public class CommentService {
         return commentRepository.findAll().stream().map(ModelMapper::toCommentDto).toList();
     }
 
-    public CommentDto findById(int id) {
+    public CommentDto findById(Long id) {
         logger.info("Executing method: findById(id={})", id);
         return ModelMapper.toCommentDto(commentRepository.findById(id));
     }
 
     public CommentDto create(CommentDto commentDto) {
         logger.info("Executing method: create(comment={})", commentDto);
-        return ModelMapper.toCommentDto(commentRepository.create(commentDto));
+        Comment comment = ModelMapper.toComment(commentDto);
+        Comment createdComment = commentRepository.create(comment);
+        return ModelMapper.toCommentDto(createdComment);
     }
 
-    public CommentDto update(int id, CommentDto commentDto) {
+    public CommentDto update(Long id, CommentDto commentDto) {
         logger.info("Executing method: update(comment={})", commentDto);
-        return ModelMapper.toCommentDto(commentRepository.update(id, commentDto));
+        commentDto.setId(id);
+        Comment comment = ModelMapper.toComment(commentDto);
+        Comment updatedComment = commentRepository.update(comment);
+        return ModelMapper.toCommentDto(updatedComment);
     }
 
-    public void deactivateByAccId(int accountId) {
+    public void deactivateByAccId(Long accountId) {
         logger.info("Executing method: deactivateByAccId(accountId={})", accountId);
         commentRepository.deactivateByAccId(accountId);
     }

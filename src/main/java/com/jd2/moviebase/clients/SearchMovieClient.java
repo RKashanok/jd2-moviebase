@@ -12,6 +12,7 @@ import okhttp3.Response;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -51,11 +52,11 @@ public class SearchMovieClient {
         try {
             for (SearchMovieResponse.Movie movie : results) {
                 movieDtos.add(MovieDto.builder()
-                        .tmdbId(movie.getId())
+                        .tmdbId((long)movie.getId())
                         .name(!Objects.equals(movie.getTitle(), "") ? movie.getTitle() : "Unknown Title")
-                        .genreId(new ArrayList<>(List.of(1)))
-                        .releaseDate(!Objects.equals(movie.getRelease_date(), "") ? Date.valueOf(movie.getRelease_date()) : null)
-                        .rating((int) (movie.getVote_average() != 0 ? movie.getVote_average() : 0))
+                        .genreId(new ArrayList<>(List.of(1L)))
+                        .releaseDate(!Objects.equals(movie.getRelease_date(), "") ? LocalDate.parse(movie.getRelease_date()) : null)
+                        .rating((long) (movie.getVote_average() != 0 ? movie.getVote_average() : 0))
                         .overview(!Objects.equals(movie.getOverview(), "") ? movie.getOverview() : "No overview available")
                         .originalLanguage(!Objects.equals(movie.getOriginal_language(), "") ? movie.getOriginal_language() : "Unknown Language")
                         .build());

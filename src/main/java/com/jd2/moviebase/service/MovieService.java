@@ -33,7 +33,7 @@ public class MovieService {
                 .collect(Collectors.toList());
     }
 
-    public MovieDto findById(int id) {
+    public MovieDto findById(Long id) {
         logger.info("Executing method: findById(id={})", id);
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new MovieDbRepositoryOperationException("Movie not found with id: " + id));
@@ -54,7 +54,7 @@ public class MovieService {
         return ModelMapper.toMovieDto(updatedMovie);
     }
 
-    public void deleteByID(int id){
+    public void deleteByID(Long id){
         logger.info("Executing method: deleteByID(id={})", id);
         movieRepository.deleteById(id);
     }
