@@ -1,7 +1,10 @@
 package com.jd2.moviebase.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
+import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 
@@ -13,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
+import java.util.concurrent.TimeUnit;
 
 import java.util.Properties;
 
@@ -84,5 +88,15 @@ public class WebConfig implements WebMvcConfigurer {
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto", hbm2ddl);
 //        hibernateProperties.setProperty("hibernate.jdbc.time_zone", "UTC");
         return hibernateProperties;
+    }
+
+    @Bean
+    public OkHttpClient okHttpClient() {
+        return new OkHttpClient.Builder().readTimeout(5, TimeUnit.SECONDS).build();
+    }
+
+    @Bean
+    ObjectMapper objectMapper() {
+        return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 }
