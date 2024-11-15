@@ -3,6 +3,7 @@ package com.jd2.moviebase.service;
 import com.jd2.moviebase.model.User;
 import com.jd2.moviebase.model.UserDetailModel;
 import com.jd2.moviebase.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final DataSource ds;
@@ -25,16 +27,6 @@ public class UserService implements UserDetailsService {
     private final CommentService commentService;
     private final AccountMovieService accountMovieService;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserService(DataSource ds, UserRepository userRepository, AccountService accountService, CommentService commentService, AccountMovieService accountMovieService, PasswordEncoder passwordEncoder) {
-        this.ds = ds;
-        this.userRepository = userRepository;
-        this.accountService = accountService;
-        this.commentService = commentService;
-        this.accountMovieService = accountMovieService;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public User create(User user) {
         logger.info("Creating user: {}", user);
