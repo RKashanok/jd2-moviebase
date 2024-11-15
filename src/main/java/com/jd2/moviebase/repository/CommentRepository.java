@@ -15,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class CommentRepository {
 
+    private static final String FIND_ALL_HQL = "FROM Comment";
+    private static final String DEACTIVATE_COMMENT_BY_ACC_ID_HQL = "UPDATE Comment c SET c.isActive = false, c.account = null WHERE c.account.id = :accountId";
+
     private final SessionFactory sessionFactory;
 
     @Autowired
@@ -28,7 +31,7 @@ public class CommentRepository {
 
     public List<Comment> findAll() {
         try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM Comment", Comment.class).getResultList();
+            return session.createQuery(FIND_ALL_HQL, Comment.class).getResultList();
         }
     }
 
@@ -58,8 +61,7 @@ public class CommentRepository {
 
     @Transactional
     public void deactivateByAccId(Long id) {
-        String hql = "UPDATE Comment c SET c.isActive = false, c.account = null WHERE c.account.id = :accountId";
-        int updatedRows = getCurrentSession().createMutationQuery(hql)
+        int updatedRows = getCurrentSession().createMutationQuery(DEACTIVATE_COMMENT_BY_ACC_ID_HQL)
                 .setParameter("accountId", id)
                 .executeUpdate();
 

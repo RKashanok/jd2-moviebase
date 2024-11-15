@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class AccountRepository {
 
+    private static final String FIND_BY_USER_ID_HQL = "FROM Account a WHERE a.user.id = :userId";
+
     private final SessionFactory sessionFactory;
 
     @Autowired
@@ -35,7 +37,7 @@ public class AccountRepository {
 
     public Account findByUserId(Long userId) {
         try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM Account a WHERE a.user.id = :userId", Account.class)
+            return session.createQuery(FIND_BY_USER_ID_HQL, Account.class)
                     .setParameter("userId", userId)
                     .uniqueResultOptional()
                     .orElseThrow(() -> new MovieDbRepositoryOperationException("Account with user ID "

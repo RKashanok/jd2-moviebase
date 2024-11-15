@@ -4,8 +4,13 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="1" author="siarheima">
-        <sqlFile path="config/liquibase/20242209-create-users-table.sql" />
+    <changeSet id="001" author="siarheima">
+        <sqlFile path="config/liquibase/001-20242209-create-users-table.sql" />
     </changeSet>
+
+    <include file="config/liquibase/002-20241411-remove-genre_id-column.xml"/>
+    <include file="config/liquibase/003-20241411-create-movie_genres-table.xml"/>
+    <include file="config/liquibase/004-20241411-insert-data-to-movie_genres.xml"/>
+    <include file="config/liquibase/005-20241411-update-passwords.xml"/>
 
 </databaseChangeLog>
