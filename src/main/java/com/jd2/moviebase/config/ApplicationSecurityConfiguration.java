@@ -27,9 +27,6 @@ import org.springframework.security.web.context.AbstractSecurityWebApplicationIn
 @PropertySource("classpath:application.properties")
 public class ApplicationSecurityConfiguration extends AbstractSecurityWebApplicationInitializer  {
 
-    @Autowired
-    private UserService userService;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         System.out.println("ApplicationSecurityConfiguration.securityFilterChain start");
@@ -54,7 +51,7 @@ public class ApplicationSecurityConfiguration extends AbstractSecurityWebApplica
 //    }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider(UserService userService) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userService);
         provider.setPasswordEncoder(passwordEncoder());
