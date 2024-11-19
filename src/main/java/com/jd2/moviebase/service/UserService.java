@@ -1,42 +1,44 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.model.User;
+import com.jd2.moviebase.model.UserDetailModel;
 import com.jd2.moviebase.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class UserService {
+@RequiredArgsConstructor
+public class UserService implements UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final DataSource ds;
     private final UserRepository userRepository;
     private final AccountService accountService;
     private final CommentService commentService;
     private final AccountMovieService accountMovieService;
-
-    @Autowired
-    public UserService(DataSource ds, UserRepository userRepository, AccountService accountService, CommentService commentService, AccountMovieService accountMovieService) {
-        this.ds = ds;
-        this.userRepository = userRepository;
-        this.accountService = accountService;
-        this.commentService = commentService;
-        this.accountMovieService = accountMovieService;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     public User create(User user) {
         logger.info("Creating user: {}", user);
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
         return userRepository.create(user);
     }
 
     public User findById(Long id) {
         logger.info("Finding user by id: {}", id);
         return userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
     public List<User> findAll() {
@@ -66,5 +68,11 @@ public class UserService {
 
         // delete user
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByUserEmail(username);
+        return user.map(UserDetailModel::new).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 }

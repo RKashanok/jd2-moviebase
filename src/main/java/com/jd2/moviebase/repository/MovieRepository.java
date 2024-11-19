@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MovieRepository {
 
+    private static final String FIND_ALL_HQL = "FROM Movie";
+
     private final SessionFactory sessionFactory;
 
     @Autowired
@@ -27,7 +29,7 @@ public class MovieRepository {
 
     public List<Movie> findAll() {
         try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM Movie", Movie.class).getResultList();
+            return session.createQuery(FIND_ALL_HQL, Movie.class).getResultList();
         }
     }
 

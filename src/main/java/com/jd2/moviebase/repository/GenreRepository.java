@@ -14,6 +14,8 @@ import java.util.Optional;
 @Repository
 public class GenreRepository {
 
+    private static final String FIND_ALL_HQL = "FROM Genre";
+
     private final SessionFactory sessionFactory;
 
     @Autowired
@@ -27,7 +29,7 @@ public class GenreRepository {
 
     public List<Genre> findAll() {
         try (Session session = sessionFactory.openSession()) {
-        return session.createQuery("FROM Genre", Genre.class).getResultList();
+        return session.createQuery(FIND_ALL_HQL, Genre.class).getResultList();
         }
     }
 

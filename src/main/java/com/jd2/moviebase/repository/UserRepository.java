@@ -15,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserRepository {
 
+    private static final String FIND_ALL_HQL = "FROM User";
+    private static final String FIND_BY_EMAIL_HQL = "FROM User WHERE email = :email";
+
     private final SessionFactory sessionFactory;
 
     @Autowired
@@ -28,7 +31,7 @@ public class UserRepository {
 
     public List<User> findAll() {
         try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM User", User.class).getResultList();
+            return session.createQuery(FIND_ALL_HQL, User.class).getResultList();
         }
     }
 
@@ -51,7 +54,6 @@ public class UserRepository {
         if (existingUser == null) {
             throw new MovieDbRepositoryOperationException("User with ID " + user.getId() + " not found");
         }
-//        user.setUpdatedAt(LocalDateTime.now(ZoneId.of("UTC")));
         getCurrentSession().merge(user);
         return user;
     }
@@ -63,6 +65,15 @@ public class UserRepository {
             getCurrentSession().remove(user);
         } else {
             throw new MovieDbRepositoryOperationException("User with ID " + id + " not found for deletion");
+        }
+    }
+
+    public Optional<User> findByUserEmail(String email) {
+        try (Session session = sessionFactory.openSession()) {
+            User user = session.createQuery(FIND_BY_EMAIL_HQL, User.class)
+                    .setParameter("email", email)
+                    .uniqueResult();
+            return Optional.ofNullable(user);
         }
     }
 }

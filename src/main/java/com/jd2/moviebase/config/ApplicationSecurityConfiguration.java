@@ -1,9 +1,13 @@
 package com.jd2.moviebase.config;
 
+import com.jd2.moviebase.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
@@ -35,15 +39,23 @@ public class ApplicationSecurityConfiguration extends AbstractSecurityWebApplica
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        var user = User.builder()
-                .username("admin")
-                .password(passwordEncoder().encode("admin123"))
-                .roles("ADMIN")
-                .build();
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        var user = User.builder()
+//                .username("admin")
+//                .password(passwordEncoder().encode("admin123"))
+//                .roles("ADMIN")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user);
+//    }
 
-        return new InMemoryUserDetailsManager(user);
+    @Bean
+    public AuthenticationProvider authenticationProvider(UserService userService) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
     }
 
     @Bean
