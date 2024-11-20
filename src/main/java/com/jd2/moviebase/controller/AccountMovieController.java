@@ -31,11 +31,10 @@ public class AccountMovieController {
     }
 
     @PostMapping("/account-movies")
-    public void create(@RequestBody AccountMovieDto accountMovieDto) {
-        accountMovieService.create(accountMovieDto);
+    public Long create(@RequestBody AccountMovieDto accountMovieDto) {
+        return accountMovieService.create(accountMovieDto);
     }
 
-    // Обновление статуса account_movie по accountId и movieId
     @PutMapping("/account-movies/{accountId}/{movieId}")
     public void updateMovieStatus(@PathVariable(value = "accountId") Long accountId,
         @PathVariable(value = "movieId") Long movieId,

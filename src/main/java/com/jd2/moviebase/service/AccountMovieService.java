@@ -25,9 +25,9 @@ public class AccountMovieService {
         this.accountMovieRepository = accountMovieRepository;
     }
 
-    public void create(AccountMovieDto accountMovieDto) {
+    public Long create(AccountMovieDto accountMovieDto) {
         logger.info("Creating account movie: {}", accountMovieDto);
-        accountMovieRepository.create(ModelMapper.toAccountMovie(accountMovieDto));
+        return accountMovieRepository.create(ModelMapper.toAccountMovie(accountMovieDto));
     }
 
     public List<AccountMovieDto> findAllByAccountId(Long accountId) {

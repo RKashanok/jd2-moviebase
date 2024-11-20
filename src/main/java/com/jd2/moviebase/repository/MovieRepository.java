@@ -40,10 +40,23 @@ public class MovieRepository {
         }
     }
 
+    public Optional<Movie> findByTmdbId(Long tmdbId) {
+        try (Session session = sessionFactory.openSession()) {
+            Movie movie = session.find(Movie.class, tmdbId);
+            return Optional.ofNullable(movie);
+        }
+    }
+
     @Transactional
     public Movie create(Movie movie) {
         getCurrentSession().persist(movie);
         return movie;
+    }
+
+    @Transactional
+    public Movie createIfNotExist(Movie movie) {
+        Optional<Movie> existingMovie = findByTmdbId(movie.getTmdbId());
+        return existingMovie.orElseGet(() -> create(movie));
     }
 
     @Transactional

@@ -47,6 +47,13 @@ public class MovieService {
         return ModelMapper.toMovieDto(createdMovie);
     }
 
+    public MovieDto createIfNotExist(MovieDto movieDto){
+        logger.info("Executing method: createIfNotExist(movieDto={})", movieDto);
+        Movie movie = ModelMapper.toMovie(movieDto);
+        Movie createdMovie = movieRepository.createIfNotExist(movie);
+        return ModelMapper.toMovieDto(createdMovie);
+    }
+
     public MovieDto update(MovieDto movieDto){
         logger.info("Executing method: update(genre={})", movieDto);
         Movie movie = ModelMapper.toMovie(movieDto);
