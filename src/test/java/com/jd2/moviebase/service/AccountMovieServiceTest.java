@@ -1,10 +1,11 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.AccountMovieDto;
+import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.model.AccountMovie;
+import com.jd2.moviebase.model.Movie;
 import com.jd2.moviebase.repository.AccountMovieRepository;
 import com.jd2.moviebase.util.ConstantsHelper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,42 +27,25 @@ class AccountMovieServiceTest {
     @InjectMocks
     private AccountMovieService accountMovieService;
 
-    private AccountMovie accountMovie;
-    private AccountMovieDto accountMovieDto;
-
-    @BeforeEach
-    void setUp() {
-        accountMovie = AccountMovie.builder()
-                .id(1L)
-                .status("WATCHED")
-                .build();
-
-        accountMovieDto = AccountMovieDto.builder()
-                .accountId(1L)
-                .movieId(1L)
-                .status("WATCHED")
-                .build();
-    }
-
     @Test
     void create_ShouldCallRepositoryCreateMethod() {
         doNothing().when(accountMovieRepository).create(any(AccountMovie.class));
 
-        accountMovieService.create(accountMovieDto);
+        accountMovieService.create(getAccountMovieDto());
 
         verify(accountMovieRepository, times(1)).create(any(AccountMovie.class));
     }
 
     @Test
     void findAllByAccountId_ShouldReturnListOfAccountMovieDtos() {
-        when(accountMovieRepository.findAllByAccountId(1L)).thenReturn(List.of(accountMovie));
+        when(accountMovieRepository.findAllByAccountId(1L)).thenReturn(List.of(getAccountMovie()));
 
         List<AccountMovieDto> result = accountMovieService.findAllByAccountId(1L);
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(accountMovieDto.getStatus(), result.get(0).getStatus());
-        verify(accountMovieRepository, times(1)).findAllByAccountId(1L);  // Проверка, что findAllByAccountId был вызван один раз
+        assertEquals(getAccountMovieDto().getStatus(), result.get(0).getStatus());
+        verify(accountMovieRepository, times(1)).findAllByAccountId(1L);
     }
 
     @Test
@@ -80,5 +64,21 @@ class AccountMovieServiceTest {
         accountMovieService.deleteByAccId(1L);
 
         verify(accountMovieRepository, times(1)).deleteByAccId(1L);
+    }
+
+    private AccountMovie getAccountMovie() {
+        return AccountMovie.builder()
+                .account(Account.builder().id(1L).build())
+                .movie(Movie.builder().id(1L).build())
+                .status("WATCHED")
+                .build();
+    }
+
+    private AccountMovieDto getAccountMovieDto() {
+        return AccountMovieDto.builder()
+                .accountId(1L)
+                .movieId(1L)
+                .status("WATCHED")
+                .build();
     }
 }

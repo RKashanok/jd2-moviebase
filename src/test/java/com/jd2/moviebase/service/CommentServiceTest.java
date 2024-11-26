@@ -25,44 +25,26 @@ class CommentServiceTest {
     @InjectMocks
     private CommentService commentService;
 
-    private Comment comment;
-    private CommentDto commentDto;
-
-    @BeforeEach
-    void setUp() {
-        comment = Comment.builder()
-                .id(1L)
-                .note("Great movie!")
-                .isActive(true)
-                .build();
-
-        commentDto = CommentDto.builder()
-                .id(1L)
-                .note("Great movie!")
-                .isActive(true)
-                .build();
-    }
-
     @Test
     void findAll_ShouldReturnListOfCommentDtos() {
-        when(commentRepository.findAll()).thenReturn(List.of(comment));
+        when(commentRepository.findAll()).thenReturn(List.of(getComment()));
 
         List<CommentDto> result = commentService.findAll();
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(commentDto.getId(), result.get(0).getId());
+        assertEquals(getCommentDto().getId(), result.get(0).getId());
         verify(commentRepository, times(1)).findAll();
     }
 
     @Test
     void findById_ShouldReturnCommentDto_WhenCommentExists() {
-        when(commentRepository.findById(1L)).thenReturn(comment);
+        when(commentRepository.findById(1L)).thenReturn(getComment());
 
         CommentDto result = commentService.findById(1L);
 
         assertNotNull(result);
-        assertEquals(commentDto.getId(), result.getId());
+        assertEquals(getCommentDto().getId(), result.getId());
         verify(commentRepository, times(1)).findById(1L);
     }
 
@@ -76,23 +58,23 @@ class CommentServiceTest {
 
     @Test
     void create_ShouldReturnCreatedCommentDto() {
-        when(commentRepository.create(any(Comment.class))).thenReturn(comment);
+        when(commentRepository.create(any(Comment.class))).thenReturn(getComment());
 
-        CommentDto result = commentService.create(commentDto);
+        CommentDto result = commentService.create(getCommentDto());
 
         assertNotNull(result);
-        assertEquals(commentDto.getId(), result.getId());
+        assertEquals(getCommentDto().getId(), result.getId());
         verify(commentRepository, times(1)).create(any(Comment.class));
     }
 
     @Test
     void update_ShouldReturnUpdatedCommentDto() {
-        when(commentRepository.update(any(Comment.class))).thenReturn(comment);
+        when(commentRepository.update(any(Comment.class))).thenReturn(getComment());
 
-        CommentDto result = commentService.update(1L, commentDto);
+        CommentDto result = commentService.update(1L, getCommentDto());
 
         assertNotNull(result);
-        assertEquals(commentDto.getId(), result.getId());
+        assertEquals(getCommentDto().getId(), result.getId());
         verify(commentRepository, times(1)).update(any(Comment.class));
     }
 
@@ -111,5 +93,21 @@ class CommentServiceTest {
 
         assertThrows(MovieDbRepositoryOperationException.class, () -> commentService.deactivateByAccId(1L));
         verify(commentRepository, times(1)).deactivateByAccId(1L);
+    }
+
+    private Comment getComment() {
+        return Comment.builder()
+                .id(1L)
+                .note("Great movie!")
+                .isActive(true)
+                .build();
+    }
+
+    private CommentDto getCommentDto() {
+        return CommentDto.builder()
+                .id(1L)
+                .note("Great movie!")
+                .isActive(true)
+                .build();
     }
 }

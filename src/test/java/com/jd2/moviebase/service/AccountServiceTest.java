@@ -2,8 +2,8 @@ package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.AccountDto;
 import com.jd2.moviebase.model.Account;
+import com.jd2.moviebase.model.User;
 import com.jd2.moviebase.repository.AccountRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,75 +29,47 @@ class AccountServiceTest {
     @InjectMocks
     private AccountService accountService;
 
-    private Account account;
-    private AccountDto accountDto;
-
-    @BeforeEach
-    void setUp() {
-        account = Account.builder()
-                .id(1L)
-                .firstName("John")
-                .lastName("Doe")
-                .preferredName("JD")
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
-                .phone("1234567890")
-                .gender("Male")
-                .photoUrl("http://example.com/photo.jpg")
-                .build();
-
-        accountDto = AccountDto.builder()
-                .id(1L)
-                .firstName("John")
-                .lastName("Doe")
-                .preferredName("JD")
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
-                .phone("1234567890")
-                .gender("Male")
-                .photoUrl("http://example.com/photo.jpg")
-                .build();
-    }
-
     @Test
     void create_ShouldSaveAccountAndReturnDto() {
-        when(accountRepository.create(any(Account.class))).thenReturn(account);
+        when(accountRepository.create(any(Account.class))).thenReturn(getAccount());
 
-        AccountDto result = accountService.create(accountDto);
+        AccountDto result = accountService.create(getAccountDto());
 
         assertNotNull(result);
-        assertEquals(accountDto.getId(), result.getId());
+        assertEquals(getAccountDto().getId(), result.getId());
         verify(accountRepository, times(1)).create(any(Account.class));
     }
 
     @Test
     void findById_ShouldReturnAccountDto_WhenAccountExists() {
-        when(accountRepository.findById(1L)).thenReturn(account);
+        when(accountRepository.findById(1L)).thenReturn(getAccount());
 
         AccountDto result = accountService.findById(1L);
 
         assertNotNull(result);
-        assertEquals(accountDto.getId(), result.getId());
+        assertEquals(getAccountDto().getId(), result.getId());
         verify(accountRepository, times(1)).findById(1L);
     }
 
     @Test
     void findByUserId_ShouldReturnAccountDto_WhenAccountExists() {
-        when(accountRepository.findByUserId(1L)).thenReturn(account);
+        when(accountRepository.findByUserId(1L)).thenReturn(getAccount());
 
         AccountDto result = accountService.findByUserId(1L);
 
         assertNotNull(result);
-        assertEquals(accountDto.getId(), result.getId());
+        assertEquals(getAccountDto().getUserId(), result.getUserId());
         verify(accountRepository, times(1)).findByUserId(1L);
     }
 
     @Test
     void update_ShouldUpdateAccountAndReturnDto() {
-        when(accountRepository.update(any(Account.class))).thenReturn(account);
+        when(accountRepository.update(any(Account.class))).thenReturn(getAccount());
 
-        AccountDto result = accountService.update(1L, accountDto);
+        AccountDto result = accountService.update(1L, getAccountDto());
 
         assertNotNull(result);
-        assertEquals(accountDto.getId(), result.getId());
+        assertEquals(getAccountDto().getId(), result.getId());
         verify(accountRepository, times(1)).update(any(Account.class));
     }
 
@@ -112,5 +84,33 @@ class AccountServiceTest {
         verify(commentService, times(1)).deactivateByAccId(1L);
         verify(accountMovieService, times(1)).deleteByAccId(1L);
         verify(accountRepository, times(1)).deleteById(1L);
+    }
+
+    private Account getAccount() {
+        return Account.builder()
+                .id(1L)
+                .user(User.builder().id(1L).build())
+                .firstName("John")
+                .lastName("Doe")
+                .preferredName("JD")
+                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                .phone("1234567890")
+                .gender("Male")
+                .photoUrl("http://example.com/photo.jpg")
+                .build();
+    }
+
+    private AccountDto getAccountDto() {
+        return AccountDto.builder()
+                .id(1L)
+                .userId(1L)
+                .firstName("John")
+                .lastName("Doe")
+                .preferredName("JD")
+                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                .phone("1234567890")
+                .gender("Male")
+                .photoUrl("http://example.com/photo.jpg")
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.jd2.moviebase.service;
 
+import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.User;
 import com.jd2.moviebase.model.UserDetailModel;
 import com.jd2.moviebase.repository.UserRepository;
@@ -38,7 +39,7 @@ public class UserService implements UserDetailsService {
     public User findById(Long id) {
         logger.info("Finding user by id: {}", id);
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new MovieDbRepositoryOperationException("User not found with id: " + id));
     }
 
     public List<User> findAll() {

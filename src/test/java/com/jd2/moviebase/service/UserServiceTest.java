@@ -1,9 +1,9 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.AccountDto;
+import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.User;
 import com.jd2.moviebase.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,29 +28,14 @@ class UserServiceTest {
     @Mock
     private AccountService accountService;
     @Mock
-    private CommentService commentService;
-    @Mock
-    private AccountMovieService accountMovieService;
-    @Mock
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserService userService;
 
-    private User user;
-
-    @BeforeEach
-    void setUp() {
-        user = User.builder()
-                .id(1L)
-                .email("test@example.com")
-                .password("password")
-                .build();
-
-    }
-
     @Test
     void create_ShouldEncodePasswordAndSaveUser() {
+        User user = getUser();
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
         when(userRepository.create(any(User.class))).thenReturn(user);
 
@@ -64,7 +49,7 @@ class UserServiceTest {
 
     @Test
     void findById_ShouldReturnUser_WhenUserExists() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(getUser()));
 
         User foundUser = userService.findById(1L);
 
@@ -77,14 +62,14 @@ class UserServiceTest {
     void findById_ShouldThrowException_WhenUserNotFound() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.findById(1L));
+        MovieDbRepositoryOperationException exception = assertThrows(MovieDbRepositoryOperationException.class, () -> userService.findById(1L));
         assertEquals("User not found with id: 1", exception.getMessage());
         verify(userRepository, times(1)).findById(1L);
     }
 
     @Test
     void findAll_ShouldReturnListOfUsers() {
-        when(userRepository.findAll()).thenReturn(List.of(user));
+        when(userRepository.findAll()).thenReturn(List.of(getUser()));
 
         List<User> users = userService.findAll();
 
@@ -95,9 +80,9 @@ class UserServiceTest {
 
     @Test
     void update_ShouldCallRepositoryUpdateMethod() {
-        when(userRepository.update(any(User.class))).thenReturn(user);
+        when(userRepository.update(any(User.class))).thenReturn(getUser());
 
-        User updatedUser = userService.update(user);
+        User updatedUser = userService.update(getUser());
 
         assertNotNull(updatedUser);
         assertEquals(1L, updatedUser.getId());
@@ -106,24 +91,20 @@ class UserServiceTest {
 
     @Test
     void deleteById_ShouldCallRelatedServicesAndDeleteUser() {
-        when(accountService.findByUserId(1L)).thenReturn(new AccountDto(1L, 1L, "John", "Doe", "JD", null, null, null, null));
-        doNothing().when(commentService).deactivateByAccId(1L);
-        doNothing().when(accountMovieService).deleteByAccId(1L);
+        when(accountService.findByUserId(1L)).thenReturn(AccountDto.builder().id(1L).userId(1L).firstName("John").lastName("Doe").build());
         doNothing().when(accountService).deleteById(1L);
         doNothing().when(userRepository).deleteById(1L);
 
         userService.deleteById(1L);
 
         verify(accountService, times(1)).findByUserId(1L);
-        verify(commentService, times(1)).deactivateByAccId(1L);
-        verify(accountMovieService, times(1)).deleteByAccId(1L);
         verify(accountService, times(1)).deleteById(1L);
         verify(userRepository, times(1)).deleteById(1L);
     }
 
     @Test
     void loadUserByUsername_ShouldReturnUserDetails_WhenUserExists() {
-        when(userRepository.findByUserEmail("test@example.com")).thenReturn(Optional.of(user));
+        when(userRepository.findByUserEmail("test@example.com")).thenReturn(Optional.of(getUser()));
 
         UserDetails userDetails = userService.loadUserByUsername("test@example.com");
 
@@ -139,5 +120,14 @@ class UserServiceTest {
         UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername("unknown@example.com"));
         assertEquals("User not found with username: unknown@example.com", exception.getMessage());
         verify(userRepository, times(1)).findByUserEmail("unknown@example.com");
+    }
+
+    private User getUser() {
+        return User.builder()
+                .id(1L)
+                .email("test@example.com")
+                .password("password")
+                .role("ADMIN")
+                .build();
     }
 }

@@ -4,7 +4,6 @@ import com.jd2.moviebase.dto.GenreDto;
 import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.Genre;
 import com.jd2.moviebase.repository.GenreRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
