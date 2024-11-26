@@ -28,53 +28,26 @@ class MovieServiceTest {
     @InjectMocks
     private MovieService movieService;
 
-    private Movie movie;
-    private MovieDto movieDto;
-
-    @BeforeEach
-    void setUp() {
-        movie = Movie.builder()
-                .id(1L)
-                .tmdbId(100L)
-                .name("Pulp Fiction")
-                .releaseDate(LocalDate.of(1994, 7, 16))
-                .rating(8L)
-                .overview("Two bandits Vincent Vega and Jules Winfield...")
-                .originalLanguage("en")
-                .build();
-
-        movieDto = MovieDto.builder()
-                .id(1L)
-                .tmdbId(100L)
-                .name("Pulp Fiction")
-                .releaseDate(LocalDate.of(1994, 7, 16))
-                .rating(8L)
-                .overview("Two bandits Vincent Vega and Jules Winfield...")
-                .originalLanguage("en")
-                .genreId(Collections.emptyList())
-                .build();
-    }
-
     @Test
     void findAll_ShouldReturnListOfMovieDtos() {
-        when(movieRepository.findAll()).thenReturn(List.of(movie));
+        when(movieRepository.findAll()).thenReturn(List.of(getMovie()));
 
         List<MovieDto> result = movieService.findAll();
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(movieDto.getId(), result.get(0).getId());
+        assertEquals(getMovieDto().getId(), result.get(0).getId());
         verify(movieRepository, times(1)).findAll();
     }
 
     @Test
     void findById_ShouldReturnMovieDto_WhenMovieExists() {
-        when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(getMovie()));
 
         MovieDto result = movieService.findById(1L);
 
         assertNotNull(result);
-        assertEquals(movieDto.getId(), result.getId());
+        assertEquals(getMovieDto().getId(), result.getId());
         verify(movieRepository, times(1)).findById(1L);
     }
 
@@ -88,23 +61,23 @@ class MovieServiceTest {
 
     @Test
     void create_ShouldReturnCreatedMovieDto() {
-        when(movieRepository.create(any(Movie.class))).thenReturn(movie);
+        when(movieRepository.create(any(Movie.class))).thenReturn(getMovie());
 
-        MovieDto result = movieService.create(movieDto);
+        MovieDto result = movieService.create(getMovieDto());
 
         assertNotNull(result);
-        assertEquals(movieDto.getId(), result.getId());
+        assertEquals(getMovieDto().getId(), result.getId());
         verify(movieRepository, times(1)).create(any(Movie.class));
     }
 
     @Test
     void update_ShouldReturnUpdatedMovieDto() {
-        when(movieRepository.update(any(Movie.class))).thenReturn(movie);
+        when(movieRepository.update(any(Movie.class))).thenReturn(getMovie());
 
-        MovieDto result = movieService.update(movieDto);
+        MovieDto result = movieService.update(getMovieDto());
 
         assertNotNull(result);
-        assertEquals(movieDto.getId(), result.getId());
+        assertEquals(getMovieDto().getId(), result.getId());
         verify(movieRepository, times(1)).update(any(Movie.class));
     }
 
@@ -115,5 +88,31 @@ class MovieServiceTest {
         movieService.deleteByID(1L);
 
         verify(movieRepository, times(1)).deleteById(1L);
+    }
+
+    private Movie getMovie() {
+        return Movie.builder()
+                .id(1L)
+                .tmdbId(100L)
+                .name("Pulp Fiction")
+                .releaseDate(LocalDate.of(1994, 7, 16))
+                .rating(8L)
+                .overview("Two bandits Vincent Vega and Jules Winfield...")
+                .originalLanguage("en")
+                .build();
+    }
+
+
+    private MovieDto getMovieDto() {
+        return MovieDto.builder()
+                .id(1L)
+                .tmdbId(100L)
+                .name("Pulp Fiction")
+                .releaseDate(LocalDate.of(1994, 7, 16))
+                .rating(8L)
+                .overview("Two bandits Vincent Vega and Jules Winfield...")
+                .originalLanguage("en")
+                .genreId(Collections.emptyList())
+                .build();
     }
 }

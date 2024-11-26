@@ -26,44 +26,26 @@ class GenreServiceTest {
     @InjectMocks
     private GenreService genreService;
 
-    private Genre genre;
-    private GenreDto genreDto;
-
-    @BeforeEach
-    void setUp() {
-        genre = Genre.builder()
-                .id(1L)
-                .tmdbId(100L)
-                .name("Action")
-                .build();
-
-        genreDto = GenreDto.builder()
-                .id(1L)
-                .tmdbId(100L)
-                .name("Action")
-                .build();
-    }
-
     @Test
     void findAll_ShouldReturnListOfGenreDtos() {
-        when(genreRepository.findAll()).thenReturn(List.of(genre));
+        when(genreRepository.findAll()).thenReturn(List.of(getGenre()));
 
         List<GenreDto> result = genreService.findAll();
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(genreDto.getId(), result.get(0).getId());
+        assertEquals(getGenreDto().getId(), result.get(0).getId());
         verify(genreRepository, times(1)).findAll();
     }
 
     @Test
     void findById_ShouldReturnGenreDto_WhenGenreExists() {
-        when(genreRepository.findById(1L)).thenReturn(Optional.of(genre));
+        when(genreRepository.findById(1L)).thenReturn(Optional.of(getGenre()));
 
         GenreDto result = genreService.findById(1L);
 
         assertNotNull(result);
-        assertEquals(genreDto.getId(), result.getId());
+        assertEquals(getGenreDto().getId(), result.getId());
         verify(genreRepository, times(1)).findById(1L);
     }
 
@@ -77,23 +59,23 @@ class GenreServiceTest {
 
     @Test
     void create_ShouldReturnCreatedGenreDto() {
-        when(genreRepository.create(any(Genre.class))).thenReturn(genre);
+        when(genreRepository.create(any(Genre.class))).thenReturn(getGenre());
 
-        GenreDto result = genreService.create(genreDto);
+        GenreDto result = genreService.create(getGenreDto());
 
         assertNotNull(result);
-        assertEquals(genreDto.getId(), result.getId());
+        assertEquals(getGenreDto().getId(), result.getId());
         verify(genreRepository, times(1)).create(any(Genre.class));
     }
 
     @Test
     void update_ShouldReturnUpdatedGenreDto() {
-        when(genreRepository.update(any(Genre.class))).thenReturn(genre);
+        when(genreRepository.update(any(Genre.class))).thenReturn(getGenre());
 
-        GenreDto result = genreService.update(1L, genreDto);
+        GenreDto result = genreService.update(1L, getGenreDto());
 
         assertNotNull(result);
-        assertEquals(genreDto.getId(), result.getId());
+        assertEquals(getGenreDto().getId(), result.getId());
         verify(genreRepository, times(1)).update(any(Genre.class));
     }
 
@@ -104,5 +86,21 @@ class GenreServiceTest {
         genreService.deleteById(1L);
 
         verify(genreRepository, times(1)).deleteById(1L);
+    }
+
+    private Genre getGenre() {
+        return Genre.builder()
+                .id(1L)
+                .tmdbId(100L)
+                .name("Action")
+                .build();
+    }
+
+    private GenreDto getGenreDto() {
+        return GenreDto.builder()
+                .id(1L)
+                .tmdbId(100L)
+                .name("Action")
+                .build();
     }
 }
