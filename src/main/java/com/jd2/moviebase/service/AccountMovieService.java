@@ -31,7 +31,6 @@ public class AccountMovieService {
         this.movieService = movieService;
     }
 
-    @Transactional
     public Long create(MovieDto movieDto) {
         UserDetailModel user = (UserDetailModel)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long accountId = user.getAccountId();

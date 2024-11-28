@@ -3,11 +3,9 @@ package com.jd2.moviebase.service;
 import com.jd2.moviebase.model.User;
 import com.jd2.moviebase.model.UserDetailModel;
 import com.jd2.moviebase.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -52,7 +50,6 @@ public class UserService implements UserDetailsService {
         return userRepository.update(user);
     }
 
-    @Transactional
     public void deleteById(Long id) {
         logger.info("Deleting user by id: {}", id);
         Long accId = accountService.findByUserId(id).getId();
