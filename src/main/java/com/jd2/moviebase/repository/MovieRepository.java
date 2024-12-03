@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 public class MovieRepository {
 
     private static final String FIND_ALL_HQL = "FROM Movie";
+    private static final String FIND_BY_TMDB_ID_HQL = "FROM Movie m WHERE m.tmdbId = :tmdbId";
 
     private final SessionFactory sessionFactory;
 
@@ -42,8 +43,9 @@ public class MovieRepository {
 
     public Optional<Movie> findByTmdbId(Long tmdbId) {
         try (Session session = sessionFactory.openSession()) {
-            Movie movie = session.find(Movie.class, tmdbId);
-            return Optional.ofNullable(movie);
+            return session.createQuery(FIND_BY_TMDB_ID_HQL, Movie.class)
+                    .setParameter("tmdbId", tmdbId)
+                    .uniqueResultOptional();
         }
     }
 

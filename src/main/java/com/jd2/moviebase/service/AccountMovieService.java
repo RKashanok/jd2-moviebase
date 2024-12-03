@@ -6,7 +6,6 @@ import com.jd2.moviebase.model.AccountMovie;
 import com.jd2.moviebase.model.UserDetailModel;
 import com.jd2.moviebase.repository.AccountMovieRepository;
 import com.jd2.moviebase.util.ModelMapper;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ public class AccountMovieService {
         Long accountId = user.getAccountId();
         logger.info("Creating account movie {} for account {}", movieDto, accountId);
         MovieDto movieDtoResult = movieService.createIfNotExist(movieDto);
-        AccountMovieDto accountMovieDto = AccountMovieDto.builder().accountId(accountId).movieId(movieDtoResult.getId()).build();
+        AccountMovieDto accountMovieDto = AccountMovieDto.builder().accountId(accountId).movieId(movieDtoResult.getId()).status(String.valueOf(MovieStatus.TO_WATCH)).build();
         return accountMovieRepository.create(ModelMapper.toAccountMovie(accountMovieDto));
     }
 
