@@ -34,9 +34,6 @@ public class UserController {
 
     @PostMapping
     public User create(@RequestBody User user) {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailModel userDetailModel = (UserDetailModel)authentication.getPrincipal();
         return userService.create(user);
     }
 

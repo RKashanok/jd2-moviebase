@@ -44,7 +44,7 @@ class UserServiceTest {
         assertNotNull(createdUser);
         assertEquals("encodedPassword", user.getPassword());
         verify(passwordEncoder, times(1)).encode("password");
-        verify(userRepository, times(1)).create(any(User.class));
+        verify(userRepository, times(1)).create(user);
     }
 
     @Test
@@ -80,13 +80,14 @@ class UserServiceTest {
 
     @Test
     void update_ShouldCallRepositoryUpdateMethod() {
-        when(userRepository.update(any(User.class))).thenReturn(getUser());
+        User user = getUser();
+        when(userRepository.update(any(User.class))).thenReturn(user);
 
-        User updatedUser = userService.update(getUser());
+        User updatedUser = userService.update(user);
 
         assertNotNull(updatedUser);
         assertEquals(1L, updatedUser.getId());
-        verify(userRepository, times(1)).update(any(User.class));
+        verify(userRepository, times(1)).update(user);
     }
 
     @Test

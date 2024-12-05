@@ -2,8 +2,11 @@ package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.CommentDto;
 import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
+import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.model.Comment;
+import com.jd2.moviebase.model.Movie;
 import com.jd2.moviebase.repository.CommentRepository;
+import com.jd2.moviebase.util.ModelMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,24 +61,28 @@ class CommentServiceTest {
 
     @Test
     void create_ShouldReturnCreatedCommentDto() {
-        when(commentRepository.create(any(Comment.class))).thenReturn(getComment());
+        Comment comment = getComment();
+        CommentDto commentDto = getCommentDto();
+        when(commentRepository.create(any(Comment.class))).thenReturn(comment);
 
-        CommentDto result = commentService.create(getCommentDto());
+        CommentDto result = commentService.create(commentDto);
 
         assertNotNull(result);
-        assertEquals(getCommentDto().getId(), result.getId());
-        verify(commentRepository, times(1)).create(any(Comment.class));
+        assertEquals(commentDto.getId(), result.getId());
+        verify(commentRepository, times(1)).create(comment);
     }
 
     @Test
     void update_ShouldReturnUpdatedCommentDto() {
-        when(commentRepository.update(any(Comment.class))).thenReturn(getComment());
+        Comment comment = getComment();
+        CommentDto commentDto = getCommentDto();
+        when(commentRepository.update(any(Comment.class))).thenReturn(comment);
 
-        CommentDto result = commentService.update(1L, getCommentDto());
+        CommentDto result = commentService.update(1L, commentDto);
 
         assertNotNull(result);
-        assertEquals(getCommentDto().getId(), result.getId());
-        verify(commentRepository, times(1)).update(any(Comment.class));
+        assertEquals(commentDto.getId(), result.getId());
+        verify(commentRepository, times(1)).update(comment);
     }
 
     @Test
@@ -98,6 +105,8 @@ class CommentServiceTest {
     private Comment getComment() {
         return Comment.builder()
                 .id(1L)
+                .account(new Account())
+                .movie(new Movie())
                 .note("Great movie!")
                 .isActive(true)
                 .build();

@@ -33,7 +33,7 @@ class AccountMovieServiceTest {
 
         accountMovieService.create(getAccountMovieDto());
 
-        verify(accountMovieRepository, times(1)).create(any(AccountMovie.class));
+        verify(accountMovieRepository, times(1)).create(getAccountMovie());
     }
 
     @Test

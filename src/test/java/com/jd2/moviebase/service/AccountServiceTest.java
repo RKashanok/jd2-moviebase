@@ -31,13 +31,15 @@ class AccountServiceTest {
 
     @Test
     void create_ShouldSaveAccountAndReturnDto() {
-        when(accountRepository.create(any(Account.class))).thenReturn(getAccount());
+        Account account = getAccount();
+        AccountDto accountDto = getAccountDto();
+        when(accountRepository.create(any(Account.class))).thenReturn(account);
 
-        AccountDto result = accountService.create(getAccountDto());
+        AccountDto result = accountService.create(accountDto);
 
         assertNotNull(result);
-        assertEquals(getAccountDto().getId(), result.getId());
-        verify(accountRepository, times(1)).create(any(Account.class));
+        assertEquals(accountDto.getId(), result.getId());
+        verify(accountRepository, times(1)).create(account);
     }
 
     @Test
@@ -64,13 +66,15 @@ class AccountServiceTest {
 
     @Test
     void update_ShouldUpdateAccountAndReturnDto() {
-        when(accountRepository.update(any(Account.class))).thenReturn(getAccount());
+        Account account = getAccount();
+        AccountDto accountDto = getAccountDto();
+        when(accountRepository.update(any(Account.class))).thenReturn(account);
 
-        AccountDto result = accountService.update(1L, getAccountDto());
+        AccountDto result = accountService.update(1L, accountDto);
 
         assertNotNull(result);
-        assertEquals(getAccountDto().getId(), result.getId());
-        verify(accountRepository, times(1)).update(any(Account.class));
+        assertEquals(accountDto.getId(), result.getId());
+        verify(accountRepository, times(1)).update(account);
     }
 
     @Test

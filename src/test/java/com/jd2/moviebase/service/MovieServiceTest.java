@@ -60,24 +60,28 @@ class MovieServiceTest {
 
     @Test
     void create_ShouldReturnCreatedMovieDto() {
-        when(movieRepository.create(any(Movie.class))).thenReturn(getMovie());
+        Movie movie = getMovie();
+        MovieDto movieDto = getMovieDto();
+        when(movieRepository.create(any(Movie.class))).thenReturn(movie);
 
-        MovieDto result = movieService.create(getMovieDto());
+        MovieDto result = movieService.create(movieDto);
 
         assertNotNull(result);
-        assertEquals(getMovieDto().getId(), result.getId());
-        verify(movieRepository, times(1)).create(any(Movie.class));
+        assertEquals(movieDto.getId(), result.getId());
+        verify(movieRepository, times(1)).create(movie);
     }
 
     @Test
     void update_ShouldReturnUpdatedMovieDto() {
-        when(movieRepository.update(any(Movie.class))).thenReturn(getMovie());
+        Movie movie = getMovie();
+        MovieDto movieDto = getMovieDto();
+        when(movieRepository.update(any(Movie.class))).thenReturn(movie);
 
-        MovieDto result = movieService.update(getMovieDto());
+        MovieDto result = movieService.update(movieDto);
 
         assertNotNull(result);
-        assertEquals(getMovieDto().getId(), result.getId());
-        verify(movieRepository, times(1)).update(any(Movie.class));
+        assertEquals(movieDto.getId(), result.getId());
+        verify(movieRepository, times(1)).update(movie);
     }
 
     @Test
@@ -98,6 +102,7 @@ class MovieServiceTest {
                 .rating(8L)
                 .overview("Two bandits Vincent Vega and Jules Winfield...")
                 .originalLanguage("en")
+                .genres(Collections.emptyList())
                 .build();
     }
 
