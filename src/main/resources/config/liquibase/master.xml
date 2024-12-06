@@ -12,5 +12,6 @@
     <include file="config/liquibase/003-20241411-create-movie_genres-table.xml"/>
     <include file="config/liquibase/004-20241411-insert-data-to-movie_genres.xml"/>
     <include file="config/liquibase/005-20241411-update-passwords.xml"/>
+    <include file="config/liquibase/006-20242011-uniq-tmdbid.xml"/>
 
 </databaseChangeLog>
