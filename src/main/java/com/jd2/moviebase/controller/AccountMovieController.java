@@ -34,7 +34,7 @@ public class AccountMovieController {
     }
 
     @PostMapping("/account-movies")
-    public Long create(@RequestBody MovieDto movieDto) {
+    public AccountMovieDto create(@RequestBody MovieDto movieDto) {
         return accountMovieService.create(movieDto);
     }
 

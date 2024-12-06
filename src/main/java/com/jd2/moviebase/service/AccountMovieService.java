@@ -30,13 +30,25 @@ public class AccountMovieService {
         this.movieService = movieService;
     }
 
-    public Long create(MovieDto movieDto) {
-        UserDetailModel user = (UserDetailModel)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public AccountMovieDto create(MovieDto movieDto) {
+        UserDetailModel user = (UserDetailModel)SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
         Long accountId = user.getAccountId();
         logger.info("Creating account movie {} for account {}", movieDto, accountId);
+
         MovieDto movieDtoResult = movieService.createIfNotExist(movieDto);
-        AccountMovieDto accountMovieDto = AccountMovieDto.builder().accountId(accountId).movieId(movieDtoResult.getId()).status(String.valueOf(MovieStatus.TO_WATCH)).build();
-        return accountMovieRepository.create(ModelMapper.toAccountMovie(accountMovieDto));
+
+        AccountMovieDto accountMovieDto = AccountMovieDto.builder()
+                .accountId(accountId)
+                .movieId(movieDtoResult.getId())
+                .status(String.valueOf(MovieStatus.TO_WATCH))
+                .build();
+
+        AccountMovie createdAccountMovie = accountMovieRepository.create(ModelMapper.toAccountMovie(accountMovieDto));
+        return ModelMapper.toAccountMovieDto(createdAccountMovie);
     }
 
     public List<AccountMovieDto> findAllByAccountId(Long accountId) {

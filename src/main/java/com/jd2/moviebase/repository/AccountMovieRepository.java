@@ -40,9 +40,9 @@ public class AccountMovieRepository {
     }
 
     @Transactional
-    public Long create(AccountMovie accountMovie) {
+    public AccountMovie create(AccountMovie accountMovie) {
         getCurrentSession().persist(accountMovie);
-        return accountMovie.getId();
+        return accountMovie;
     }
 
     @Transactional
