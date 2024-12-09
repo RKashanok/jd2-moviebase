@@ -1,7 +1,9 @@
 package com.jd2.moviebase.controller;
 
 import com.jd2.moviebase.dto.AccountMovieDto;
+import com.jd2.moviebase.dto.MovieDto;
 import com.jd2.moviebase.service.AccountMovieService;
+import com.jd2.moviebase.service.MovieService;
 import com.jd2.moviebase.util.ConstantsHelper;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountMovieController {
 
     private AccountMovieService accountMovieService;
+    private MovieService movieService;
 
     @Autowired
     public AccountMovieController(AccountMovieService accountMovieService) {
@@ -31,11 +34,10 @@ public class AccountMovieController {
     }
 
     @PostMapping("/account-movies")
-    public void create(@RequestBody AccountMovieDto accountMovieDto) {
-        accountMovieService.create(accountMovieDto);
+    public AccountMovieDto create(@RequestBody MovieDto movieDto) {
+        return accountMovieService.create(movieDto);
     }
 
-    // Обновление статуса account_movie по accountId и movieId
     @PutMapping("/account-movies/{accountId}/{movieId}")
     public void updateMovieStatus(@PathVariable(value = "accountId") Long accountId,
         @PathVariable(value = "movieId") Long movieId,

@@ -4,6 +4,7 @@ import com.jd2.moviebase.dto.AccountDto;
 import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.repository.AccountRepository;
 import com.jd2.moviebase.util.ModelMapper;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ public class AccountService {
         return ModelMapper.toAccountDto(accountRepository.update(account));
     }
 
+    @Transactional
     public void deleteById(Long id) {
         logger.info("Deleting account by id: {}", id);
         // deactivate comments and set null account id

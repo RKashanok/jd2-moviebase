@@ -1,5 +1,6 @@
 package com.jd2.moviebase.model;
 
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,13 +14,16 @@ public class UserDetailModel implements UserDetails {
     private String username;
     private String password;
     private List<GrantedAuthority> authorities;
+    @Getter
+    private Long accountId;
 
-    public UserDetailModel(User user) {
+    public UserDetailModel(User user, Long accountId) {
         this.username = user.getEmail();
         this.password = user.getPassword();
         this.authorities = Stream.of(user.getRole().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+        this.accountId = accountId;
     }
 
     @Override
@@ -36,4 +40,5 @@ public class UserDetailModel implements UserDetails {
     public String getUsername() {
         return this.username;
     }
+
 }

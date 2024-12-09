@@ -6,7 +6,6 @@ import com.jd2.moviebase.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -53,26 +52,16 @@ public class UserService implements UserDetailsService {
 
     public void deleteById(Long id) {
         logger.info("Deleting user by id: {}", id);
-
-        // get account id
         Long accId = accountService.findByUserId(id).getId();
-
-        // deactivate comments and set null account id
-//        commentService.deactivateByAccId(accId);
-
-        // delete user_movie
-//        accountMovieService.deleteByAccId(accId);
-
-        //delete account
         accountService.deleteById(accId);
-
-        // delete user
         userRepository.deleteById(id);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUserEmail(username);
-        return user.map(UserDetailModel::new).orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
+        return user.map(u -> new UserDetailModel(u, accountService.findByUserId(u.getId()).getId()))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 }
