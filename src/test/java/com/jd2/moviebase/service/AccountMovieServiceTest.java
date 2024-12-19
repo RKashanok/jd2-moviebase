@@ -29,11 +29,12 @@ class AccountMovieServiceTest {
 
     @Test
     void create_ShouldCallRepositoryCreateMethod() {
-        doNothing().when(accountMovieRepository).create(any(AccountMovie.class));
+        AccountMovie accountMovie = getAccountMovie();
+        doNothing().when(accountMovieRepository).create(accountMovie);
 
         accountMovieService.create(getAccountMovieDto());
 
-        verify(accountMovieRepository, times(1)).create(getAccountMovie());
+        verify(accountMovieRepository, times(1)).create(accountMovie);
     }
 
     @Test
