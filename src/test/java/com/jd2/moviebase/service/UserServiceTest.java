@@ -3,6 +3,7 @@ package com.jd2.moviebase.service;
 import com.jd2.moviebase.dto.AccountDto;
 import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.User;
+import com.jd2.moviebase.model.UserDetailModel;
 import com.jd2.moviebase.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -105,13 +106,27 @@ class UserServiceTest {
 
     @Test
     void loadUserByUsername_ShouldReturnUserDetails_WhenUserExists() {
+        AccountDto accountDto = AccountDto.builder()
+                .id(1L)
+                .userId(1L)
+                .firstName("John")
+                .lastName("Doe")
+                .build();
+
         when(userRepository.findByUserEmail("test@example.com")).thenReturn(Optional.of(getUser()));
+        when(accountService.findByUserId(1L)).thenReturn(accountDto);
 
         UserDetails userDetails = userService.loadUserByUsername("test@example.com");
 
         assertNotNull(userDetails);
         assertEquals("test@example.com", userDetails.getUsername());
+        assertInstanceOf(UserDetailModel.class, userDetails);
+
+        UserDetailModel userDetailModel = (UserDetailModel) userDetails;
+        assertEquals(1L, userDetailModel.getAccountId());
+
         verify(userRepository, times(1)).findByUserEmail("test@example.com");
+        verify(accountService, times(1)).findByUserId(1L);
     }
 
     @Test
