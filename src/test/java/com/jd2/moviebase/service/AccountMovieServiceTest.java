@@ -1,9 +1,8 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.AccountMovieDto;
-import com.jd2.moviebase.model.Account;
-import com.jd2.moviebase.model.AccountMovie;
-import com.jd2.moviebase.model.Movie;
+import com.jd2.moviebase.dto.MovieDto;
+import com.jd2.moviebase.model.*;
 import com.jd2.moviebase.repository.AccountMovieRepository;
 import com.jd2.moviebase.util.ConstantsHelper;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -24,17 +26,42 @@ class AccountMovieServiceTest {
     @Mock
     private AccountMovieRepository accountMovieRepository;
 
+    @Mock
+    private SecurityContext securityContext;
+
+    @Mock
+    private Authentication authentication;
+
+    @Mock
+    private MovieService movieService;
+
     @InjectMocks
     private AccountMovieService accountMovieService;
 
     @Test
-    void create_ShouldCallRepositoryCreateMethod() {
+    void create_ShouldCreateAccountMovieSuccessfully() {
+        MovieDto inputMovieDto = MovieDto.builder().name("Test Movie").build();
+        MovieDto createdMovieDto = MovieDto.builder().id(1L).name("Test Movie").build();
         AccountMovie accountMovie = getAccountMovie();
-        doNothing().when(accountMovieRepository).create(accountMovie);
+        AccountMovieDto expectedAccountMovieDto = getAccountMovieDto();
 
-        accountMovieService.create(getAccountMovieDto());
+        UserDetailModel userDetailModel = new UserDetailModel(User.builder().role("ADMIN").build(), 1L);
 
-        verify(accountMovieRepository, times(1)).create(accountMovie);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(userDetailModel);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(movieService.createIfNotExist(any(MovieDto.class))).thenReturn(createdMovieDto);
+        when(accountMovieRepository.create(any(AccountMovie.class))).thenReturn(accountMovie);
+
+        AccountMovieDto result = accountMovieService.create(inputMovieDto);
+
+        assertNotNull(result);
+        assertEquals(expectedAccountMovieDto.getAccountId(), result.getAccountId());
+        assertEquals(expectedAccountMovieDto.getMovieId(), result.getMovieId());
+        assertEquals(expectedAccountMovieDto.getStatus(), result.getStatus());
+        verify(movieService, times(1)).createIfNotExist(inputMovieDto);
+        verify(accountMovieRepository, times(1)).create(any(AccountMovie.class));
     }
 
     @Test
