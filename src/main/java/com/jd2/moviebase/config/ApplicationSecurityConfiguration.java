@@ -15,7 +15,6 @@ public class ApplicationSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("SecurityFilterChain started");
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
@@ -27,7 +26,6 @@ public class ApplicationSecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        System.out.println("PasswordEncoder started");
         return new BCryptPasswordEncoder();
     }
 }
