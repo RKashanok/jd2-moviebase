@@ -8,15 +8,12 @@ import lombok.RequiredArgsConstructor;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -52,7 +49,7 @@ public class SearchMovieClient {
         try {
             for (SearchMovieResponse.Movie movie : results) {
                 movieDtos.add(MovieDto.builder()
-                        .tmdbId((long)movie.getId())
+                        .tmdbId((long) movie.getId())
                         .name(!Objects.equals(movie.getTitle(), "") ? movie.getTitle() : "Unknown Title")
                         .genreId(new ArrayList<>(List.of(1L)))
                         .releaseDate(!Objects.equals(movie.getRelease_date(), "") ? LocalDate.parse(movie.getRelease_date()) : null)

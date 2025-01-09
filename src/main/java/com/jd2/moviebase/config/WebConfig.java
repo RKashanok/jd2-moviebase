@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 public class WebConfig {
     @Bean
     public OkHttpClient okHttpClient() {
-        System.out.println("OkHttpClient started");
         return new OkHttpClient.Builder().readTimeout(5, TimeUnit.SECONDS).build();
     }
 

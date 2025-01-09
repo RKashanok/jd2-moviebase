@@ -2,7 +2,6 @@ package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.CommentDto;
 import com.jd2.moviebase.model.Comment;
-import com.jd2.moviebase.model.Genre;
 import com.jd2.moviebase.repository.CommentRepository;
 import com.jd2.moviebase.util.ModelMapper;
 import org.slf4j.Logger;
