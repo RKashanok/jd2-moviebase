@@ -40,21 +40,26 @@ public class GenreService {
         Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new MovieDbRepositoryOperationException("Genre not found with id: " + id));
         return ModelMapper.toGenreDto(genre);
-
     }
 
     public GenreDto create(GenreDto genreDto) {
         logger.info("Executing method: create(genre={})", genreDto);
         Genre genre = ModelMapper.toGenre(genreDto);
-        Genre createdGenre = genreRepository.create(genre);
+        Genre createdGenre = genreRepository.save(genre);
         return ModelMapper.toGenreDto(createdGenre);
     }
 
     public GenreDto update(Long id, GenreDto genreDto) {
         logger.info("Executing method: update(id={}, genre={})", id, genreDto);
+
+        if (!genreRepository.existsById(id)) {
+            throw new MovieDbRepositoryOperationException("Genre with ID " + id + " not found");
+        }
+
         genreDto.setId(id);
         Genre genre = ModelMapper.toGenre(genreDto);
-        Genre updatedGenre = genreRepository.update(genre);
+
+        Genre updatedGenre = genreRepository.save(genre);
         return ModelMapper.toGenreDto(updatedGenre);
     }
 
