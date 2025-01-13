@@ -40,30 +40,34 @@ public class MovieService {
         return ModelMapper.toMovieDto(movie);
     }
 
-    public MovieDto create(MovieDto movieDto){
+    public MovieDto create(MovieDto movieDto) {
         logger.info("Executing method: create(genre={})", movieDto);
         Movie movie = ModelMapper.toMovie(movieDto);
-        Movie createdMovie = movieRepository.create(movie);
+        Movie createdMovie = movieRepository.save(movie);
         return ModelMapper.toMovieDto(createdMovie);
     }
 
-    public MovieDto createIfNotExist(MovieDto movieDto){
+    public MovieDto createIfNotExist(MovieDto movieDto) {
         logger.info("Executing method: createIfNotExist(movieDto={})", movieDto);
         Movie movie = ModelMapper.toMovie(movieDto);
-        Movie createdMovie = movieRepository.createIfNotExist(movie);
-        return ModelMapper.toMovieDto(createdMovie);
+        Movie existingMovie = movieRepository.findByTmdbId(movie.getTmdbId()).orElse(movie);
+        return ModelMapper.toMovieDto(movieRepository.save(existingMovie));
     }
 
-    public MovieDto update(MovieDto movieDto){
-        logger.info("Executing method: update(genre={})", movieDto);
+    public MovieDto update(MovieDto movieDto) {
+        logger.info("Executing method: update(movieDto={})", movieDto);
         Movie movie = ModelMapper.toMovie(movieDto);
-        Movie updatedMovie = movieRepository.update(movie);
-        return ModelMapper.toMovieDto(updatedMovie);
+        if (!movieRepository.existsById(movie.getId())) {
+            throw new MovieDbRepositoryOperationException("Movie not found with id: " + movie.getId());
+        }
+        return ModelMapper.toMovieDto(movieRepository.save(movie));
     }
 
-    public void deleteByID(Long id){
+    public void deleteByID(Long id) {
         logger.info("Executing method: deleteByID(id={})", id);
+        if (!movieRepository.existsById(id)) {
+            throw new MovieDbRepositoryOperationException("Movie not found with id: " + id);
+        }
         movieRepository.deleteById(id);
     }
-
 }
