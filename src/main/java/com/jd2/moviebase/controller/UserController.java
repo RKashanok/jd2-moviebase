@@ -2,14 +2,9 @@ package com.jd2.moviebase.controller;
 
 import com.jd2.moviebase.dto.AccountDto;
 import com.jd2.moviebase.model.User;
-import com.jd2.moviebase.model.UserDetailModel;
 import com.jd2.moviebase.service.AccountService;
 import com.jd2.moviebase.service.UserService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")

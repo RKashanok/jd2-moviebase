@@ -1,6 +1,5 @@
 package com.jd2.moviebase.model;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 

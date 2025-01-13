@@ -1,7 +1,6 @@
 package com.jd2.moviebase.model;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
