@@ -52,7 +52,7 @@ class AccountMovieServiceTest {
         SecurityContextHolder.setContext(securityContext);
 
         when(movieService.createIfNotExist(any(MovieDto.class))).thenReturn(createdMovieDto);
-        when(accountMovieRepository.create(any(AccountMovie.class))).thenReturn(accountMovie);
+        when(accountMovieRepository.save(any(AccountMovie.class))).thenReturn(accountMovie);
 
         AccountMovieDto result = accountMovieService.create(inputMovieDto);
 
@@ -61,7 +61,7 @@ class AccountMovieServiceTest {
         assertEquals(expectedAccountMovieDto.getMovieId(), result.getMovieId());
         assertEquals(expectedAccountMovieDto.getStatus(), result.getStatus());
         verify(movieService, times(1)).createIfNotExist(inputMovieDto);
-        verify(accountMovieRepository, times(1)).create(any(AccountMovie.class));
+        verify(accountMovieRepository, times(1)).save(any(AccountMovie.class));
     }
 
     @Test
@@ -77,21 +77,23 @@ class AccountMovieServiceTest {
     }
 
     @Test
-    void updateStatusByAccId_ShouldCallRepositoryUpdateStatusByAccId() {
-        doNothing().when(accountMovieRepository).updateStatusByAccId(1L, 1L, ConstantsHelper.MovieStatus.WATCHED);
+    void updateStatusByAccountId_ShouldCallRepositoryUpdateStatusByAccId() {
+        when(accountMovieRepository.updateStatusByAccountId(1L, 1L, ConstantsHelper.MovieStatus.WATCHED.toString()))
+                .thenReturn(1);
 
         accountMovieService.updateStatusByAccId(1L, 1L, ConstantsHelper.MovieStatus.WATCHED);
 
-        verify(accountMovieRepository, times(1)).updateStatusByAccId(1L, 1L, ConstantsHelper.MovieStatus.WATCHED);
+        verify(accountMovieRepository, times(1))
+                .updateStatusByAccountId(1L, 1L, ConstantsHelper.MovieStatus.WATCHED.toString());
     }
 
     @Test
-    void deleteByAccId_ShouldCallRepositoryDeleteByAccId() {
-        doNothing().when(accountMovieRepository).deleteByAccId(1L);
+    void deleteByAccountId_ShouldCallRepositoryDeleteByAccId() {
+        doNothing().when(accountMovieRepository).deleteByAccountId(1L);
 
         accountMovieService.deleteByAccId(1L);
 
-        verify(accountMovieRepository, times(1)).deleteByAccId(1L);
+        verify(accountMovieRepository, times(1)).deleteByAccountId(1L);
     }
 
     private AccountMovie getAccountMovie() {
