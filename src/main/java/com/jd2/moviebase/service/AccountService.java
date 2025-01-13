@@ -1,6 +1,7 @@
 package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.AccountDto;
+import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.Account;
 import com.jd2.moviebase.repository.AccountRepository;
 import com.jd2.moviebase.util.ModelMapper;
@@ -28,25 +29,34 @@ public class AccountService {
 
     public AccountDto create(AccountDto accountDto) {
         logger.info("Creating account: {}", accountDto);
-        Account account = accountRepository.create(ModelMapper.toAccount(accountDto));
+        Account account = accountRepository.save(ModelMapper.toAccount(accountDto));
         return ModelMapper.toAccountDto(account);
     }
 
     public AccountDto findById(Long id) {
         logger.info("Finding account by id: {}", id);
-        return ModelMapper.toAccountDto(accountRepository.findById(id));
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new MovieDbRepositoryOperationException("Account with ID " + id + " not found"));
+        return ModelMapper.toAccountDto(account);
     }
 
     public AccountDto findByUserId(Long userId) {
         logger.info("Finding account by user_id: {}", userId);
-        return ModelMapper.toAccountDto(accountRepository.findByUserId(userId));
+        Account account = accountRepository.findByUserId(userId)
+                .orElseThrow(() -> new MovieDbRepositoryOperationException("Account with user ID " + userId + " not found"));
+        return ModelMapper.toAccountDto(account);
     }
 
     public AccountDto update(Long id, AccountDto accountDto) {
         logger.info("Updating account: {}", accountDto);
+
+        if (!accountRepository.existsById(id)) {
+            throw new MovieDbRepositoryOperationException("Account with ID " + id + " not found");
+        }
+
         accountDto.setId(id);
         Account account = ModelMapper.toAccount(accountDto);
-        return ModelMapper.toAccountDto(accountRepository.update(account));
+        return ModelMapper.toAccountDto(accountRepository.save(account));
     }
 
     @Transactional
