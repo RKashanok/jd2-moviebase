@@ -22,4 +22,38 @@ public interface AccountMovieRepository extends JpaRepository<AccountMovie, Long
     @Query("DELETE FROM AccountMovie am WHERE am.account.id = :accountId")
     void deleteByAccountId(Long accountId);
 
+    public List<AccountMovie> findAllByAccountId(Long accountId) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery(FIND_ALL_ACC_MOVIE_BY_ACC_ID_HQL, AccountMovie.class)
+                    .setParameter("accountId", accountId)
+                    .getResultList();
+        }
+    }
+
+    @Transactional
+    public AccountMovie create(AccountMovie accountMovie) {
+        getCurrentSession().persist(accountMovie);
+        return accountMovie;
+    }
+
+    @Transactional
+    public void updateStatusByAccId(Long accountId, Long movieId, MovieStatus status) {
+        int updatedRows = getCurrentSession().createMutationQuery(UPDATE_ACC_MOVIE_STATUS_BY_ACC_ID_HQL)
+                .setParameter("status", status.toString())
+                .setParameter("accountId", accountId)
+                .setParameter("movieId", movieId)
+                .executeUpdate();
+
+        if (updatedRows == 0) {
+            throw new MovieDbRepositoryOperationException("Error updating account movies with Account ID"
+                    + accountId + " and Movie ID " + movieId);
+        }
+    }
+
+    @Transactional
+    public void deleteByAccId(Long accountId) {
+        getCurrentSession().createMutationQuery(DELETE_ACC_MOVIE_BY_ACC_ID_HQL)
+                .setParameter("accountId", accountId)
+                .executeUpdate();
+    }
 }

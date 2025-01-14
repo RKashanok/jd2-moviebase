@@ -4,7 +4,6 @@ import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.User;
 import com.jd2.moviebase.model.UserDetailModel;
 import com.jd2.moviebase.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

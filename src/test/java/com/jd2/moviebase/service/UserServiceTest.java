@@ -38,14 +38,14 @@ class UserServiceTest {
     void create_ShouldEncodePasswordAndSaveUser() {
         User user = getUser();
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
-        when(userRepository.create(any(User.class))).thenReturn(user);
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
         User createdUser = userService.create(user);
 
         assertNotNull(createdUser);
         assertEquals("encodedPassword", user.getPassword());
         verify(passwordEncoder, times(1)).encode("password");
-        verify(userRepository, times(1)).create(user);
+        verify(userRepository, times(1)).save(user);
     }
 
     @Test
@@ -82,13 +82,14 @@ class UserServiceTest {
     @Test
     void update_ShouldCallRepositoryUpdateMethod() {
         User user = getUser();
-        when(userRepository.update(any(User.class))).thenReturn(user);
+        when(userRepository.existsById(user.getId())).thenReturn(true);
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
         User updatedUser = userService.update(user);
 
         assertNotNull(updatedUser);
         assertEquals(1L, updatedUser.getId());
-        verify(userRepository, times(1)).update(user);
+        verify(userRepository, times(1)).save(user);
     }
 
     @Test
@@ -113,7 +114,7 @@ class UserServiceTest {
                 .lastName("Doe")
                 .build();
 
-        when(userRepository.findByUserEmail("test@example.com")).thenReturn(Optional.of(getUser()));
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(getUser()));
         when(accountService.findByUserId(1L)).thenReturn(accountDto);
 
         UserDetails userDetails = userService.loadUserByUsername("test@example.com");
@@ -125,17 +126,17 @@ class UserServiceTest {
         UserDetailModel userDetailModel = (UserDetailModel) userDetails;
         assertEquals(1L, userDetailModel.getAccountId());
 
-        verify(userRepository, times(1)).findByUserEmail("test@example.com");
+        verify(userRepository, times(1)).findByEmail("test@example.com");
         verify(accountService, times(1)).findByUserId(1L);
     }
 
     @Test
     void loadUserByUsername_ShouldThrowException_WhenUserNotFound() {
-        when(userRepository.findByUserEmail("unknown@example.com")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("unknown@example.com")).thenReturn(Optional.empty());
 
         UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername("unknown@example.com"));
         assertEquals("User not found with username: unknown@example.com", exception.getMessage());
-        verify(userRepository, times(1)).findByUserEmail("unknown@example.com");
+        verify(userRepository, times(1)).findByEmail("unknown@example.com");
     }
 
     private User getUser() {

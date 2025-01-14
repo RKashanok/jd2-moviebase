@@ -5,7 +5,6 @@ import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.Comment;
 import com.jd2.moviebase.repository.CommentRepository;
 import com.jd2.moviebase.util.ModelMapper;
-import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

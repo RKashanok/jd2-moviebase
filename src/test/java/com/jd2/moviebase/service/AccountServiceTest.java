@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,18 +34,18 @@ class AccountServiceTest {
     void create_ShouldSaveAccountAndReturnDto() {
         Account account = getAccount();
         AccountDto accountDto = getAccountDto();
-        when(accountRepository.create(any(Account.class))).thenReturn(account);
+        when(accountRepository.save(any(Account.class))).thenReturn(account);
 
         AccountDto result = accountService.create(accountDto);
 
         assertNotNull(result);
         assertEquals(accountDto.getId(), result.getId());
-        verify(accountRepository, times(1)).create(account);
+        verify(accountRepository, times(1)).save(account);
     }
 
     @Test
     void findById_ShouldReturnAccountDto_WhenAccountExists() {
-        when(accountRepository.findById(1L)).thenReturn(getAccount());
+        when(accountRepository.findById(1L)).thenReturn(Optional.ofNullable(getAccount()));
 
         AccountDto result = accountService.findById(1L);
 
@@ -55,7 +56,7 @@ class AccountServiceTest {
 
     @Test
     void findByUserId_ShouldReturnAccountDto_WhenAccountExists() {
-        when(accountRepository.findByUserId(1L)).thenReturn(getAccount());
+        when(accountRepository.findByUserId(1L)).thenReturn(Optional.ofNullable(getAccount()));
 
         AccountDto result = accountService.findByUserId(1L);
 
@@ -68,13 +69,14 @@ class AccountServiceTest {
     void update_ShouldUpdateAccountAndReturnDto() {
         Account account = getAccount();
         AccountDto accountDto = getAccountDto();
-        when(accountRepository.update(any(Account.class))).thenReturn(account);
+        when(accountRepository.save(any(Account.class))).thenReturn(account);
+        when(accountRepository.existsById(anyLong())).thenReturn(true);
 
         AccountDto result = accountService.update(1L, accountDto);
 
         assertNotNull(result);
         assertEquals(accountDto.getId(), result.getId());
-        verify(accountRepository, times(1)).update(account);
+        verify(accountRepository, times(1)).save(account);
     }
 
     @Test
