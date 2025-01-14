@@ -60,26 +60,27 @@ class GenreServiceTest {
     void create_ShouldReturnCreatedGenreDto() {
         Genre genre = getGenre();
         GenreDto genreDto = getGenreDto();
-        when(genreRepository.create(any(Genre.class))).thenReturn(genre);
+        when(genreRepository.save(any(Genre.class))).thenReturn(genre);
 
         GenreDto result = genreService.create(genreDto);
 
         assertNotNull(result);
         assertEquals(genreDto.getId(), result.getId());
-        verify(genreRepository, times(1)).create(genre);
+        verify(genreRepository, times(1)).save(genre);
     }
 
     @Test
     void update_ShouldReturnUpdatedGenreDto() {
         Genre genre = getGenre();
         GenreDto genreDto = getGenreDto();
-        when(genreRepository.update(any(Genre.class))).thenReturn(genre);
+        when(genreRepository.save(any(Genre.class))).thenReturn(genre);
+        when(genreRepository.existsById(anyLong())).thenReturn(true);
 
         GenreDto result = genreService.update(1L, genreDto);
 
         assertNotNull(result);
         assertEquals(genreDto.getId(), result.getId());
-        verify(genreRepository, times(1)).update(genre);
+        verify(genreRepository, times(1)).save(genre);
     }
 
     @Test

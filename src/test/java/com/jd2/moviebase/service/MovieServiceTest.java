@@ -62,35 +62,39 @@ class MovieServiceTest {
     void create_ShouldReturnCreatedMovieDto() {
         Movie movie = getMovie();
         MovieDto movieDto = getMovieDto();
-        when(movieRepository.create(any(Movie.class))).thenReturn(movie);
+        when(movieRepository.save(any(Movie.class))).thenReturn(movie);
 
         MovieDto result = movieService.create(movieDto);
 
         assertNotNull(result);
         assertEquals(movieDto.getId(), result.getId());
-        verify(movieRepository, times(1)).create(movie);
+        verify(movieRepository, times(1)).save(movie);
     }
 
     @Test
     void update_ShouldReturnUpdatedMovieDto() {
         Movie movie = getMovie();
         MovieDto movieDto = getMovieDto();
-        when(movieRepository.update(any(Movie.class))).thenReturn(movie);
+        when(movieRepository.save(any(Movie.class))).thenReturn(movie);
+        when(movieRepository.existsById(movieDto.getId())).thenReturn(true);
 
         MovieDto result = movieService.update(movieDto);
 
         assertNotNull(result);
         assertEquals(movieDto.getId(), result.getId());
-        verify(movieRepository, times(1)).update(movie);
+        verify(movieRepository, times(1)).existsById(movieDto.getId());
+        verify(movieRepository, times(1)).save(movie);
     }
 
     @Test
     void deleteByID_ShouldInvokeRepositoryDeleteById() {
+        when(movieRepository.existsById(1L)).thenReturn(true);
         doNothing().when(movieRepository).deleteById(1L);
 
         movieService.deleteByID(1L);
 
         verify(movieRepository, times(1)).deleteById(1L);
+        verify(movieRepository, times(1)).existsById(1L);
     }
 
     private Movie getMovie() {

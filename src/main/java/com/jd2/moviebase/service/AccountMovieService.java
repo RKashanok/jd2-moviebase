@@ -31,7 +31,7 @@ public class AccountMovieService {
     }
 
     public AccountMovieDto create(MovieDto movieDto) {
-        UserDetailModel user = (UserDetailModel)SecurityContextHolder
+        UserDetailModel user = (UserDetailModel) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
@@ -47,7 +47,7 @@ public class AccountMovieService {
                 .status(String.valueOf(MovieStatus.TO_WATCH))
                 .build();
 
-        AccountMovie createdAccountMovie = accountMovieRepository.create(ModelMapper.toAccountMovie(accountMovieDto));
+        AccountMovie createdAccountMovie = accountMovieRepository.save(ModelMapper.toAccountMovie(accountMovieDto));
         return ModelMapper.toAccountMovieDto(createdAccountMovie);
     }
 
@@ -62,11 +62,11 @@ public class AccountMovieService {
 
     public void updateStatusByAccId(Long accountId, Long movieId, MovieStatus status) {
         logger.info("Updating account movie status by account id: {}", accountId);
-        accountMovieRepository.updateStatusByAccId(accountId, movieId, status);
+        accountMovieRepository.updateStatusByAccountId(accountId, movieId, status.toString());
     }
 
     public void deleteByAccId(Long id) {
         logger.info("Deleting user movie by account id: {}", id);
-        accountMovieRepository.deleteByAccId(id);
+        accountMovieRepository.deleteByAccountId(id);
     }
 }
