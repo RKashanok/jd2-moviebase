@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE Comment c SET c.isActive = false, c.account = null WHERE c.account.id = :accountId")
-    int deactivateByAccountId(Long accountId);
+    Optional<Comment> findByAccountId(Long accountId);
 }
+

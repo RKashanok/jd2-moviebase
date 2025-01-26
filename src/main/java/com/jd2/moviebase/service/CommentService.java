@@ -5,6 +5,7 @@ import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.Comment;
 import com.jd2.moviebase.repository.CommentRepository;
 import com.jd2.moviebase.util.ModelMapper;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +57,11 @@ public class CommentService {
 
     public void deactivateByAccId(Long accountId) {
         logger.info("Executing method: deactivateByAccId(accountId={})", accountId);
-        int updatedRows = commentRepository.deactivateByAccountId(accountId);
-        if (updatedRows == 0) {
-            throw new MovieDbRepositoryOperationException("No comments found for Account ID " + accountId);
-        }
+        commentRepository.findByAccountId(accountId)
+                .ifPresent(c -> {
+                    c.setIsActive(false);
+                    c.setAccount(null);
+                    commentRepository.save(c);
+                });
     }
 }

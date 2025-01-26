@@ -2,10 +2,12 @@ package com.jd2.moviebase.service;
 
 import com.jd2.moviebase.dto.AccountMovieDto;
 import com.jd2.moviebase.dto.MovieDto;
+import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.AccountMovie;
 import com.jd2.moviebase.model.UserDetailModel;
 import com.jd2.moviebase.repository.AccountMovieRepository;
 import com.jd2.moviebase.util.ModelMapper;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,11 +62,13 @@ public class AccountMovieService {
         return accountMovieDtos;
     }
 
+    @Transactional
     public void updateStatusByAccId(Long accountId, Long movieId, MovieStatus status) {
         logger.info("Updating account movie status by account id: {}", accountId);
         accountMovieRepository.updateStatusByAccountId(accountId, movieId, status.toString());
     }
 
+    @Transactional
     public void deleteByAccId(Long id) {
         logger.info("Deleting user movie by account id: {}", id);
         accountMovieRepository.deleteByAccountId(id);
