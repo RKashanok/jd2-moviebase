@@ -4,6 +4,7 @@ import com.jd2.moviebase.exception.MovieDbRepositoryOperationException;
 import com.jd2.moviebase.model.User;
 import com.jd2.moviebase.model.UserDetailModel;
 import com.jd2.moviebase.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,6 @@ public class UserService implements UserDetailsService {
     private final DataSource ds;
     private final UserRepository userRepository;
     private final AccountService accountService;
-    private final CommentService commentService;
-    private final AccountMovieService accountMovieService;
     private final PasswordEncoder passwordEncoder;
 
     public User create(User user) {
