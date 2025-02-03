@@ -29,9 +29,8 @@ public class UserService implements UserDetailsService {
 
     public User create(User user) {
         logger.info("Creating user: {}", user);
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
-        return userRepository.create(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
     public User findById(Long id) {
@@ -47,7 +46,10 @@ public class UserService implements UserDetailsService {
 
     public User update(User user) {
         logger.info("Updating user: {}", user);
-        return userRepository.update(user);
+        if (!userRepository.existsById(user.getId())) {
+            throw new MovieDbRepositoryOperationException("User with ID " + user.getId() + " not found");
+        }
+        return userRepository.save(user);
     }
 
     public void deleteById(Long id) {
@@ -59,7 +61,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUserEmail(username);
+        Optional<User> user = userRepository.findByEmail(username);
 
         return user.map(u -> new UserDetailModel(u, accountService.findByUserId(u.getId()).getId()))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
