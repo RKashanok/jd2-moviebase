@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -42,7 +43,7 @@ class CommentServiceTest {
 
     @Test
     void findById_ShouldReturnCommentDto_WhenCommentExists() {
-        when(commentRepository.findById(1L)).thenReturn(getComment());
+        when(commentRepository.findById(1L)).thenReturn(Optional.ofNullable(getComment()));
 
         CommentDto result = commentService.findById(1L);
 
@@ -63,43 +64,44 @@ class CommentServiceTest {
     void create_ShouldReturnCreatedCommentDto() {
         Comment comment = getComment();
         CommentDto commentDto = getCommentDto();
-        when(commentRepository.create(any(Comment.class))).thenReturn(comment);
+        when(commentRepository.save(any(Comment.class))).thenReturn(comment);
 
         CommentDto result = commentService.create(commentDto);
 
         assertNotNull(result);
         assertEquals(commentDto.getId(), result.getId());
-        verify(commentRepository, times(1)).create(comment);
+        verify(commentRepository, times(1)).save(comment);
     }
 
     @Test
     void update_ShouldReturnUpdatedCommentDto() {
         Comment comment = getComment();
         CommentDto commentDto = getCommentDto();
-        when(commentRepository.update(any(Comment.class))).thenReturn(comment);
+        when(commentRepository.save(any(Comment.class))).thenReturn(comment);
+        when(commentRepository.existsById(anyLong())).thenReturn(true);
 
         CommentDto result = commentService.update(1L, commentDto);
 
         assertNotNull(result);
         assertEquals(commentDto.getId(), result.getId());
-        verify(commentRepository, times(1)).update(comment);
+        verify(commentRepository, times(1)).save(comment);
     }
 
     @Test
     void deactivateByAccId_ShouldInvokeRepositoryDeactivateByAccId() {
-        doNothing().when(commentRepository).deactivateByAccId(1L);
+        when(commentRepository.deactivateByAccountId(1L)).thenReturn(1);;
 
         commentService.deactivateByAccId(1L);
 
-        verify(commentRepository, times(1)).deactivateByAccId(1L);
+        verify(commentRepository, times(1)).deactivateByAccountId(1L);
     }
 
     @Test
     void deactivateByAccId_ShouldThrowException_WhenNoCommentsFound() {
-        doThrow(new MovieDbRepositoryOperationException("No comments found for Account ID 1")).when(commentRepository).deactivateByAccId(1L);
+        doThrow(new MovieDbRepositoryOperationException("No comments found for Account ID 1")).when(commentRepository).deactivateByAccountId(1L);
 
         assertThrows(MovieDbRepositoryOperationException.class, () -> commentService.deactivateByAccId(1L));
-        verify(commentRepository, times(1)).deactivateByAccId(1L);
+        verify(commentRepository, times(1)).deactivateByAccountId(1L);
     }
 
     private Comment getComment() {
