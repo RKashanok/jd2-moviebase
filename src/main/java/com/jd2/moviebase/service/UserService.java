@@ -29,8 +29,7 @@ public class UserService implements UserDetailsService {
 
     public User create(User user) {
         logger.info("Creating user: {}", user);
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 

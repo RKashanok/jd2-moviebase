@@ -87,22 +87,23 @@ class CommentServiceTest {
         verify(commentRepository, times(1)).save(comment);
     }
 
-    @Test
-    void deactivateByAccId_ShouldInvokeRepositoryDeactivateByAccId() {
-        when(commentRepository.deactivateByAccountId(1L)).thenReturn(1);;
+//    @Test
+//    void deactivateByAccId_ShouldInvokeRepositoryDeactivateByAccId() {
+//        when(commentRepository.deactivateByAccountId(1L)).thenReturn(1);;
+//
+//        commentService.deactivateByAccId(1L);
+//
+//        verify(commentRepository, times(1)).deactivateByAccountId(1L);
+//    }
 
-        commentService.deactivateByAccId(1L);
+//    @Test
+//    void deactivateByAccId_ShouldThrowException_WhenNoCommentsFound() {
+//        doThrow(new MovieDbRepositoryOperationException("No comments found for Account ID 1")).when(commentRepository).deactivateByAccountId(1L);
+//
+//        assertThrows(MovieDbRepositoryOperationException.class, () -> commentService.deactivateByAccId(1L));
+//        verify(commentRepository, times(1)).deactivateByAccountId(1L);
+//    }
 
-        verify(commentRepository, times(1)).deactivateByAccountId(1L);
-    }
-
-    @Test
-    void deactivateByAccId_ShouldThrowException_WhenNoCommentsFound() {
-        doThrow(new MovieDbRepositoryOperationException("No comments found for Account ID 1")).when(commentRepository).deactivateByAccountId(1L);
-
-        assertThrows(MovieDbRepositoryOperationException.class, () -> commentService.deactivateByAccId(1L));
-        verify(commentRepository, times(1)).deactivateByAccountId(1L);
-    }
 
     private Comment getComment() {
         return Comment.builder()

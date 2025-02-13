@@ -21,5 +21,4 @@ public interface AccountMovieRepository extends JpaRepository<AccountMovie, Long
     @Modifying
     @Query("DELETE FROM AccountMovie am WHERE am.account.id = :accountId")
     void deleteByAccountId(Long accountId);
-
 }
