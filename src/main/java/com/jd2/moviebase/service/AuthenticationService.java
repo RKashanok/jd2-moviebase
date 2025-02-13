@@ -12,6 +12,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -40,13 +42,13 @@ public class AuthenticationService {
                 .build();
         User registeredUser = userService.create(user);
 
-        AccountDto accountDto = AccountDto.builder()
-                .userId(registeredUser.getId())
-                .firstName(registerUserDto.getFirstName())
-                .lastName(registerUserDto.getLastName())
-                .preferredName(registerUserDto.getPreferredName())
-                .dateOfBirth(registerUserDto.getDateOfBirth())
-                .build();
+        AccountDto.AccountDtoBuilder accountBuilder = AccountDto.builder()
+                .userId(registeredUser.getId());
+        Optional.ofNullable(registerUserDto.getFirstName()).ifPresent(accountBuilder::firstName);
+        Optional.ofNullable(registerUserDto.getLastName()).ifPresent(accountBuilder::lastName);
+        Optional.ofNullable(registerUserDto.getPreferredName()).ifPresent(accountBuilder::preferredName);
+        Optional.ofNullable(registerUserDto.getDateOfBirth()).ifPresent(accountBuilder::dateOfBirth);
+        AccountDto accountDto = accountBuilder.build();
         accountService.create(accountDto);
 
         return registeredUser;
