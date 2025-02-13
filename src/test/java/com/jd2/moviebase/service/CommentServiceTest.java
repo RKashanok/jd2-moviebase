@@ -104,6 +104,7 @@ class CommentServiceTest {
 //        verify(commentRepository, times(1)).deactivateByAccountId(1L);
 //    }
 
+
     private Comment getComment() {
         return Comment.builder()
                 .id(1L)
